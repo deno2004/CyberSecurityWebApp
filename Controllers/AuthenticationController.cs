@@ -37,27 +37,31 @@ namespace CyberSecurityWebApp.Controllers
                 return View();
             }
 
-            /*var claims = new List<Claim>
+            // Create claims for authentication
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
-                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             };
-
 
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true, // keep logged in across sessions (optional)
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
+            };
+
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties);
 
-            if (user.IsAdmin)
-                return RedirectToAction("Dashboard", "Admin");*/
-
-            // ✅ Redirect to Movie page after login
             return RedirectToAction("Index", "Home");
         }
+
+
 
         [HttpGet]
         public IActionResult Register() => View();

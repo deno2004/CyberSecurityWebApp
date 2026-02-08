@@ -30,4 +30,10 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    Console.WriteLine($"Connected to database! Tables: {string.Join(", ", db.Model.GetEntityTypes().Select(t => t.GetTableName()))}");
+}
+
 app.Run();
