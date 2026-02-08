@@ -56,7 +56,7 @@ namespace CyberSecurityWebApp.Controllers
                 return RedirectToAction("Dashboard", "Admin");*/
 
             // ✅ Redirect to Movie page after login
-            return RedirectToAction("Index", "Movies");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
