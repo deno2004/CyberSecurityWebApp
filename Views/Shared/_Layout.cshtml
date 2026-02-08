@@ -12,10 +12,23 @@
             <div class="container">
                 <a class="navbar-brand" href="/">🛡️ KiberVarnost Akademija</a>
                 <ul class="nav-menu">
-                    <li><a href="/">Domov</a></li>
-                    <li><a href="/Home/Learn">Izobraževanje</a></li>
-                    <li><a href="/Quiz">Kvizi</a></li>
-                    <li><a href="/Home/About">O aplikaciji</a></li>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li><a href="/Home/Learn">Izobraževanje</a></li>
+                        <li><a href="/Quiz">Kvizi</a></li>
+                        <li><a href="/Home/About">O aplikaciji</a></li>
+
+                        <li>
+                            <form asp-controller="Authentication" asp-action="Logout" method="post" style="display:inline;">
+                                <button type="submit" class="nav-link-button">Odjava</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a href="/Authentication/Login">Prijava</a></li>
+                        <li><a href="/Authentication/Register">Registracija</a></li>
+                    }
                 </ul>
             </div>
         </nav>

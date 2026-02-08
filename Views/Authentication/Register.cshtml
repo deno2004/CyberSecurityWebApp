@@ -1,0 +1,179 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Registracija";
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">👤</div>
+            <h1>Registracija</h1>
+            <p>Ustvarite račun v KiberVarnost Akademiji</p>
+        </div>
+
+        <form asp-action="Register" method="post" class="auth-form">
+            <div asp-validation-summary="All" class="validation-summary"></div>
+
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="Janez" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" class="form-control" placeholder="Novak" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" placeholder="janez.novak" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <small>Uporabniško ime mora biti dolgo med 3 in 50 znaki</small>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" type="email" placeholder="janez.novak@example.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <small>Vsaj 6 znakov, vsebovati mora veliko in malo črko ter številko</small>
+            </div>
+
+            <div class="password-requirements">
+                <h4>📋 Zahteve za geslo:</h4>
+                <ul>
+                    <li>Vsaj 6 znakov</li>
+                    <li>Vsaj ena velika črka (A-Z)</li>
+                    <li>Vsaj ena mala črka (a-z)</li>
+                    <li>Vsaj ena številka (0-9)</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-large">Registriraj se</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Že imate račun? <a asp-action="Login">Prijavite se</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
+        padding: 2rem 0;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 3rem;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .auth-header h1 {
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: #666;
+    }
+
+    .auth-form {
+        margin-bottom: 2rem;
+    }
+
+    .validation-summary {
+        background: #ffebee;
+        border-left: 4px solid #c62828;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 4px;
+        color: #c62828;
+    }
+
+        .validation-summary ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+    .text-danger {
+        color: #c62828;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .password-requirements {
+        background: #e8f5e9;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #4CAF50;
+    }
+
+        .password-requirements h4 {
+            margin: 0 0 0.5rem 0;
+            color: #2e7d32;
+            font-size: 1rem;
+        }
+
+        .password-requirements ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .password-requirements li {
+            color: #555;
+            margin: 0.25rem 0;
+        }
+
+    .auth-footer {
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e0e0;
+    }
+
+        .auth-footer a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .auth-footer a:hover {
+                text-decoration: underline;
+            }
+
+    @@media (max-width: 768px) {
+        .auth-card {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
