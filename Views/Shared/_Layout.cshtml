@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - KiberVarnost Akademija</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a class="navbar-brand" href="/">🛡️ KiberVarnost Akademija</a>
+                <ul class="nav-menu">
+                    <li><a href="/">Domov</a></li>
+                    <li><a href="/Home/Learn">Izobraževanje</a></li>
+                    <li><a href="/Quiz">Kvizi</a></li>
+                    <li><a href="/Home/About">O aplikaciji</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 - KiberVarnost Akademija - Aplikacija za ozaveščanje o kibernetski varnosti</p>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
