@@ -13,6 +13,10 @@ namespace CyberSecurityWebApp.Controllers
             _logger = logger;
         }
 
+        public IActionResult Learn()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View();
