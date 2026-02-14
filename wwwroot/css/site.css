@@ -787,6 +787,7 @@ footer {
 
     .nav-menu {
         gap: 1rem;
+        visibility: hidden;
     }
 
     .hero h1 {
@@ -808,5 +809,34 @@ footer {
 
     .module-actions {
         justify-content: center;
+    }
+
+    /* Logout button kot nav link */
+    .logout-form {
+        display: inline;
+    }
+
+    .nav-link-button {
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font: inherit;
+        color: white;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: 500;
+        transition: opacity 0.3s;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    /* Enako obnašanje kot .nav-menu a */
+    .nav-link-button:hover {
+        opacity: 0.8;
+    }
+
+    .nav-menu.loaded {
+        visibility: visible;
     }
 }

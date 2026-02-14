@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - KiberVarnost Akademija</title>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <title>@ViewData["Title"] - Cyber Security Akademija</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <header>
         <nav class="navbar">
             <div class="container">
-                <a class="navbar-brand" href="/">🛡️ KiberVarnost Akademija</a>
+                <a class="navbar-brand" href="/">🛡️ Cyber Security Akademija</a>
                 <ul class="nav-menu">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
@@ -19,7 +19,7 @@
                         <li><a href="/Home/About">O aplikaciji</a></li>
 
                         <li>
-                            <form asp-controller="Authentication" asp-action="Logout" method="post" style="display:inline;">
+                            <form asp-controller="Authentication" asp-action="Logout" method="post" class="logout-form">
                                 <button type="submit" class="nav-link-button">Odjava</button>
                             </form>
                         </li>
@@ -59,5 +59,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        window.addEventListener('load', () => {
+            document.querySelector('.nav-menu')?.classList.add('loaded');
+        });
+    </script>
 </body>
 </html>

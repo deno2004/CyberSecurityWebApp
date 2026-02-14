@@ -42,6 +42,7 @@ namespace CyberSecurityWebApp.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
+                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             };
 
             var claimsIdentity = new ClaimsIdentity(

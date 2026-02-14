@@ -29,5 +29,8 @@ namespace CyberSecurityWebApp.Models
         [Required]
         [Column("password")]
         public string Password { get; set; }
+
+        [Column("is_admin")]
+        public bool IsAdmin { get; set; } = false;
     }
 }
