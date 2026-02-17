@@ -14,17 +14,36 @@
                 <ul class="nav-menu">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <li><a href="/Home/Learn">Izobraževanje</a></li>
-                        <li><a href="/Quiz">Kvizi</a></li>
+                        // 🔐 ADMIN NAVBAR
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li><a href="/Admin">Dashboard</a></li>
+                            <li><a href="/Admin/Users">Uporabniki</a></li>
+                            <li><a href="/Admin/Quizzes">Kvizi</a></li>
+                            <li><a href="/Admin/Statistics">Statistika</a></li>
 
-                        <li>
-                            <form asp-controller="Authentication" asp-action="Logout" method="post" class="logout-form">
-                                <button type="submit" class="nav-link-button">Odjava</button>
-                            </form>
-                        </li>
+                            <li>
+                                <form asp-controller="Authentication" asp-action="Logout" method="post" class="logout-form">
+                                    <button type="submit" class="nav-link-button">Odjava</button>
+                                </form>
+                            </li>
+                        }
+                        // 👤 NORMAL USER NAVBAR
+                        else
+                        {
+                            <li><a href="/Home/Learn">Izobraževanje</a></li>
+                            <li><a href="/Quiz">Kvizi</a></li>
+
+                            <li>
+                                <form asp-controller="Authentication" asp-action="Logout" method="post" class="logout-form">
+                                    <button type="submit" class="nav-link-button">Odjava</button>
+                                </form>
+                            </li>
+                        }
                     }
                     else
                     {
+                        // 🚫 NOT LOGGED IN
                         <li><a href="/Authentication/Login">Prijava</a></li>
                         <li><a href="/Authentication/Register">Registracija</a></li>
                     }

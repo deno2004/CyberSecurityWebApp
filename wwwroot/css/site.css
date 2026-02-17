@@ -840,3 +840,51 @@ footer {
         visibility: visible;
     }
 }
+
+.admin-hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+    .admin-hero h1 {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.admin-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+    .admin-card:hover {
+        transform: translateY(-5px);
+    }
+
+.admin-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.admin-actions {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.admin-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+

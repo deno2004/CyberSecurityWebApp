@@ -48,16 +48,12 @@ namespace CyberSecurityWebApp.Controllers
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = true, // keep logged in across sessions (optional)
-                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1)
-            };
-
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
+                new ClaimsPrincipal(claimsIdentity));
+
+            if (user.IsAdmin)
+                return RedirectToAction("Dashboard", "Admin");
 
             return RedirectToAction("Index", "Home");
         }
