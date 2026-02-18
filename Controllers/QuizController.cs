@@ -1,5 +1,6 @@
 ﻿using CyberSecurityWebApp.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CyberSecurityWebApp.Controllers
 {
@@ -13,9 +14,12 @@ namespace CyberSecurityWebApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var quizzes = await _context.Quizzes
+                .ToListAsync();
+
+            return View(quizzes);
         }
 
         /*public async Task<IActionResult> Index()

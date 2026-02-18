@@ -14,6 +14,9 @@
                 <ul class="nav-menu">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
+                        <li class="nav-user">
+                            Pozdravljen, @User.Identity.Name
+                        </li>
                         // 🔐 ADMIN NAVBAR
                         if (User.IsInRole("Admin"))
                         {

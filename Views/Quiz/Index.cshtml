@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<CyberSecurityWebApp.Models.Quiz>
+@{
     ViewData["Title"] = "Kvizi";
 }
 <br />
@@ -8,20 +9,23 @@
 </div>
 
 <div class="quiz-modules">
-    <div class="quiz-module-card">
-        <div class="module-icon">IconClass</div>
-        <div class="module-content">
-            <h3>Title</h3>
-            <p>Description</p>
-            <div class="module-meta">
-                <span class="question-count">📝 Questions.Count vprašanj</span>
-            </div>
-            <div class="module-actions">
-                <a href="/Quiz/Start/Id" class="btn btn-primary">Začni kviz</a>
-                <a href="/Quiz/Share/Id" class="btn btn-secondary">📤 Deli</a>
+    @foreach (var module in Model)
+    {
+        <div class="quiz-module-card">
+            <div class="module-icon">IconClass</div>
+            <div class="module-content">
+                <h3>@module.Title</h3>
+                <p>@module.Description</p>
+                <div class="module-meta">
+                    <span class="question-count">📝 Questions.Count vprašanj</span>
+                </div>
+                <div class="module-actions">
+                    <a href="/Quiz/Start/@module.Id" class="btn btn-primary">Začni kviz</a>
+                    <a href="/Quiz/Share/@module.Id" class="btn btn-secondary">📤 Deli</a>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>
 
 <div class="quiz-info">
