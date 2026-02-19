@@ -12,12 +12,14 @@
     @foreach (var module in Model)
     {
         <div class="quiz-module-card">
-            <div class="module-icon">IconClass</div>
+            <div class="module-icon">
+                <img src="@module.IconClass" alt="Quiz icon" />
+            </div>
             <div class="module-content">
                 <h3>@module.Title</h3>
                 <p>@module.Description</p>
                 <div class="module-meta">
-                    <span class="question-count">📝 Questions.Count vprašanj</span>
+                    <span class="question-count">📝 5 vprašanj</span>
                 </div>
                 <div class="module-actions">
                     <a href="/Quiz/Start/@module.Id" class="btn btn-primary">Začni kviz</a>

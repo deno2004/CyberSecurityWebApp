@@ -22,6 +22,17 @@ namespace CyberSecurityWebApp.Controllers
             return View(quizzes);
         }
 
+        public async Task<IActionResult> Start(int id)
+        {
+            var module = await _context.Quizzes
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (module == null)
+                return NotFound();
+
+            return View(module);
+        }
+
         /*public async Task<IActionResult> Index()
         {
             var modules = await _context.QuizModules

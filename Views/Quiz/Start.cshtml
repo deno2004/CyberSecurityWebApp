@@ -1,0 +1,59 @@
+﻿@model Quiz
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="quiz-start">
+    <div class="quiz-start-card">
+        <div class="quiz-icon-large">
+            <img src="@Model.IconClass" alt="Quiz icon" />
+        </div>
+        <h1>@Model.Title</h1>
+        <p class="quiz-description">@Model.Description</p>
+        
+        <div class="quiz-details">
+            <div class="detail-item">
+                <span class="detail-icon">📝</span>
+                <div>
+                    <strong>Število vprašanj</strong>
+                    <p>Questions.Count</p>
+                </div>
+            </div>
+            <div class="detail-item">
+                <span class="detail-icon">⏱️</span>
+                <div>
+                    <strong>Predviden čas</strong>
+                    <p>(Questions.Count * 1) minut</p>
+                </div>
+            </div>
+            <div class="detail-item">
+                <span class="detail-icon">🎯</span>
+                <div>
+                    <strong>Tip</strong>
+                    <p>Večkratni izbor</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" action="/Quiz/CreateSession" class="start-form">
+            <input type="hidden" name="moduleId" value="@Model.Id" />
+            <div class="form-group">
+                <label for="userName">Vnesite vaše ime:</label>
+                <input type="text" id="userName" name="userName" class="form-control" required 
+                       placeholder="Janez Novak" maxlength="50" />
+                <small>To ime bo uporabljeno za identifikacijo vaših rezultatov</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-large">Začni kviz</button>
+        </form>
+
+        <div class="quiz-tips">
+            <h4>💡 Nasveti:</h4>
+            <ul>
+                <li>Preberite vsako vprašanje pozorno</li>
+                <li>Ne hitite - ni časovne omejitve</li>
+                <li>Po koncu boste prejeli podrobno povratno informacijo</li>
+                <li>Lahko poskusite večkrat in izboljšate rezultat</li>
+            </ul>
+        </div>
+    </div>
+</div>
