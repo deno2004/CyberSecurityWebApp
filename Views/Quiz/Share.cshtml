@@ -1,0 +1,250 @@
+﻿@{
+    ViewData["Title"] = "Deli kviz";
+    var moduleId = ViewBag.ModuleId;
+    var shareUrl = ViewBag.ShareUrl as string;
+    var sessionCode = ViewBag.SessionCode as string;
+}
+
+<div class="share-container">
+    <div class="share-card">
+        <div class="share-icon-large">🔗</div>
+        <h1>Deli kviz z drugimi</h1>
+
+        @if (string.IsNullOrEmpty(shareUrl))
+        {
+            <p class="share-description">
+                Ustvarite unikatno povezavo, ki jo lahko delite s prijatelji, sodelavci ali družino.
+                Vsi, ki imajo povezavo, bodo lahko rešili ta kviz.
+            </p>
+
+            <form method="post" action="/Quiz/GenerateLink" class="share-form">
+                <input type="hidden" name="moduleId" value="@moduleId" />
+                <div class="form-group">
+                    <label for="userName">Vaše ime (opcijsko):</label>
+                    <input type="text" id="userName" name="userName" class="form-control"
+                           placeholder="Za sledenje, kdo je ustvaril povezavo" maxlength="50" />
+                    <small>To ime bo vidno samo vam kot ustvarjalec povezave</small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">🔗 Ustvari povezavo</button>
+            </form>
+        }
+        else
+        {
+            <div class="success-message">
+                <div class="success-icon">✓</div>
+                <h2>Povezava uspešno ustvarjena!</h2>
+            </div>
+
+            <div class="share-link-container">
+                <label>Povezava do kviza:</label>
+                <div class="link-box">
+                    <input type="text" id="shareLink" value="@shareUrl" readonly class="share-link-input" />
+                    <button onclick="copyLink()" class="btn-copy" title="Kopiraj">📋</button>
+                </div>
+                <small>Koda seje: <strong>@sessionCode</strong></small>
+            </div>
+
+            <div class="share-options">
+                <h3>Deli preko:</h3>
+                <div class="share-buttons">
+                    <a href="mailto:?subject=Preizkusi svoj kviz o kibernetski varnosti&body=Pozdravljeni,%0D%0A%0D%0AVabim te, da rešiš kviz o kibernetski varnosti:%0D%0A@shareUrl"
+                       class="share-btn email">
+                        📧 E-pošta
+                    </a>
+                    <a href="https://wa.me/?text=Preizkusi svoj kviz o kibernetski varnosti: @shareUrl"
+                       target="_blank" class="share-btn whatsapp">
+                        💬 WhatsApp
+                    </a>
+                    <a href="https://t.me/share/url?url=@shareUrl&text=Preizkusi svoj kviz o kibernetski varnosti"
+                       target="_blank" class="share-btn telegram">
+                        ✈️ Telegram
+                    </a>
+                </div>
+            </div>
+
+            <div class="share-info">
+                <h4>💡 Nasveti za deljenje:</h4>
+                <ul>
+                    <li>Povezava je aktivna in jo lahko uporabite večkrat</li>
+                    <li>Vsak uporabnik bo imel svojo unikatno sejo</li>
+                    <li>Rezultati so vidni samo uporabniku, ki je rešil kviz</li>
+                    <li>Povezavo lahko delite preko kateregakoli sporočilnega sistema</li>
+                </ul>
+            </div>
+
+            <div class="share-actions">
+                <button onclick="copyLink()" class="btn btn-primary">📋 Kopiraj povezavo</button>
+                <a href="/Quiz" class="btn btn-secondary">Nazaj na kvize</a>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function copyLink() {
+        const linkInput = document.getElementById('shareLink');
+        linkInput.select();
+        linkInput.setSelectionRange(0, 99999); // For mobile devices
+
+        navigator.clipboard.writeText(linkInput.value).then(function() {
+            // Success
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Kopirano!';
+            btn.style.background = '#4CAF50';
+
+            setTimeout(function() {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 2000);
+        }, function(err) {
+            // Fallback
+            document.execCommand('copy');
+            alert('Povezava kopirana!');
+        });
+    }
+</script>
+
+<style>
+    .share-icon-large {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .share-description {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    .share-form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .success-message {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        background: #4CAF50;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        margin: 0 auto 15px;
+    }
+
+    .share-link-container {
+        margin: 30px 0;
+    }
+
+        .share-link-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+    .link-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .share-link-input {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid #2196F3;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        background: #f5f9ff;
+    }
+
+    .btn-copy {
+        padding: 12px 20px;
+        background: #2196F3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: background 0.3s;
+    }
+
+        .btn-copy:hover {
+            background: #1976D2;
+        }
+
+    .share-options {
+        margin: 30px 0;
+    }
+
+        .share-options h3 {
+            margin-bottom: 15px;
+        }
+
+    .share-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .share-btn {
+        display: block;
+        padding: 12px 20px;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+        .share-btn.email {
+            background: #0072C6;
+            color: white;
+        }
+
+        .share-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .share-btn.telegram {
+            background: #0088cc;
+            color: white;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+    .share-info {
+        background: #f5f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+        .share-info h4 {
+            margin-top: 0;
+        }
+
+        .share-info ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .share-info li {
+            margin: 8px 0;
+            color: #666;
+        }
+</style>
+

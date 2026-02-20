@@ -33,6 +33,12 @@ namespace CyberSecurityWebApp.Controllers
             return View(module);
         }
 
+        public IActionResult Share(int id)
+        {
+            ViewBag.ModuleId = id;
+            return View();
+        }
+
         /*public async Task<IActionResult> Index()
         {
             var modules = await _context.QuizModules
