@@ -14,9 +14,6 @@
                 <ul class="nav-menu">
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-user">
-                            Pozdravljen, @User.Identity.Name
-                        </li>
                         // 🔐 ADMIN NAVBAR
                         if (User.IsInRole("Admin"))
                         {
@@ -37,10 +34,27 @@
                             <li><a href="/Home/Learn">Izobraževanje</a></li>
                             <li><a href="/Quiz">Kvizi</a></li>
 
-                            <li>
-                                <form asp-controller="Authentication" asp-action="Logout" method="post" class="logout-form">
-                                    <button type="submit" class="nav-link-button">Odjava</button>
-                                </form>
+                            <li class="nav-dropdown">
+                                <button class="nav-user-button" id="userDropdownBtn">
+                                    👤 @User.Identity.Name ▾
+                                </button>
+
+                                <div class="dropdown-menu" id="userDropdownMenu">
+                                    <a href="/Home/Profile">Moj profil</a>
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a href="/Admin">Admin Dashboard</a>
+                                    }
+
+                                    <form asp-controller="Authentication"
+                                          asp-action="Logout"
+                                          method="post">
+                                        <button type="submit" class="dropdown-logout">
+                                            Odjava
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         }
                     }
@@ -84,6 +98,19 @@
     <script>
         window.addEventListener('load', () => {
             document.querySelector('.nav-menu')?.classList.add('loaded');
+        });
+    </script>
+    <script>
+        const dropdownBtn = document.getElementById('userDropdownBtn');
+        const dropdownMenu = document.getElementById('userDropdownMenu');
+
+        dropdownBtn?.addEventListener('click', function (e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function () {
+            dropdownMenu?.classList.remove('show');
         });
     </script>
 </body>

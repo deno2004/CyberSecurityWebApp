@@ -1,0 +1,198 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-icon">👤</div>
+        <h1>Moj profil</h1>
+    </div>
+
+    <div class="profile-card">
+        <div class="profile-section">
+            <h3>Informacije o računu</h3>
+            <div class="profile-info">
+                <div class="info-row">
+                    <span class="info-label">Ime:</span>
+                    <span class="info-value">@Model.FirstName</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Priimek:</span>
+                    <span class="info-value">@Model.LastName</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Uporabniško ime:</span>
+                    <span class="info-value">@Model.Username</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">E-poštni naslov:</span>
+                    <span class="info-value">@Model.Email</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Geslo:</span>
+                    <span class="info-value">@Model.Password</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h3>Vloga v sistemu</h3>
+            <div class="role-badge">
+                @if (User.IsInRole("Admin"))
+                {
+                    <span class="badge badge-admin">👑 Administrator</span>
+                    <p>Imate polni dostop do sistema</p>
+                }
+                else
+                {
+                    <span class="badge badge-user">👤 Uporabnik</span>
+                    <p>Dostop do izobraževalnih vsebin in kvizov</p>
+                }
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="/Quiz" class="btn btn-primary">Reši kviz</a>
+            <a href="/Home/Learn" class="btn btn-secondary">Izobraževalne vsebine</a>
+            <form asp-controller="Account" asp-action="Logout" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-danger">Odjavi se</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .profile-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .profile-header h1 {
+        color: #667eea;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 2rem;
+    }
+
+    .profile-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+        .profile-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .profile-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+    .profile-info {
+        background: #f5f9ff;
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e8eaf6;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .info-value {
+        color: #333;
+    }
+
+    .role-badge {
+        background: #f5f9ff;
+        padding: 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .badge-admin {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .badge-user {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        color: white;
+    }
+
+    .role-badge p {
+        margin: 0.5rem 0 0 0;
+        color: #666;
+    }
+
+    .profile-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding-top: 1rem;
+    }
+
+    .btn-danger {
+        background: #f44336;
+        color: white;
+    }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+    @@media (max-width: 768px) {
+        .info-row {
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .profile-actions {
+            flex-direction: column;
+        }
+
+            .profile-actions .btn,
+            .profile-actions button {
+                width: 100%;
+            }
+    }
+</style>
+

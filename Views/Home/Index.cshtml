@@ -6,10 +6,13 @@
     <div class="hero-content">
         <h1>🛡️ Dobrodošli v Cyber Security Akademiji</h1>
         <p class="hero-subtitle">Naučite se osnov kibernetske varnosti in zaščitite se v digitalnem svetu</p>
-        <div class="hero-buttons">
-            <a href="/Home/Learn" class="btn btn-primary">Začni z učenjem</a>
-            <a href="/Quiz" class="btn btn-secondary">Preizkusi svoje znanje</a>
-        </div>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <div class="hero-buttons">
+                <a href="/Home/Learn" class="btn btn-primary">Začni z učenjem</a>
+                <a href="/Quiz" class="btn btn-secondary">Preizkusi svoje znanje</a>
+            </div>
+        }
     </div>
 </div>
 
@@ -18,21 +21,30 @@
         <div class="feature-icon">📚</div>
         <h3>Izobraževalne vsebine</h3>
         <p>Osnove kibernetske varnosti razložene na preprost in razumljiv način</p>
-        <a href="/Home/Learn" class="btn btn-link">Preberi več →</a>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a href="/Home/Learn" class="btn btn-link">Preberi več →</a>
+        }
     </div>
 
     <div class="feature-card">
         <div class="feature-icon">✅</div>
         <h3>Interaktivni kvizi</h3>
         <p>Preverite in utrdite svoje znanje z našimi kvizi</p>
-        <a href="/Quiz" class="btn btn-link">Reši kviz →</a>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a href="/Quiz" class="btn btn-link">Reši kviz →</a>
+        }
     </div>
 
     <div class="feature-card">
         <div class="feature-icon">🔗</div>
         <h3>Deljenje povezav</h3>
         <p>Ustvarite povezavo in delite kviz z drugimi uporabniki</p>
-        <a href="/Quiz" class="btn btn-link">Ustvari povezavo →</a>
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a href="/Quiz" class="btn btn-link">Ustvari povezavo →</a>
+        }
     </div>
 </div>
 
@@ -65,5 +77,6 @@
 <div class="cta-section">
     <h2>Pripravljeni začeti?</h2>
     <p>Začnite svojo pot do boljšega razumevanja kibernetske varnosti še danes!</p>
+    <br />
     <a href="/Home/Learn" class="btn btn-large btn-primary">Začni zdaj</a>
 </div>

@@ -888,3 +888,51 @@ footer {
     margin-top: 15px;
 }
 
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-user-button {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    background: white;
+    min-width: 190px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    overflow: hidden;
+    z-index: 1000;
+}
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-menu a,
+    .dropdown-menu .dropdown-logout {
+        display: block;
+        width: 100%;
+        padding: 10px 15px;
+        text-align: left;
+        background: none;
+        border: none;
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+        .dropdown-menu a:hover,
+        .dropdown-menu .dropdown-logout:hover {
+            background-color: #f3f4f6;
+        }
