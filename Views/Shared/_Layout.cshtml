@@ -17,15 +17,22 @@
                         // 🔐 ADMIN NAVBAR
                         if (User.IsInRole("Admin"))
                         {
-                            <li><a href="/Admin">Dashboard</a></li>
-                            <li><a href="/Admin/Users">Uporabniki</a></li>
-                            <li><a href="/Admin/Quizzes">Kvizi</a></li>
-                            <li><a href="/Admin/Statistics">Statistika</a></li>
+                            <li class="nav-dropdown">
+                                <button class="nav-user-button" id="userDropdownBtn">
+                                    👤 @User.Identity.Name ▾
+                                </button>
 
-                            <li>
-                                <form asp-controller="Authentication" asp-action="Logout" method="post" class="logout-form">
-                                    <button type="submit" class="nav-link-button">Odjava</button>
-                                </form>
+                                <div class="dropdown-menu" id="userDropdownMenu">
+                                    <a href="/Home/Profile">Moj profil</a>
+
+                                    <form asp-controller="Authentication"
+                                          asp-action="Logout"
+                                          method="post">
+                                        <button type="submit" class="dropdown-logout">
+                                            Odjava
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         }
                         // 👤 NORMAL USER NAVBAR
@@ -41,11 +48,6 @@
 
                                 <div class="dropdown-menu" id="userDropdownMenu">
                                     <a href="/Home/Profile">Moj profil</a>
-
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <a href="/Admin">Admin Dashboard</a>
-                                    }
 
                                     <form asp-controller="Authentication"
                                           asp-action="Logout"
