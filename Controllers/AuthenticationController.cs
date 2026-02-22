@@ -1,4 +1,5 @@
 ﻿using CyberSecurityWebApp.Data;
+using CyberSecurityWebApp.Helpers;
 using CyberSecurityWebApp.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -31,7 +32,7 @@ namespace CyberSecurityWebApp.Controllers
         public async Task<IActionResult> Login(string email, string password)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
             {
@@ -39,7 +40,15 @@ namespace CyberSecurityWebApp.Controllers
                 return View();
             }
 
-            // Create claims for authentication
+            // 🔐 VERIFY HASHED PASSWORD
+            bool isValidPassword = PasswordHelper.VerifyPassword(password, user.Password);
+
+            if (!isValidPassword)
+            {
+                ViewBag.Error = "Invalid email or password.";
+                return View();
+            }
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
@@ -60,8 +69,6 @@ namespace CyberSecurityWebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
-
         [HttpGet]
         public IActionResult Register() => View();
 
@@ -80,7 +87,11 @@ namespace CyberSecurityWebApp.Controllers
                 LastName = lastname,
                 Username = username,
                 Email = email,
-                Password = password // ⚠️ For real apps, hash this!
+
+                // 🔐 HASH PASSWORD
+                Password = PasswordHelper.HashPassword(password),
+
+                IsAdmin = false
             };
 
             _context.Users.Add(newUser);
@@ -88,6 +99,7 @@ namespace CyberSecurityWebApp.Controllers
 
             return RedirectToAction("Login");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()

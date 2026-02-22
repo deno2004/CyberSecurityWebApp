@@ -9,6 +9,14 @@
         <div class="users-icon">👥</div>
         <h1>Upravljanje uporabnikov</h1>
         <p>Pregled vseh registriranih računov v sistemu</p>
+        <div class="users-top-actions">
+            <a asp-action="AddUser" class="btn btn-action btn-add">
+                ➕ Dodaj uporabnika
+            </a>
+            <a asp-action="Dashboard" class="btn btn-action btn-add">
+                Nazaj
+            </a>
+        </div>
     </div>
 
     <div class="users-grid">
@@ -29,11 +37,6 @@
                     <div class="info-row">
                         <span>Email:</span>
                         <span>@user.Email</span>
-                    </div>
-
-                    <div class="info-row">
-                        <span>Geslo:</span>
-                        <span>@user.Password</span>
                     </div>
 
                     <div class="info-row">
@@ -133,6 +136,35 @@
         font-weight: bold;
         font-size: 1.2rem;
     }
+
+    .users-top-actions {
+        margin-top: 1rem;
+    }
+
+    /* Reuse isti action sistem */
+    .btn-action {
+        padding: 0.5rem 1.2rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        transition: 0.2s;
+    }
+
+    /* Add user gumb */
+    .btn-add {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        color: white;
+        align-items: center;
+    }
+
+        .btn-add:hover {
+            opacity: 0.9;
+        }
 
     .username {
         color: #888;
