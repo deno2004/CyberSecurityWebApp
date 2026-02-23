@@ -1,190 +1,148 @@
 ﻿@model User
+
 @{
-    ViewData["Title"] = "Profil";
+    ViewData["Title"] = "Moj profil";
 }
 
-<div class="profile-container">
-    <div class="profile-header">
-        <div class="profile-icon">👤</div>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-icon">👤</div>
         <h1>Moj profil</h1>
+        <p>Uredi svoje osebne podatke</p>
     </div>
 
-    <div class="profile-card">
-        <div class="profile-section">
-            <h3>Informacije o računu</h3>
-            <div class="profile-info">
-                <div class="info-row">
-                    <span class="info-label">Ime:</span>
-                    <span class="info-value">@Model.FirstName</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Priimek:</span>
-                    <span class="info-value">@Model.LastName</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Uporabniško ime:</span>
-                    <span class="info-value">@Model.Username</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">E-poštni naslov:</span>
-                    <span class="info-value">@Model.Email</span>
-                </div>
-            </div>
-        </div>
+    <div class="form-card">
+        <form asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
 
-        <div class="profile-section">
-            <h3>Vloga v sistemu</h3>
-            <div class="role-badge">
+            <div class="form-group">
+                <label>Ime</label>
+                <input asp-for="FirstName" class="form-input" />
+            </div>
+
+            <div class="form-group">
+                <label>Priimek</label>
+                <input asp-for="LastName" class="form-input" />
+            </div>
+
+            <div class="form-group">
+                <label>Uporabniško ime</label>
+                <input asp-for="Username" class="form-input" />
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input asp-for="Email" class="form-input" />
+            </div>
+
+            <div class="form-group">
+                <label>Novo geslo (pusti prazno, če ne želiš spremeniti)</label>
+                <input asp-for="Password" type="password" class="form-input" />
+            </div>
+
+            <div class="form-group">
+                <label>Vloga</label>
                 @if (User.IsInRole("Admin"))
                 {
-                    <span class="badge badge-admin">👑 Administrator</span>
-                    <p>Imate polni dostop do sistema</p>
+                    <div class="badge badge-admin">👑 Administrator</div>
                 }
                 else
                 {
-                    <span class="badge badge-user">👤 Uporabnik</span>
-                    <p>Dostop do izobraževalnih vsebin in kvizov</p>
+                    <div class="badge badge-user">👤 Uporabnik</div>
                 }
             </div>
-        </div>
 
-        <div class="profile-actions">
-            
-        </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    Shrani spremembe
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
 <style>
-    .profile-container {
-        max-width: 800px;
+    .form-container {
+        max-width: 600px;
         margin: 0 auto;
         padding: 2rem 0;
     }
 
-    .profile-header {
+    .form-header {
         text-align: center;
         margin-bottom: 2rem;
     }
 
-    .profile-icon {
+    .form-icon {
         font-size: 4rem;
         margin-bottom: 1rem;
     }
 
-    .profile-header h1 {
+    .form-header h1 {
         color: #667eea;
     }
 
-    .profile-card {
+    .form-header p {
+        color: #666;
+    }
+
+    .form-card {
         background: white;
         border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         padding: 2rem;
     }
 
-    .profile-section {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-        .profile-section:last-of-type {
-            border-bottom: none;
-        }
-
-        .profile-section h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-    .profile-info {
-        background: #f5f9ff;
-        padding: 1.5rem;
-        border-radius: 8px;
-    }
-
-    .info-row {
+    .form-group {
+        margin-bottom: 1.2rem;
         display: flex;
-        justify-content: space-between;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #e8eaf6;
+        flex-direction: column;
     }
 
-        .info-row:last-child {
-            border-bottom: none;
+        .form-group label {
+            margin-bottom: 0.4rem;
+            font-weight: 600;
         }
 
-    .info-label {
-        font-weight: 600;
-        color: #666;
+    .form-input {
+        padding: 0.6rem;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        font-size: 0.95rem;
     }
 
-    .info-value {
-        color: #333;
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+    .checkbox-group {
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .role-badge {
-        background: #f5f9ff;
-        padding: 1.5rem;
-        border-radius: 8px;
-        text-align: center;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 0.5rem 1.5rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .badge-admin {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-    }
-
-    .badge-user {
-        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-        color: white;
-    }
-
-    .role-badge p {
-        margin: 0.5rem 0 0 0;
-        color: #666;
-    }
-
-    .profile-actions {
+    .form-actions {
         display: flex;
         gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        padding-top: 1rem;
+        justify-content: space-between;
+        margin-top: 1.5rem;
     }
 
-    .btn-danger {
-        background: #f44336;
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        cursor: pointer;
     }
 
-        .btn-danger:hover {
-            background: #d32f2f;
-        }
-
-    @@media (max-width: 768px) {
-        .info-row {
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .profile-actions {
-            flex-direction: column;
-        }
-
-            .profile-actions .btn,
-            .profile-actions button {
-                width: 100%;
-            }
+    .btn-secondary {
+        background: #e0e0e0;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        text-decoration: none;
+        color: black;
     }
 </style>
-
