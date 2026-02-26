@@ -25,7 +25,7 @@ namespace CyberSecurityWebApp.Controllers
         public async Task<IActionResult> Start(int id)
         {
             var module = await _context.Quizzes
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.QuizId == id);
 
             if (module == null)
                 return NotFound();
@@ -37,6 +37,45 @@ namespace CyberSecurityWebApp.Controllers
         {
             ViewBag.ModuleId = id;
             return View();
+        }
+
+        public async Task<IActionResult> TakeQuiz(int id, int questionIndex = 1)
+        {
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.QuizId == id);
+
+            if (quiz == null)
+                return NotFound();
+
+            ViewBag.CurrentQuestion = questionIndex;
+
+            return View(quiz);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitAnswer(int quizId, int questionId, int answerId, int questionIndex)
+        {
+            var answer = await _context.Answers
+                .FirstOrDefaultAsync(a => a.AnswerId == answerId);
+
+            if (answer == null)
+                return NotFound();
+
+            // Tukaj lahko shraniš rezultat v bazo
+            // ali pa uporabiš Session za začasno shranjevanje točk
+
+            if (questionIndex < await _context.Questions.CountAsync(q => q.QuizId == quizId))
+            {
+                return RedirectToAction("Take", new
+                {
+                    id = quizId,
+                    questionIndex = questionIndex + 1
+                });
+            }
+
+            return RedirectToAction("Result", new { id = quizId });
         }
 
         /*public async Task<IActionResult> Index()

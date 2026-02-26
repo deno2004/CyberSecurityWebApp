@@ -35,15 +35,13 @@
             </div>
         </div>
 
-        <form method="post" action="/Quiz/CreateSession" class="start-form">
-            <input type="hidden" name="moduleId" value="@Model.Id" />
-            <div class="form-group">
-                <label for="userName">Vnesite vaše ime:</label>
-                <input type="text" id="userName" name="userName" class="form-control" required 
-                       placeholder="Janez Novak" maxlength="50" />
-                <small>To ime bo uporabljeno za identifikacijo vaših rezultatov</small>
-            </div>
-            <button type="submit" class="btn btn-primary btn-large">Začni kviz</button>
+        <form asp-controller="Quiz" asp-action="TakeQuiz" method="get" class="start-form">
+
+            <input type="hidden" name="id" value="@Model.QuizId" />
+
+            <button type="submit" class="btn btn-primary btn-large">
+                Začni kviz
+            </button>
         </form>
 
         <div class="quiz-tips">

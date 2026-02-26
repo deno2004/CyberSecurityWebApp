@@ -1,0 +1,69 @@
+﻿@model Quiz
+@{
+    ViewData["Title"] = "Kviz - " + Model.Title;
+
+    var currentQuestionIndex = ViewBag.CurrentQuestion as int? ?? 1;
+
+    var questions = Model.Questions
+        .OrderBy(q => q.QuestionId)
+        .ToList();
+
+    var currentQuestion = questions
+        .Skip(currentQuestionIndex - 1)
+        .FirstOrDefault();
+}
+
+<div class="quiz-container">
+
+    <div class="quiz-header">
+        <h2>@Model.Title</h2>
+
+        <div class="quiz-progress">
+            Vprašanje @currentQuestionIndex od @questions.Count
+        </div>
+    </div>
+
+    @if (currentQuestion != null)
+    {
+        <div class="question-card">
+
+            <h3>@currentQuestion.Text</h3>
+
+            <form asp-action="SubmitAnswer" method="post">
+
+                <input type="hidden" name="quizId" value="@Model.QuizId" />
+                <input type="hidden" name="questionId" value="@currentQuestion.QuestionId" />
+                <input type="hidden" name="questionIndex" value="@currentQuestionIndex" />
+
+                <div class="answers-list">
+                    @foreach (var answer in currentQuestion.Answers)
+                    {
+                        <label class="answer-option">
+                            <input type="radio"
+                                   name="answerId"
+                                   value="@answer.AnswerId"
+                                   required />
+
+                            <span class="answer-text">@answer.Text</span>
+                            <span class="checkmark"></span>
+                        </label>
+                    }
+                </div>
+
+                <div class="question-actions">
+                    <button type="submit" class="btn btn-primary">
+                        @if (currentQuestionIndex < questions.Count)
+                        {
+                            <text>Naslednje vprašanje →</text>
+                        }
+                        else
+                        {
+                            <text>Zaključi kviz ✓</text>
+                        }
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    }
+</div>

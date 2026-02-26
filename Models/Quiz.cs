@@ -8,7 +8,7 @@ namespace CyberSecurityWebApp.Models
     {
         [Key]
         [Column("quiz_id")]
-        public int Id { get; set; }
+        public int QuizId { get; set; }
 
         [Required]
         [Column("title")]
@@ -21,6 +21,9 @@ namespace CyberSecurityWebApp.Models
         [Required]
         [Column("icon_class")] 
         public string? IconClass { get; set; } = string.Empty;
+
+        [Required]
+        public ICollection<Question> Questions { get; set; }
 
         /*public List<Question> Questions { get; set; } = new();*/
     }
