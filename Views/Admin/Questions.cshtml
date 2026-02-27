@@ -1,0 +1,235 @@
+﻿@model Quiz
+
+@{
+    ViewData["Title"] = "Vprašanja";
+}
+
+<div class="users-container">
+
+    <div class="users-header">
+        <div class="users-icon">❓</div>
+        <h1>@Model.Title</h1>
+        <p>Upravljanje vprašanj</p>
+
+        <div class="users-top-actions">
+            <a asp-action="AddQuestion"
+               asp-route-quizId="@Model.QuizId"
+               class="btn btn-action btn-add">
+                ➕ Dodaj vprašanje
+            </a>
+
+            <a asp-action="Quizzes"
+               class="btn btn-action btn-add">
+                Nazaj
+            </a>
+        </div>
+    </div>
+
+    <div class="users-grid">
+        @foreach (var question in Model.Questions)
+        {
+            <div class="user-card">
+
+                <div class="user-card-header">
+                    <div>
+                        <h3>@question.Text</h3>
+                        <p class="username">@question.Answers.Count odgovorov</p>
+                    </div>
+                </div>
+
+                <div class="user-info">
+                    @foreach (var answer in question.Answers)
+                    {
+                        <div class="info-row">
+                            <span>@answer.Text</span>
+
+                            @if (answer.IsCorrect)
+                            {
+                                <span class="badge badge-admin">
+                                    ✔ Pravilno
+                                </span>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="user-actions">
+                    <a asp-action="EditQuestion"
+                       asp-route-id="@question.QuestionId"
+                       class="btn btn-secondary btn-sm">
+                        ✏️ Uredi
+                    </a>
+
+                    <form asp-action="DeleteQuestion"
+                          asp-route-id="@question.QuestionId"
+                          method="post">
+                        <button type="submit"
+                                class="btn btn-secondary btn-sm">
+                            🗑 Izbriši
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .users-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .users-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .users-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .users-header h1 {
+        color: #667eea;
+    }
+
+    .users-header p {
+        color: #666;
+    }
+
+    .users-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .user-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+    .user-card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .users-top-actions {
+        margin-top: 1rem;
+    }
+
+    /* Reuse isti action sistem */
+    .btn-action {
+        padding: 0.5rem 1.2rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        transition: 0.2s;
+    }
+
+    /* Add user gumb */
+    .btn-add {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        color: white;
+        align-items: center;
+    }
+
+        .btn-add:hover {
+            opacity: 0.9;
+        }
+
+    .username {
+        color: #888;
+        margin: 0;
+    }
+
+    .user-info {
+        background: #f5f9ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+    }
+
+    .badge {
+        padding: 0.3rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .badge-admin {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .badge-user {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+        color: white;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+        .user-actions form {
+            margin: 0;
+        }
+
+        .user-actions .btn {
+            padding: 0.4rem 0.9rem;
+        }
+
+    .btn-danger {
+        background: #f44336;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+</style>

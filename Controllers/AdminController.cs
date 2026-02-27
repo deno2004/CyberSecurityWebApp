@@ -141,6 +141,136 @@ namespace CyberSecurityWebApp.Controllers
             return RedirectToAction("Users");
         }
 
+        public async Task<IActionResult> Quizzes()
+        {
+            var quizzes = await _context.Quizzes.ToListAsync();
+            return View(quizzes);
+        }
+
+        public IActionResult AddQuiz()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddQuiz(Quiz quiz)
+        {
+            _context.Quizzes.Add(quiz);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Quizzes");
+        }
+
+        public async Task<IActionResult> EditQuiz(int id)
+        {
+            var quiz = await _context.Quizzes.FindAsync(id);
+            if (quiz == null)
+                return NotFound();
+
+            return View(quiz);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditQuiz(Quiz model)
+        {
+            var quiz = await _context.Quizzes.FindAsync(model.QuizId);
+            if (quiz == null)
+                return NotFound();
+
+            quiz.Title = model.Title;
+            quiz.Description = model.Description;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Quizzes");
+        }
+
+        public async Task<IActionResult> Questions(int id)
+        {
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.QuizId == id);
+
+            if (quiz == null)
+                return NotFound();
+
+            return View(quiz);
+        }
+
+        public IActionResult AddQuestion(int quizId)
+        {
+            ViewBag.QuizId = quizId;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddQuestion(
+            int quizId,
+            string questionText,
+            List<string> answers,
+            int correctAnswerIndex)
+        {
+            var question = new Question
+            {
+                QuizId = quizId,
+                Text = questionText,
+                Answers = new List<Answer>()
+            };
+
+            for (int i = 0; i < answers.Count; i++)
+            {
+                question.Answers.Add(new Answer
+                {
+                    Text = answers[i],
+                    IsCorrect = i == correctAnswerIndex
+                });
+            }
+
+            _context.Questions.Add(question);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Questions", new { id = quizId });
+        }
+
+        public async Task<IActionResult> EditQuestion(int id)
+        {
+            var question = await _context.Questions
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.QuestionId == id);
+
+            if (question == null)
+                return NotFound();
+
+            return View(question);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditQuestion(
+            int QuestionId,
+            string Text,
+            List<string> answers,
+            int correctAnswerIndex)
+        {
+            var question = await _context.Questions
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.QuestionId == QuestionId);
+
+            if (question == null)
+                return NotFound();
+
+            question.Text = Text;
+
+            for (int i = 0; i < question.Answers.Count; i++)
+            {
+                question.Answers.ElementAt(i).Text = answers[i];
+                question.Answers.ElementAt(i).IsCorrect = i == correctAnswerIndex;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Questions", new { id = question.QuizId });
+        }
 
     }
 }
