@@ -41,6 +41,12 @@ namespace CyberSecurityWebApp.Controllers
 
         public async Task<IActionResult> TakeQuiz(int id, int questionIndex = 1)
         {
+            // ✅ Počisti session, če je prvo vprašanje
+            if (questionIndex == 1)
+            {
+                HttpContext.Session.Remove("UserAnswers");
+            }
+
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.Answers)
@@ -57,18 +63,30 @@ namespace CyberSecurityWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitAnswer(int quizId, int questionId, int answerId, int questionIndex)
         {
-            var answer = await _context.Answers
-                .FirstOrDefaultAsync(a => a.AnswerId == answerId);
+            // 🔹 1. Preberi obstoječe odgovore iz Session
+            var existingAnswers = HttpContext.Session.GetString("UserAnswers");
 
-            if (answer == null)
-                return NotFound();
+            List<int> answerIds;
 
-            // Tukaj lahko shraniš rezultat v bazo
-            // ali pa uporabiš Session za začasno shranjevanje točk
+            if (string.IsNullOrEmpty(existingAnswers))
+                answerIds = new List<int>();
+            else
+                answerIds = existingAnswers.Split(',').Select(int.Parse).ToList();
 
-            if (questionIndex < await _context.Questions.CountAsync(q => q.QuizId == quizId))
+            // 🔹 2. Shrani trenutni odgovor
+            answerIds.Add(answerId);
+
+            // 🔹 3. Shrani nazaj v Session
+            HttpContext.Session.SetString("UserAnswers",
+                string.Join(",", answerIds));
+
+            // 🔹 4. Preveri koliko je vprašanj
+            var totalQuestions = await _context.Questions
+                .CountAsync(q => q.QuizId == quizId);
+
+            if (questionIndex < totalQuestions)
             {
-                return RedirectToAction("Take", new
+                return RedirectToAction("TakeQuiz", new
                 {
                     id = quizId,
                     questionIndex = questionIndex + 1
@@ -76,6 +94,62 @@ namespace CyberSecurityWebApp.Controllers
             }
 
             return RedirectToAction("Result", new { id = quizId });
+        }
+
+        public async Task<IActionResult> Result(int id)
+        {
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.QuizId == id);
+
+            if (quiz == null)
+                return NotFound();
+
+            var userAnswers = HttpContext.Session
+                .GetString("UserAnswers");
+
+            var answerIds = string.IsNullOrEmpty(userAnswers)
+                ? new List<int>()
+                : userAnswers.Split(',').Select(int.Parse).ToList();
+
+            int score = 0;
+
+            var results = new List<dynamic>();
+
+            var questions = quiz.Questions
+                .OrderBy(q => q.QuestionId)
+                .ToList();
+
+            for (int i = 0; i < questions.Count; i++)
+            {
+                var question = questions[i];
+                var selectedAnswerId = answerIds.ElementAtOrDefault(i);
+
+                var selectedAnswer = question.Answers
+                    .FirstOrDefault(a => a.AnswerId == selectedAnswerId);
+
+                var correctAnswer = question.Answers
+                    .FirstOrDefault(a => a.IsCorrect);
+
+                bool isCorrect = selectedAnswer != null && selectedAnswer.IsCorrect;
+
+                if (isCorrect) score++;
+
+                results.Add(new
+                {
+                    Question = question,
+                    SelectedAnswer = selectedAnswer,
+                    CorrectAnswer = correctAnswer,
+                    IsCorrect = isCorrect
+                });
+            }
+
+            ViewBag.Score = score;
+            ViewBag.Total = questions.Count;
+            ViewBag.Results = results;
+
+            return View(quiz);
         }
 
         /*public async Task<IActionResult> Index()

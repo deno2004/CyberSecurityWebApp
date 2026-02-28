@@ -1,0 +1,230 @@
+﻿@model Quiz
+
+@{
+    ViewData["Title"] = "Rezultati - " + Model.Title;
+
+    var score = ViewBag.Score as int? ?? 0;
+    var total = ViewBag.Total as int? ?? 0;
+    var results = ViewBag.Results as List<dynamic>;
+
+    var percentage = total > 0 ? (double)score / total * 100 : 0;
+}
+
+<div class="quiz-container">
+
+    <div class="quiz-header">
+        <h2>📊 Rezultati kviza</h2>
+        <div class="quiz-progress">
+            @score / @total (@percentage.ToString("F0")%)
+        </div>
+    </div>
+
+    <div class="question-card">
+
+        <h3>Uspešnost: @percentage.ToString("F0")%</h3>
+
+        <div style="margin-top:20px;">
+
+            @for (int i = 0; i < results.Count; i++)
+            {
+                var result = results[i];
+
+                <div class="result-item @(result.IsCorrect ? "correct" : "incorrect")">
+
+                    <strong>Vprašanje @(i + 1)</strong>
+                    <p>@result.Question.Text</p>
+
+                    <p>
+                        <strong>Vaš odgovor:</strong>
+                        <span class="@(result.IsCorrect ? "correct-answer" : "wrong-answer")">
+                            @(result.SelectedAnswer?.Text ?? "Ni odgovora")
+                        </span>
+                    </p>
+
+                    @if (!result.IsCorrect)
+                    {
+                        <p>
+                            <strong>Pravilen odgovor:</strong>
+                            <span class="correct-answer">
+                                @result.CorrectAnswer?.Text
+                            </span>
+                        </p>
+                    }
+
+
+                </div>
+            }
+
+        </div>
+
+        <div style="margin-top:25px;">
+            <a asp-action="Index" class="btn btn-primary">
+                Nazaj na kvize
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .score-circle {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 20px;
+    }
+
+        .score-circle svg {
+            transform: scale(1);
+        }
+
+    .score-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .score-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .score-percentage {
+        font-size: 1.5rem;
+        color: #666;
+    }
+
+    .results-details {
+        margin-top: 30px;
+    }
+
+    .result-item {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 4px solid #ccc;
+    }
+
+        .result-item.correct {
+            border-left-color: #4CAF50;
+            background: #f1f8f4;
+        }
+
+        .result-item.incorrect {
+            border-left-color: #f44336;
+            background: #fef5f5;
+        }
+
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .result-number {
+        font-weight: bold;
+        color: #666;
+    }
+
+    .result-status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: bold;
+    }
+
+    .result-item.correct .result-status {
+        color: #4CAF50;
+    }
+
+    .result-item.incorrect .result-status {
+        color: #f44336;
+    }
+
+    .result-question {
+        margin: 15px 0;
+        font-size: 1.1rem;
+    }
+
+    .answer-row {
+        margin: 10px 0;
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 10px;
+    }
+
+    .answer-label {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .correct-answer {
+        color: #4CAF50;
+        font-weight: 600;
+    }
+
+    .wrong-answer {
+        color: #f44336;
+        font-weight: 600;
+    }
+
+    .result-explanation {
+        margin-top: 15px;
+        padding: 15px;
+        background: #fff9e6;
+        border-radius: 4px;
+        border-left: 3px solid #ffc107;
+    }
+
+        .result-explanation p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+
+    .score-card.excellent {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .score-card.excellent svg circle:last-child {
+            color: #4CAF50;
+        }
+
+    .score-card.good {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+
+        .score-card.good svg circle:last-child {
+            color: #2196F3;
+        }
+
+    .score-card.average {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        color: #333;
+    }
+
+        .score-card.average svg circle:last-child {
+            color: #FF9800;
+        }
+
+    .score-card.needs-improvement {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #333;
+    }
+
+        .score-card.needs-improvement svg circle:last-child {
+            color: #f44336;
+        }
+
+    @@media print {
+        .results-actions, .navbar, footer {
+            display: none;
+        }
+    }
+</style>
