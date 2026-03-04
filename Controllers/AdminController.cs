@@ -272,10 +272,5 @@ namespace CyberSecurityWebApp.Controllers
             return RedirectToAction("Questions", new { id = question.QuizId });
         }
 
-        public IActionResult Statistics()
-        {
-            return View();
-        }
-
     }
 }

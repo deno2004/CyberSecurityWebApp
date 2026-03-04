@@ -1,81 +1,59 @@
 ﻿@model Question
 
-<div class="users-container">
-
-    <div class="users-header">
+<div class="form-container">
+    <div class="form-header">
         <div class="users-icon">✏️</div>
         <h1>Uredi vprašanje</h1>
         <p>Spremeni vprašanje in odgovore</p>
-
-        <div class="users-top-actions">
-            <a asp-action="Questions"
-               asp-route-id="@Model.QuizId"
-               class="btn btn-action btn-add">
-                Nazaj
-            </a>
-        </div>
     </div>
 
-    <div class="users-grid">
-        <div class="user-card">
+    <div class="form-card">
+        <form method="post">
 
-            <form method="post">
+            <input type="hidden" name="QuestionId" value="@Model.QuestionId" />
 
-                <input type="hidden" name="QuestionId" value="@Model.QuestionId" />
+            <div class="form-group">
+                <label>Besedilo vprašanja</label>
+                <input type="text"
+                       name="questionText"
+                       class="form-input"
+                       required />
+            </div>
 
-                <div class="user-card-header">
-                    <div class="user-avatar">Q</div>
+            <hr />
 
-                    <div style="flex:1;">
-                        <label><strong>Besedilo vprašanja</strong></label>
-                        <input type="text"
-                               name="Text"
-                               value="@Model.Text"
-                               class="form-control"
+            @for (int i = 0; i < 4; i++)
+            {
+                <div class="form-group">
+                    <label>Odgovor @(i + 1)</label>
+
+                    <input type="text"
+                           name="answers"
+                           class="form-input"
+                           required />
+
+                    <div class="checkbox-group">
+                        <input type="radio"
+                               name="correctAnswerIndex"
+                               value="@i"
                                required />
+                        <label>Pravilni odgovor</label>
                     </div>
                 </div>
+            }
 
-                <div class="user-info">
-                    <h4 style="margin-bottom:1rem;">Odgovori</h4>
+            <div class="form-actions">
+                <a asp-action="Questions"
+                   asp-route-id="@Model.QuizId"
+                   class="btn btn-secondary">
+                    Nazaj
+                </a>
 
-                    @{
-                        var answers = Model.Answers.ToList();
-                    }
+                <button type="submit" class="btn btn-primary">
+                    Shrani spremembe
+                </button>
+            </div>
 
-                    @for (int i = 0; i < answers.Count; i++)
-                    {
-                        <div class="info-row"
-                             style="align-items:center; gap:10px; margin-bottom:10px;">
-
-                            <input type="radio"
-                                   name="correctAnswerIndex"
-                                   value="@i"
-                                   @(answers[i].IsCorrect ? "checked" : "")
-                                   required />
-
-                            <input type="text"
-                                   name="answers"
-                                   value="@answers[i].Text"
-                                   class="form-control"
-                                   required />
-
-                            <span class="badge badge-user">
-                                Pravilen
-                            </span>
-                        </div>
-                    }
-                </div>
-
-                <div class="user-actions">
-                    <button type="submit"
-                            class="btn btn-action btn-add">
-                        💾 Shrani spremembe
-                    </button>
-                </div>
-
-            </form>
-
-        </div>
+        </form>
     </div>
 </div>

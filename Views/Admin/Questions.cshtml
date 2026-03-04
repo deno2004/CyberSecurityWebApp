@@ -56,16 +56,15 @@
                 <div class="user-actions">
                     <a asp-action="EditQuestion"
                        asp-route-id="@question.QuestionId"
-                       class="btn btn-secondary btn-sm">
-                        ✏️ Uredi
+                       class="btn btn-secondary">
+                        Uredi 
                     </a>
 
                     <form asp-action="DeleteQuestion"
                           asp-route-id="@question.QuestionId"
                           method="post">
-                        <button type="submit"
-                                class="btn btn-secondary btn-sm">
-                            🗑 Izbriši
+                        <button type="submit" class="btn btn-secondary">
+                            Izbriši
                         </button>
                     </form>
                 </div>

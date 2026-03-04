@@ -41,22 +41,22 @@
                 <div class="user-actions">
                     <a asp-action="Questions"
                        asp-route-id="@quiz.QuizId"
-                       class="btn btn-secondary btn-sm">
-                        📋 Vprašanja
+                       class="btn btn-secondary btn-add">
+                        Vprašanja
                     </a>
 
                     <a asp-action="EditQuiz"
                        asp-route-id="@quiz.QuizId"
-                       class="btn btn-secondary btn-sm">
-                        ✏️ Uredi
+                       class="btn btn-secondary btn-add">
+                        Uredi
                     </a>
 
                     <form asp-action="DeleteQuiz"
                           asp-route-id="@quiz.QuizId"
                           method="post">
                         <button type="submit"
-                                class="btn btn-secondary btn-sm">
-                            🗑 Izbriši
+                                class="btn btn-secondary btn-add">
+                            Izbriši
                         </button>
                     </form>
                 </div>

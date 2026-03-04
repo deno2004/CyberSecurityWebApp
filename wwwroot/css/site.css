@@ -1162,16 +1162,21 @@ footer {
 .user-actions {
     display: flex;
     gap: 0.5rem;
-    justify-content: flex-end;
-    align-items: center;
 }
 
+    .user-actions a,
     .user-actions form {
-        margin: 0;
+        flex: 1;
     }
 
     .user-actions .btn {
-        padding: 0.4rem 0.9rem;
+        width: 100%;
+        padding: 0.5rem 0;
+        display: flex;
+        height: 38px;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
     }
 
 .btn-danger {
