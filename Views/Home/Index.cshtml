@@ -78,5 +78,8 @@
     <h2>Pripravljeni začeti?</h2>
     <p>Začnite svojo pot do boljšega razumevanja kibernetske varnosti še danes!</p>
     <br />
-    <a href="/Home/Learn" class="btn btn-large btn-primary">Začni zdaj</a>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <a href="/Home/Learn" class="btn btn-large btn-primary">Začni zdaj</a>
+    }
 </div>

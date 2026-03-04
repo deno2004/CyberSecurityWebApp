@@ -831,10 +831,10 @@ footer {
         -webkit-appearance: none;
     }
 
-    /* Enako obnašanje kot .nav-menu a */
-    .nav-link-button:hover {
-        opacity: 0.8;
-    }
+        /* Enako obnašanje kot .nav-menu a */
+        .nav-link-button:hover {
+            opacity: 0.8;
+        }
 
     .nav-menu.loaded {
         visibility: visible;
@@ -947,37 +947,911 @@ footer {
     color: inherit;
 }
 
-/* ===== DARK THEME ===== */
-
-body.dark-mode {
-    background-color: #121212;
-    color: #f5f5f5;
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 0;
 }
 
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.form-header h1 {
+    color: #667eea;
+}
+
+.form-header p {
+    color: #666;
+}
+
+.form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group label {
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+    }
+
+.form-input {
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 0.95rem;
+}
+
+    .form-input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: black;
+}
+
+.users-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.users-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.users-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.users-header h1 {
+    color: #667eea;
+}
+
+.users-header p {
+    color: #666;
+}
+
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.user-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .user-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+.user-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.users-top-actions {
+    margin-top: 1rem;
+    align-items: center;
+}
+
+/* Reuse isti action sistem */
+.btn-action {
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    transition: 0.2s;
+}
+
+/* Add user gumb */
+.btn-add {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+    align-items: center;
+}
+
+    .btn-add:hover {
+        opacity: 0.9;
+    }
+
+.username {
+    color: #888;
+    margin: 0;
+}
+
+.user-info {
+    background: #f5f9ff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+}
+
+.badge {
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-admin {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.badge-user {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    color: white;
+}
+
+.user-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+    .user-actions form {
+        margin: 0;
+    }
+
+    .user-actions .btn {
+        padding: 0.4rem 0.9rem;
+    }
+
+.btn-danger {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .btn-danger:hover {
+        background: #d32f2f;
+    }
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+    padding: 2rem 0;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 3rem;
+    max-width: 500px;
+    width: 100%;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.auth-header h1 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+}
+
+.auth-form {
+    margin-bottom: 2rem;
+}
+
+.form-group-checkbox {
+    margin-bottom: 1.5rem;
+}
+
+    .form-group-checkbox label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .form-group-checkbox input[type="checkbox"] {
+        width: auto;
+        cursor: pointer;
+    }
+
+.validation-summary {
+    background: #ffebee;
+    border-left: 4px solid #c62828;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    color: #c62828;
+}
+
+    .validation-summary ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+.text-danger {
+    color: #c62828;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.auth-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+    .auth-footer a {
+        color: #2196F3;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+.demo-credentials {
+    background: #fff9e6;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+    .demo-credentials h4 {
+        margin: 0 0 1rem 0;
+        color: #f57c00;
+        font-size: 1rem;
+    }
+
+.demo-account {
+    margin-bottom: 1rem;
+}
+
+    .demo-account:last-child {
+        margin-bottom: 0;
+    }
+
+    .demo-account strong {
+        display: block;
+        margin-bottom: 0.25rem;
+        color: #333;
+    }
+
+    .demo-account p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .demo-account code {
+        background: #f5f5f5;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        color: #d32f2f;
+    }
+
+.answer-option {
+    display: block;
+    position: relative;
+    padding: 15px 20px 15px 50px;
+    margin-bottom: 12px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .answer-option:hover {
+        border-color: #2196F3;
+        background: #f5f9ff;
+    }
+
+    .answer-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+.checkmark {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 20px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+}
+
+.answer-option:hover .checkmark {
+    border-color: #2196F3;
+}
+
+.answer-option input[type="radio"]:checked ~ .checkmark {
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+    .answer-option input[type="radio"]:checked ~ .checkmark:after {
+        content: "";
+        position: absolute;
+        display: block;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+    }
+
+.answer-option input[type="radio"]:checked {
+    & ~ .answer-text
+    {
+        font-weight: 600;
+        color: #1976D2;
+    }
+}
+
+.score-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+}
+
+    .score-circle svg {
+        transform: scale(1);
+    }
+
+.score-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.score-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.score-percentage {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.results-details {
+    margin-top: 30px;
+}
+
+.result-item {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 4px solid #ccc;
+}
+
+    .result-item.correct {
+        border-left-color: #4CAF50;
+        background: #f1f8f4;
+    }
+
+    .result-item.incorrect {
+        border-left-color: #f44336;
+        background: #fef5f5;
+    }
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.result-number {
+    font-weight: bold;
+    color: #666;
+}
+
+.result-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+}
+
+.result-item.correct .result-status {
+    color: #4CAF50;
+}
+
+.result-item.incorrect .result-status {
+    color: #f44336;
+}
+
+.result-question {
+    margin: 15px 0;
+    font-size: 1.1rem;
+}
+
+.answer-row {
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 10px;
+}
+
+.answer-label {
+    font-weight: 600;
+    color: #666;
+}
+
+.correct-answer {
+    color: #4CAF50;
+    font-weight: 600;
+}
+
+.wrong-answer {
+    color: #f44336;
+    font-weight: 600;
+}
+
+.result-explanation {
+    margin-top: 15px;
+    padding: 15px;
+    background: #fff9e6;
+    border-radius: 4px;
+    border-left: 3px solid #ffc107;
+}
+
+    .result-explanation p {
+        margin: 5px 0 0 0;
+        color: #666;
+    }
+
+.score-card.excellent {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+    .score-card.excellent svg circle:last-child {
+        color: #4CAF50;
+    }
+
+.score-card.good {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+/* ========================================= */
+/* ========== IMPROVED DARK MODE =========== */
+/* ========================================= */
+
+body.dark-mode {
+    background: #0f1115;
+    color: #e4e6eb;
+}
+
+    /* Typography */
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3,
+    body.dark-mode h4,
+    body.dark-mode p,
+    body.dark-mode span,
+    body.dark-mode li {
+        color: #ffffff;
+    }
+
+    /* Navbar */
     body.dark-mode .navbar {
-        background: #1e1e1e;
-        border-bottom: 1px solid #333;
+        background: linear-gradient(135deg, #1f2230 0%, #1a1d29 100%);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.6);
     }
 
+    /* Footer */
     body.dark-mode footer {
-        background: #1e1e1e;
-        border-top: 1px solid #333;
+        background: #14161c;
     }
 
-    body.dark-mode a {
-        color: #90caf9;
-    }
-
-    body.dark-mode .form-card,
+    /* Cards (global) */
+    body.dark-mode .feature-card,
+    body.dark-mode .content-card,
+    body.dark-mode .quiz-module-card,
+    body.dark-mode .quiz-header,
     body.dark-mode .question-card,
-    body.dark-mode .result-item {
-        background: #1f1f1f;
-        border-color: #333;
+    body.dark-mode .score-card,
+    body.dark-mode .share-card,
+    body.dark-mode .about-section,
+    body.dark-mode .admin-card,
+    body.dark-mode .auth-card,
+    body.dark-mode .form-card,
+    body.dark-mode .user-card,
+    body.dark-mode .quiz-start-card,
+    body.dark-mode .quiz-info,
+    body.dark-mode .next-steps {
+        background: #1a1d24;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
     }
 
-    body.dark-mode input,
-    body.dark-mode textarea {
-        background: #2a2a2a;
-        color: #f5f5f5;
-        border: 1px solid #444;
+    /* Hero sections */
+    body.dark-mode .hero {
+        background: linear-gradient(135deg, #2a2e45 0%, #1c2033 100%);
     }
+
+    body.dark-mode .cta-section {
+        background: linear-gradient(135deg, #3a1c71 0%, #d76d77 100%);
+    }
+
+    /* Info blocks */
+    body.dark-mode .info-section,
+    body.dark-mode .learning-tips,
+    body.dark-mode .quiz-tips,
+    body.dark-mode .demo-credentials {
+        background: #1c2029;
+        border-left-color: #667eea;
+    }
+
+    /* Inputs */
+    body.dark-mode .form-control,
+    body.dark-mode .form-input,
+    body.dark-mode input,
+    body.dark-mode textarea,
+    body.dark-mode select {
+        background: #222733;
+        border: 1px solid #333845;
+        color: #ffffff;
+    }
+
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-input:focus {
+            border-color: #667eea;
+        }
+
+    /* Progress bar */
+    body.dark-mode .progress-bar {
+        background: #2a2e3b;
+    }
+
+    body.dark-mode .progress-fill {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Dropdown */
+    body.dark-mode .dropdown-menu {
+        background: #1a1d24;
+    }
+
+        body.dark-mode .dropdown-menu a,
+        body.dark-mode .dropdown-menu .dropdown-logout {
+            color: #e4e6eb;
+        }
+
+            body.dark-mode .dropdown-menu a:hover,
+            body.dark-mode .dropdown-menu .dropdown-logout:hover {
+                background: #2a2f3a;
+            }
+
+    /* Alerts */
+    body.dark-mode .alert-error {
+        background: #3a1f23;
+        color: #ff8a80;
+        border-left-color: #ff5252;
+    }
+
+    body.dark-mode .alert-success {
+        background: #1e3327;
+        color: #81c784;
+        border-left-color: #4caf50;
+    }
+
+    /* Buttons */
+    body.dark-mode .btn-secondary {
+        background: #2a2f3a;
+        border: 2px solid #667eea;
+        color: #ffffff;
+    }
+
+        body.dark-mode .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+    /* Links */
+    body.dark-mode a {
+        color: #8ab4ff;
+    }
+
+        body.dark-mode a:hover {
+            color: #a5c8ff;
+        }
+
+    /* User info blocks */
+    body.dark-mode .user-info,
+    body.dark-mode .tech-item,
+    body.dark-mode .detail-item {
+        background: #202532;
+    }
+
+    /* Badges */
+    body.dark-mode .badge-user {
+        background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    }
+
+    body.dark-mode .badge-admin {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Tables (future-proofing) */
+    body.dark-mode table {
+        background: #1a1d24;
+        color: #e4e6eb;
+    }
+
+    body.dark-mode th {
+        background: #222733;
+    }
+
+/* Smooth transition */
+body,
+.navbar,
+footer,
+.feature-card,
+.content-card,
+.quiz-module-card,
+.question-card,
+.admin-card,
+.auth-card {
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    body.dark-mode .page-header h1,
+    body.dark-mode .page-header p {
+        color: #ffffff;
+    }
+
+    /* Question text */
+    body.dark-mode .question-text {
+        color: #ffffff;
+    }
+
+    /* Answer options */
+    body.dark-mode .answer-option {
+        background: #1e222b;
+        border: 2px solid #2f3542;
+    }
+
+        body.dark-mode .answer-option:hover {
+            background: #252a35;
+            border-color: #667eea;
+        }
+
+    body.dark-mode .checkmark {
+        background: #1e222b;
+        border-color: #555;
+    }
+
+    body.dark-mode .answer-option input[type="radio"]:checked ~ .checkmark {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    /* Results section */
+    body.dark-mode .result-item {
+        background: #1a1d24;
+        border-left-color: #444;
+    }
+
+        body.dark-mode .result-item.correct {
+            background: #1e3327;
+            border-left-color: #4CAF50;
+        }
+
+        body.dark-mode .result-item.incorrect {
+            background: #3a1f23;
+            border-left-color: #f44336;
+        }
+
+    body.dark-mode .correct-answer {
+        color: #81c784;
+    }
+
+    body.dark-mode .wrong-answer {
+        color: #ff8a80;
+    }
+
+    body.dark-mode .result-explanation {
+        background: #232733;
+        border-left-color: #ffc107;
+    }
+
+    /* Score circle text */
+    body.dark-mode .score-number {
+        color: #ffffff;
+    }
+
+    body.dark-mode .score-percentage {
+        color: #cfd3da;
+    }
+
+    /* Quiz progress text */
+    body.dark-mode .progress-text {
+        color: #aaa;
+    }
+
+    /* Info numbers */
+    body.dark-mode .info-number {
+        color: #ffffff;
+    }
+
+    /* Step numbers */
+    body.dark-mode .step-number {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Share section */
+    body.dark-mode .share-info {
+        background: #1c2029;
+    }
+
+    /* Admin sections */
+    body.dark-mode .admin-hero h1 {
+        color: #ffffff;
+    }
+
+    /* Users section */
+    body.dark-mode .username {
+        color: #aaa;
+    }
+
+    /* Forms */
+    body.dark-mode .form-group label {
+        color: #ffffff;
+    }
+
+    body.dark-mode .validation-summary {
+        background: #3a1f23;
+        border-left-color: #f44336;
+        color: #ff8a80;
+    }
+
+    /* Logout dropdown fix */
+    body.dark-mode .dropdown-menu {
+        border: 1px solid #2a2f3a;
+    }
+
+    /* Footer text */
+    body.dark-mode footer p {
+        color: #bbb;
+    }
+
+    /* Borders cleanup */
+    body.dark-mode .content-header {
+        border-bottom: 1px solid #2f3542;
+    }
+
+    /* Improve shadows in dark mode */
+    body.dark-mode .feature-card,
+    body.dark-mode .content-card,
+    body.dark-mode .quiz-module-card,
+    body.dark-mode .quiz-header,
+    body.dark-mode .question-card,
+    body.dark-mode .score-card,
+    body.dark-mode .share-card,
+    body.dark-mode .about-section,
+    body.dark-mode .admin-card,
+    body.dark-mode .auth-card,
+    body.dark-mode .form-card,
+    body.dark-mode .user-card,
+    body.dark-mode .quiz-start-card {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.7);
+    }
+
+    /* Fix white backgrounds in special blocks */
+    body.dark-mode .detail-item,
+    body.dark-mode .tech-item {
+        background: #202532;
+    }
+
+/* Smooth theme transition everywhere */
+* {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
