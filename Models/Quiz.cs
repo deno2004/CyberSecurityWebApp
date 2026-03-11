@@ -25,6 +25,8 @@ namespace CyberSecurityWebApp.Models
         [Required]
         public ICollection<Question> Questions { get; set; }
 
-        /*public List<Question> Questions { get; set; } = new();*/
+        [Required]
+        [Column("pass_threshold")]
+        public int PassThreshold { get; set; } = 60;
     }
 }

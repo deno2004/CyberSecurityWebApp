@@ -1,0 +1,53 @@
+﻿@model IEnumerable<CyberSecurityWebApp.Models.Course>
+
+@{
+    ViewData["Title"] = "Tečaji";
+}
+
+<br />
+
+<div class="page-header">
+    <h1>🎓 Tečaji kibernetske varnosti</h1>
+    <p>Izboljšajte svoje znanje skozi interaktivne tečaje in praktične primere</p>
+</div>
+
+<div class="courses-grid">
+
+    @foreach (var course in Model)
+    {
+        <div class="course-card">
+
+            <div class="course-header">
+                <div class="course-icon">
+                    <span>@course.Icon</span>
+                </div>
+
+                <div class="course-title">
+                    <h3>@course.Name</h3>
+                    <span class="course-category">@course.Category</span>
+                </div>
+            </div>
+
+            <div class="course-body">
+                <p>@course.Description</p>
+
+                <div class="course-meta">
+                    <span>📚 5 lekcij</span>
+                    <span>📝 kviz na koncu</span>
+                </div>
+            </div>
+
+            <div class="course-actions">
+                <a href="/Courses/Start/@course.CourseId" class="btn btn-primary">
+                    📖 Odpri tečaj
+                </a>
+
+                <a href="/Quiz/Start/@course.QuizId" class="btn btn-secondary">
+                    🧠 Reši kviz
+                </a>
+            </div>
+
+        </div>
+    }
+
+</div>
