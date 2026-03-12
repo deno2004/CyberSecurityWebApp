@@ -1,0 +1,213 @@
+﻿@model CyberSecurityWebApp.Models.Quiz
+@{
+    ViewData["Title"] = "Phishing napadi";
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-page="/Courses/Index">Tečaji</a></li>
+        <li class="breadcrumb-item active">Phishing napadi</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg,#ffc107,#e0a800); color:#1a1a1a;">
+            <div class="card-body p-4 d-flex align-items-center">
+                <i class="bi bi-fish display-3 me-4 opacity-75"></i>
+                <div>
+                    <h1 class="fw-bold mb-1">Phishing napadi</h1>
+                    <p class="mb-0 opacity-75">Prepoznajte goljufive poskuse kraje vaših podatkov</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- What is Phishing -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-1-circle-fill text-warning me-2"></i>Kaj je phishing?</h3>
+                <p>Phishing je vrsta <strong>socialnega inženiringa</strong>, kjer napadalci poskušajo žrtev preslepiti, da razkrije občutljive informacije (gesla, številke kreditnih kartic, osebne podatke).</p>
+
+                <div class="row g-3 mt-2">
+                    <div class="col-md-6">
+                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-envelope-fill me-2 text-warning"></i>E-poštni phishing</h6>
+                                <p class="small mb-0">Lažna sporočila, ki se pretvarjajo, da so od bank, PayPal, Microsoft ali drugih zaupanja vrednih vira.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-phone-fill me-2 text-warning"></i>Smishing (SMS)</h6>
+                                <p class="small mb-0">Goljufiva SMS sporočila z lažnimi navodili ali lažnimi paketi za dostavo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-telephone-fill me-2 text-warning"></i>Vishing (Telefon)</h6>
+                                <p class="small mb-0">Klici "tehnične podpore" ali "banke", ki zahtevajo gesla ali dostop do računalnika.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-person-check-fill me-2 text-warning"></i>Spear Phishing</h6>
+                                <p class="small mb-0">Ciljni napadi na specifične posameznike ali podjetja z osebno prilagojenimi sporočili.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phishing Email Example -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-2-circle-fill text-warning me-2"></i>Primer phishing sporočila</h3>
+                <p class="text-muted">Kliknite na sumljive elemente v spodnjem e-poštnem sporočilu:</p>
+
+                <div class="card border-2 border-secondary mt-3" id="phishingEmail">
+                    <div class="card-header bg-light">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <small><strong>Od:</strong> <span class="phish-element badge bg-danger text-white" data-info="Sumljiv pošiljatelj! 'noreply-support@paypa1-secure.com' – opazite 1 namesto l v 'paypa1'" style="cursor:pointer;">noreply-support@paypa1-secure.com</span></small>
+                            </div>
+                            <div class="col-sm-6">
+                                <small><strong>Zadeva:</strong> <span class="phish-element badge bg-danger text-white" data-info="Urgentni naslov sproži strah in pritisk. Legitimna podjetja ne pišejo tako." style="cursor:pointer;">⚠️ NUJNO: Vaš račun bo zaprt v 24 urah!</span></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4 bg-white">
+                        <p>Spoštovani uporabnik,</p>
+                        <p>Zaznali smo <span class="phish-element text-danger fw-bold" data-info="Strašenje in urgenca – klasičen manipulativni trik." style="cursor:pointer; text-decoration: underline dotted;">sumljivo aktivnost</span> na vašem računu. Vaš račun bo <strong class="phish-element text-danger" data-info="Groznja zaklene -> pritisk na žrtev da ravna hitro brez razmisleka." style="cursor:pointer; text-decoration: underline dotted;">blokiran v 24 urah</strong>, razen če potrdite svojo identiteto.</p>
+                        <p>Kliknite spodnjo povezavo za verifikacijo:</p>
+                        <div class="my-3">
+                            <span class="phish-element btn btn-danger btn-sm" data-info="NEVARNA POVEZAVA! Prava PayPal stran je paypal.com, ne 'paypa1-secure-verify.ru'" style="cursor:pointer;">
+                                👉 Potrdite račun zdaj: http://paypa1-secure-verify.ru/verify
+                            </span>
+                        </div>
+                        <p>Vnesite vaše <span class="phish-element text-danger" data-info="Legitimna podjetja NIKOLI ne zahtevajo gesla po e-pošti!" style="cursor:pointer; text-decoration: underline dotted;">uporabniško ime, geslo in PIN</span> za potrditev.</p>
+                        <p>Z lepimi pozdravi,<br><span class="phish-element" data-info="Lažni podpis – podjetja imajo profesionalne podpise z uradnimi kontakti." style="cursor:pointer; text-decoration: underline dotted;">PayPal Varnostna Ekipa</span></p>
+                    </div>
+                </div>
+
+                <div id="phishHint" class="alert alert-info mt-3 d-none">
+                    <strong><i class="bi bi-cursor-fill me-2"></i>Kliknite na označene rdeče elemente</strong> za razlago!
+                </div>
+                <div id="phishExplanation" class="alert alert-warning mt-3 d-none">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span id="phishExplanationText"></span>
+                </div>
+
+                <div class="mt-3">
+                    <button class="btn btn-warning" onclick="showAllPhishHints()">
+                        <i class="bi bi-eye me-2"></i>Pokaži vse znake phishinga
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Signs Checklist -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-3-circle-fill text-warning me-2"></i>Opozorilni znaki checklist</h3>
+                <p class="text-muted">Preverite vsako e-poštno sporočilo po tem seznamu:</p>
+                <div id="checklistContainer">
+                    @{
+                        var checks = new[] {
+                                        "Pošiljateljev naslov je sumljiv ali ne ustreza domeni podjetja",
+                                        "Sporočilo vsebuje urgentni jezik ('TAKOJ', '24 ur', 'ZAKLENJEN')",
+                                        "URL v sporočilu ne ustreza pravemu naslovu podjetja",
+                                        "Zahteva po geslu, PIN-u ali osebnih podatkih",
+                                        "Slovnične ali pravopisne napake v besedilu",
+                                        "Splošno nagovarjanje ('Spoštovani uporabnik') namesto vašega imena",
+                                        "Nepričakovane priponke ali sumljive datoteke",
+                                        "Ponudba, ki je predobra, da bi bila resnična"
+                                        };
+                        for (int i = 0; i < checks.Length; i++)
+                        {
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="check@i" onchange="updateChecklist()">
+                                <label class="form-check-label" for="check@i">@checks[i]</label>
+                            </div>
+                        }
+                    }
+                </div>
+                <div id="checklistResult" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 80px;">
+            <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2"></i>O tečaju</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0"><i class="bi bi-clock me-2 text-muted"></i>Čas: ~25 minut</li>
+                    <li class="list-group-item px-0"><i class="bi bi-patch-question me-2 text-muted"></i>15 vprašanj v kvizu</li>
+                    <li class="list-group-item px-0"><i class="bi bi-check2-circle me-2 text-muted"></i>70% za uspešen zaključek</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-shield-check me-2"></i>Kaj storiti ob phishingu</h6>
+            </div>
+            <div class="card-body">
+                <ol class="mb-0 ps-3">
+                    <li class="mb-2 small">Ne kliknite na povezave</li>
+                    <li class="mb-2 small">Preverite pravi naslov pošiljatelja</li>
+                    <li class="mb-2 small">Kontaktirajte podjetje neposredno</li>
+                    <li class="mb-2 small">Prijavite sporočilo kot phishing</li>
+                    <li class="mb-2 small">Zamenjajte gesla, če ste kliknili</li>
+                    <li class="mb-0 small">Obvestite IT ekipo / banko</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.phish-element').forEach(el => {
+            el.addEventListener('click', function() {
+                const exp = document.getElementById('phishExplanation');
+                document.getElementById('phishExplanationText').textContent = this.dataset.info;
+                exp.classList.remove('d-none');
+                document.getElementById('phishHint').classList.add('d-none');
+            });
+        });
+
+        function showAllPhishHints() {
+            document.querySelectorAll('.phish-element').forEach(el => {
+                if (!el.classList.contains('btn')) {
+                    el.style.backgroundColor = '#fff3cd';
+                    el.style.border = '2px solid #ffc107';
+                    el.style.borderRadius = '3px';
+                }
+            });
+            document.getElementById('phishHint').classList.remove('d-none');
+            document.getElementById('phishHint').innerHTML = '<strong>🎯 Označeni so vsi sumljivi elementi:</strong> Pošiljateljev naslov, urgentna zadeva, lažna URL, zahteva po geslu, generično nagovarjanje.';
+        }
+
+        function updateChecklist() {
+            const total = document.querySelectorAll('#checklistContainer .form-check-input').length;
+            const checked = document.querySelectorAll('#checklistContainer .form-check-input:checked').length;
+            const result = document.getElementById('checklistResult');
+            if (checked === 0) { result.innerHTML = ''; return; }
+            const pct = Math.round(checked / total * 100);
+            result.innerHTML = `<div class="alert alert-${checked >= 3 ? 'danger' : 'warning'} mb-0">
+                <strong>${checked}/${total} opozorilnih znakov zaznano.</strong>
+                ${checked >= 3 ? ' ⚠️ Velika verjetnost phishinga! Ne kliknite ničesar.' : ' Bodite pozorni.'}
+            </div>`;
+        }
+    </script>
+}

@@ -23,5 +23,19 @@ namespace CyberSecurityWebApp.Controllers
             return View(course);
         }
 
+        public IActionResult Password()
+        {
+            return View();
+        }
+
+        public IActionResult Phishing()
+        {
+            return View();
+        }
+
+        public IActionResult Internet()
+        {
+            return View();
+        }
     }
 }

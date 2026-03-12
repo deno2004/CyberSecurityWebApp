@@ -38,7 +38,30 @@
             </div>
 
             <div class="course-actions">
-                <a href="/Courses/Start/@course.CourseId" class="btn btn-primary">
+                @{
+                    var coursePage = "";
+
+                    switch (course.Category)
+                    {
+                        case "Gesla":
+                            coursePage = "/Course/Password";
+                            break;
+
+                        case "Phishing":
+                            coursePage = "/Course/Phishing";
+                            break;
+
+                        case "Internet":
+                            coursePage = "/Course/Internet";
+                            break;
+
+                        default:
+                            coursePage = "/Course";
+                            break;
+                    }
+                }
+
+                <a href="@coursePage" class="btn btn-primary">
                     📖 Odpri tečaj
                 </a>
 

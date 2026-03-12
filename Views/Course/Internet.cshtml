@@ -1,0 +1,204 @@
+﻿@model CyberSecurityWebApp.Models.Quiz
+@{
+    ViewData["Title"] = "Varna uporaba interneta";
+}
+
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index">Domov</a></li>
+        <li class="breadcrumb-item"><a asp-page="/Courses/Index">Tečaji</a></li>
+        <li class="breadcrumb-item active">Varna uporaba interneta</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg,#198754,#146c43); color:white;">
+            <div class="card-body p-4 d-flex align-items-center">
+                <i class="bi bi-shield-lock-fill display-3 me-4 opacity-75"></i>
+                <div>
+                    <h1 class="fw-bold mb-1">Varna uporaba interneta</h1>
+                    <p class="mb-0 opacity-75">Najboljše prakse za digitalno varnost in zasebnost</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2FA -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-1-circle-fill text-success me-2"></i>Dvofaktorska avtentikacija (2FA)</h3>
+                <p>2FA doda <strong>dodatni sloj zaščite</strong> poleg gesla. Tudi če napadalec pozna vaše geslo, brez drugega faktorja ne bo mogel dostopiti do vašega računa.</p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="card text-center bg-success bg-opacity-10 border-success border-opacity-25">
+                            <div class="card-body">
+                                <i class="bi bi-phone text-success display-6"></i>
+                                <h6 class="mt-2">SMS koda</h6>
+                                <small class="text-muted">6-mestna koda po SMS</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center bg-success bg-opacity-10 border-success border-opacity-25">
+                            <div class="card-body">
+                                <i class="bi bi-grid-3x3-gap text-success display-6"></i>
+                                <h6 class="mt-2">Aplikacija (TOTP)</h6>
+                                <small class="text-muted">Google/Microsoft Authenticator</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center bg-success bg-opacity-10 border-success border-opacity-25">
+                            <div class="card-body">
+                                <i class="bi bi-usb-drive text-success display-6"></i>
+                                <h6 class="mt-2">Hardware ključ</h6>
+                                <small class="text-muted">YubiKey – najmočnejši</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-success mt-3">
+                    <i class="bi bi-lightbulb-fill me-2"></i><strong>Priporočilo:</strong> Omogočite 2FA na vseh pomembnih računih (e-pošta, banka, socialna omrežja, shranjevanje v oblaku).
+                </div>
+            </div>
+        </div>
+
+        <!-- WiFi & VPN -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-2-circle-fill text-success me-2"></i>Varno Wi-Fi omrežje & VPN</h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="card border-danger border-opacity-25 h-100">
+                            <div class="card-header bg-danger bg-opacity-10">
+                                <h6 class="mb-0"><i class="bi bi-wifi text-danger me-2"></i>Javno WiFi – NEVARNO</h6>
+                            </div>
+                            <div class="card-body small">
+                                <ul class="list-unstyled mb-0">
+                                    <li>❌ Brez šifriranja prometa</li>
+                                    <li>❌ Napadalci lahko prisluškujejo</li>
+                                    <li>❌ "Man-in-the-middle" napadi</li>
+                                    <li>❌ Lažna dostopna točka (Evil Twin)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-success border-opacity-25 h-100">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h6 class="mb-0"><i class="bi bi-shield-lock text-success me-2"></i>Z VPN – VARNO</h6>
+                            </div>
+                            <div class="card-body small">
+                                <ul class="list-unstyled mb-0">
+                                    <li>✅ Šifriran promet</li>
+                                    <li>✅ Skrit IP naslov</li>
+                                    <li>✅ Zaščita pred prisluhovanjem</li>
+                                    <li>✅ Zasebnost od ponudnika</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-3-circle-fill text-success me-2"></i>Varnostni nasveti</h3>
+                <div class="row g-2">
+                    @{
+                        var tips = new[] {
+                                        ("bi-arrow-clockwise", "success", "Redno posodabljanje", "Namestite varnostne posodobitve takoj ko so na voljo."),
+                                        ("bi-shield-check", "success", "Protivirusna zaščita", "Uporabite zaupanja vredne AV programe in jih posodabljajte."),
+                                        ("bi-lock", "primary", "Zaklepanje naprav", "Vedno zaklenite zaslon računalnika in mobilnega telefona."),
+                                        ("bi-cloud-check", "info", "Varnostne kopije", "3-2-1 pravilo: 3 kopije, 2 medija, 1 zunaj lokacije."),
+                                        ("bi-eye-slash", "warning", "Zasebnost na spletu", "Bodite previdni, kaj objavljate. Trajno je trajno."),
+                                        ("bi-download", "danger", "Prenos programov", "Prenašajte samo iz uradnih virov. Preverite hash datotek.")
+                                        };
+                        foreach (var (icon, color, title, text) in tips)
+                        {
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start p-3 border rounded">
+                                    <i class="bi @icon text-@color fs-4 me-3 mt-1"></i>
+                                    <div>
+                                        <h6 class="mb-1 fw-semibold">@title</h6>
+                                        <small class="text-muted">@text</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Habits Checklist -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h3 class="fw-bold"><i class="bi bi-4-circle-fill text-success me-2"></i>Moje varnostne navade</h3>
+                <p class="text-muted">Označite navade, ki jih že izvajate:</p>
+                <div id="habitsContainer">
+                    @{
+                        var habits = new[] {
+                                        "Vsa gesla so dolga in edinstvena",
+                                        "Uporabljam upravitelja gesel",
+                                        "2FA je omogočena na e-pošti",
+                                        "2FA je omogočena na banki / PayPal",
+                                        "Redna varnostna kopija podatkov",
+                                        "OS in programi so posodobljeni",
+                                        "Protivirusni program je aktiven",
+                                        "VPN uporabljam na javnem WiFi",
+                                        "Redna kontrola bančnih izpiskov",
+                                        "Zaklepam zaslon pri odhodu od mize",
+                                        "Ne klikam na sumljive povezave",
+                                        "Preverim URL pred prijavo"
+                                        };
+                        for (int i = 0; i < habits.Length; i++)
+                        {
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="habit@i" onchange="updateHabits()">
+                                <label class="form-check-label" for="habit@i">@habits[i]</label>
+                            </div>
+                        }
+                    }
+                </div>
+                <div id="habitScore" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 80px;">
+            <div class="card-header bg-success text-white">
+                <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2"></i>O tečaju</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0"><i class="bi bi-clock me-2 text-muted"></i>Čas: ~20 minut</li>
+                    <li class="list-group-item px-0"><i class="bi bi-patch-question me-2 text-muted"></i>15 vprašanj v kvizu</li>
+                    <li class="list-group-item px-0"><i class="bi bi-check2-circle me-2 text-muted"></i>70% za uspešen zaključek</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateHabits() {
+            const total = document.querySelectorAll('#habitsContainer .form-check-input').length;
+            const checked = document.querySelectorAll('#habitsContainer .form-check-input:checked').length;
+            const pct = Math.round(checked / total * 100);
+            let cls = 'danger', msg = '🔴 Morate izboljšati varnostne navade!';
+            if (pct >= 75) { cls = 'success'; msg = '🟢 Odlično! Ste varnostno ozaveščeni!'; }
+            else if (pct >= 50) { cls = 'warning'; msg = '🟡 Dobro – še malo napredka in ste odlični!'; }
+            else if (pct >= 25) { cls = 'info'; msg = '🔵 Dober začetek – nadaljujte z izboljšavami.'; }
+            document.getElementById('habitScore').innerHTML = `
+                <div class="d-flex justify-content-between mb-1"><span class="fw-semibold">Varnostni rezultat</span><span class="fw-bold">${checked}/${total} (${pct}%)</span></div>
+                <div class="progress mb-2" style="height:10px;"><div class="progress-bar bg-${cls}" style="width:${pct}%"></div></div>
+                <div class="alert alert-${cls} py-2 mb-0 small">${msg}</div>`;
+        }
+    </script>
+}
