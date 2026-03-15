@@ -3,22 +3,14 @@
     ViewData["Title"] = "Varna uporaba interneta";
 }
 
-<nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-page="/Index">Domov</a></li>
-        <li class="breadcrumb-item"><a asp-page="/Courses/Index">Tečaji</a></li>
-        <li class="breadcrumb-item active">Varna uporaba interneta</li>
-    </ol>
-</nav>
-
 <div class="row">
     <div class="col-lg-8">
-        <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg,#198754,#146c43); color:white;">
+        <div class="card border-0 shadow-sm mb-4 course-header-card">
             <div class="card-body p-4 d-flex align-items-center">
                 <i class="bi bi-shield-lock-fill display-3 me-4 opacity-75"></i>
                 <div>
-                    <h1 class="fw-bold mb-1">Varna uporaba interneta</h1>
-                    <p class="mb-0 opacity-75">Najboljše prakse za digitalno varnost in zasebnost</p>
+                    <h1 class="fw-bold mb-1">🌐 Varna raba interneta</h1>
+                    <p class="mb-0 opacity-75">Naučite se varno uporabljati internet in javna omrežja</p>
                 </div>
             </div>
         </div>
@@ -167,22 +159,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Sidebar -->
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm mb-4 sticky-top" style="top: 80px;">
-            <div class="card-header bg-success text-white">
-                <h6 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2"></i>O tečaju</h6>
-            </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item px-0"><i class="bi bi-clock me-2 text-muted"></i>Čas: ~20 minut</li>
-                    <li class="list-group-item px-0"><i class="bi bi-patch-question me-2 text-muted"></i>15 vprašanj v kvizu</li>
-                    <li class="list-group-item px-0"><i class="bi bi-check2-circle me-2 text-muted"></i>70% za uspešen zaključek</li>
-                </ul>
-            </div>
-        </div>
-    </div>
 </div>
 
 @section Scripts {
@@ -202,3 +178,113 @@
         }
     </script>
 }
+
+<style>
+
+    .course-header-card {
+        border-radius: 8px;
+    }
+
+        .course-header-card h1 {
+            font-size: 1.6rem;
+        }
+
+        .course-header-card p {
+            opacity: 0.85;
+            font-size: 0.9rem;
+        }
+
+    .card {
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .card-header {
+        background: white;
+        border-bottom: 1px solid #eee;
+        font-weight: 600;
+    }
+
+    .section-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        background: #dc3545;
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .border-danger {
+        border: 1px solid #f1b0b7 !important;
+        background: #fff7f7;
+    }
+
+    .border-success {
+        border: 1px solid #b8e0c5 !important;
+        background: #f5fff8;
+    }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .table-dark th {
+        background-color: #2b2f33;
+    }
+
+    .table-success {
+        background-color: #d8f3dc;
+    }
+
+    .progress {
+        background: #e9ecef;
+        border-radius: 6px;
+    }
+
+    .progress-bar {
+        transition: width 0.3s ease;
+    }
+
+    #generatedPwd {
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
+
+    .sidebar-card .card-header {
+        background: #2f343a;
+        color: white;
+        font-size: 0.9rem;
+    }
+
+    .sidebar-card .list-group-item {
+        border: none;
+        font-size: 0.9rem;
+        padding: 10px 0;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background-color: #bb2d3b;
+        }
+
+    .card-body {
+        padding: 22px;
+    }
+
+    h5 {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+</style>
+
