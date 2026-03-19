@@ -1806,6 +1806,7 @@ body.dark-mode {
     /* Cards (global) */
     body.dark-mode .feature-card,
     body.dark-mode .content-card,
+    body.dark-mode .course-card,
     body.dark-mode .quiz-module-card,
     body.dark-mode .quiz-header,
     body.dark-mode .question-card,
