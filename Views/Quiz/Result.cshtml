@@ -1,67 +1,256 @@
 ﻿@model Quiz
-
 @{
     ViewData["Title"] = "Rezultati - " + Model.Title;
-
     var score = ViewBag.Score as int? ?? 0;
     var total = ViewBag.Total as int? ?? 0;
     var results = ViewBag.Results as List<dynamic>;
-
-    var percentage = total > 0 ? (double)score / total * 100 : 0;
+    var percentage = ViewBag.Percentage as double? ?? 0;
+    var passed = ViewBag.Passed as bool? ?? false;
+    var feedbackMessage = ViewBag.FeedbackMessage as string ?? "";
+    var feedbackClass = ViewBag.FeedbackClass as string ?? "";
 }
 
 <div class="quiz-container">
-
     <div class="quiz-header">
-        <h2>📊 Rezultati kviza</h2>
+        <h2>&#128202; Rezultati kviza</h2>
         <div class="quiz-progress">
             @score / @total (@percentage.ToString("F0")%)
         </div>
     </div>
 
-    <div class="question-card">
+    @* ✅ Certifikat razdelek - prikazan samo ob uspešnem opravljanju *@
+    @if (passed)
+    {
+        <div class="certificate-banner">
+            <div class="certificate-banner-inner">
+                <div class="certificate-banner-icon">&#127942;</div>
+                <div class="certificate-banner-content">
+                    <h3>Čestitamo! Uspešno ste opravili kviz.</h3>
+                    <p>
+                        Dosegli ste <strong>@percentage.ToString("F0")%</strong>
+                        (@score od @total točk), kar presega zahtevano mejo
+                        <strong>@Model.PassThreshold%</strong>.
+                    </p>
+                    <p>Prejmite vaš certifikat za uspešno opravljanje kviza <em>@Model.Title</em>.</p>
+                    <div class="certificate-banner-actions">
+                        <input type="text"
+                               id="certUserName"
+                               class="cert-name-input"
+                               placeholder="Vnesite vaše ime za certifikat"
+                               maxlength="80" />
+                        <a id="certLink"
+                           href="/Quiz/Certificate/@Model.QuizId"
+                           class="btn btn-cert"
+                           target="_blank">
+                            &#127891; Pridobi certifikat
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <h3>Uspešnost: @percentage.ToString("F0")%</h3>
+        <script>
+            document.getElementById('certUserName').addEventListener('input', function () {
+                var name = this.value.trim();
+                var base = '/Quiz/Certificate/@Model.QuizId';
+                document.getElementById('certLink').href = name
+                    ? base + '?userName=' + encodeURIComponent(name)
+                    : base;
+            });
+        </script>
+    }
+    else
+    {
+        <div class="result-feedback needs-improvement">
+            <p>@feedbackMessage</p>
+            <p>Za certifikat potrebujete vsaj <strong>@Model.PassThreshold%</strong>. Poskusite znova!</p>
+        </div>
+    }
+
+    @* Rezultati po vprašanjih *@
+    <div class="question-card">
+        <h3 class="feedback-title @feedbackClass">
+            Uspešnost: @percentage.ToString("F0")%
+            @if (passed)
+            {
+                <span class="badge-passed">&#10004; Opravljeno</span>
+            }
+            else
+            {
+                <span class="badge-failed">&#10008; Ni opravljeno</span>
+            }
+        </h3>
 
         <div style="margin-top:20px;">
-
             @for (int i = 0; i < results.Count; i++)
             {
                 var result = results[i];
-
                 <div class="result-item @(result.IsCorrect ? "correct" : "incorrect")">
-
                     <strong>Vprašanje @(i + 1)</strong>
                     <p>@result.Question.Text</p>
-
                     <p>
                         <strong>Vaš odgovor:</strong>
                         <span class="@(result.IsCorrect ? "correct-answer" : "wrong-answer")">
                             @(result.SelectedAnswer?.Text ?? "Ni odgovora")
                         </span>
                     </p>
-
                     @if (!result.IsCorrect)
                     {
                         <p>
                             <strong>Pravilen odgovor:</strong>
-                            <span class="correct-answer">
-                                @result.CorrectAnswer?.Text
-                            </span>
+                            <span class="correct-answer">@result.CorrectAnswer?.Text</span>
                         </p>
                     }
-
-
                 </div>
             }
-
         </div>
 
-        <div style="margin-top:25px;">
+        <div style="margin-top:25px; display:flex; gap:12px; flex-wrap:wrap;">
+            <a asp-action="TakeQuiz" asp-route-id="@Model.QuizId" class="btn btn-secondary">
+                &#128260; Poskusi znova
+            </a>
             <a asp-action="Index" class="btn btn-primary">
-                Nazaj na kvize
+                &#8592; Nazaj na kvize
             </a>
         </div>
-
     </div>
 </div>
+
+<style>
+    .certificate-banner {
+        margin: 0 0 24px 0;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        border: 2px solid #e8b923;
+        box-shadow: 0 8px 32px rgba(232, 185, 35, 0.2);
+        overflow: hidden;
+    }
+
+    .certificate-banner-inner {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 28px 32px;
+    }
+
+    .certificate-banner-icon {
+        font-size: 3.5rem;
+        flex-shrink: 0;
+        filter: drop-shadow(0 0 8px rgba(232,185,35,0.6));
+    }
+
+    .certificate-banner-content h3 {
+        color: #e8b923;
+        font-size: 1.4rem;
+        margin: 0 0 8px 0;
+    }
+
+    .certificate-banner-content p {
+        color: #cbd5e1;
+        margin: 0 0 6px 0;
+        font-size: 0.97rem;
+    }
+
+    .certificate-banner-content strong {
+        color: #fff;
+    }
+
+    .certificate-banner-content em {
+        color: #93c5fd;
+    }
+
+    .certificate-banner-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+    }
+
+    .cert-name-input {
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: 1.5px solid #4a5568;
+        background: rgba(255,255,255,0.08);
+        color: #fff;
+        font-size: 0.95rem;
+        width: 240px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+        .cert-name-input:focus {
+            border-color: #e8b923;
+        }
+
+        .cert-name-input::placeholder {
+            color: #94a3b8;
+        }
+
+    .btn-cert {
+        background: linear-gradient(135deg, #e8b923, #f59e0b);
+        color: #1a1a2e !important;
+        font-weight: 700;
+        padding: 10px 22px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: transform 0.15s, box-shadow 0.15s;
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+        .btn-cert:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(232,185,35,0.4);
+            color: #1a1a2e !important;
+        }
+
+    .result-feedback {
+        padding: 18px 24px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 0.97rem;
+    }
+
+        .result-feedback.needs-improvement {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1.5px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+    .badge-passed {
+        background: #16a34a;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    .badge-failed {
+        background: #dc2626;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-left: 10px;
+        vertical-align: middle;
+    }
+
+    .feedback-title {
+        font-size: 1.2rem;
+    }
+
+    @@media (max-width: 600px) {
+        .certificate-banner-inner {
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .cert-name-input {
+            width: 100%;
+        }
+    }
+</style>

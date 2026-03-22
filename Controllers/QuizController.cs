@@ -6,7 +6,6 @@ namespace CyberSecurityWebApp.Controllers
 {
     public class QuizController : Controller
     {
-
         private readonly AppDbContext _context;
 
         public QuizController(AppDbContext context)
@@ -16,9 +15,7 @@ namespace CyberSecurityWebApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var quizzes = await _context.Quizzes
-                .ToListAsync();
-
+            var quizzes = await _context.Quizzes.ToListAsync();
             return View(quizzes);
         }
 
@@ -41,10 +38,10 @@ namespace CyberSecurityWebApp.Controllers
 
         public async Task<IActionResult> TakeQuiz(int id, int questionIndex = 1)
         {
-            // ✅ Počisti session, če je prvo vprašanje
             if (questionIndex == 1)
             {
                 HttpContext.Session.Remove("UserAnswers");
+                HttpContext.Session.Remove("UserName");
             }
 
             var quiz = await _context.Quizzes
@@ -63,7 +60,6 @@ namespace CyberSecurityWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitAnswer(int quizId, int questionId, int answerId, int questionIndex)
         {
-            // 🔹 1. Preberi obstoječe odgovore iz Session
             var existingAnswers = HttpContext.Session.GetString("UserAnswers");
 
             List<int> answerIds;
@@ -73,14 +69,10 @@ namespace CyberSecurityWebApp.Controllers
             else
                 answerIds = existingAnswers.Split(',').Select(int.Parse).ToList();
 
-            // 🔹 2. Shrani trenutni odgovor
             answerIds.Add(answerId);
 
-            // 🔹 3. Shrani nazaj v Session
-            HttpContext.Session.SetString("UserAnswers",
-                string.Join(",", answerIds));
+            HttpContext.Session.SetString("UserAnswers", string.Join(",", answerIds));
 
-            // 🔹 4. Preveri koliko je vprašanj
             var totalQuestions = await _context.Questions
                 .CountAsync(q => q.QuizId == quizId);
 
@@ -106,15 +98,13 @@ namespace CyberSecurityWebApp.Controllers
             if (quiz == null)
                 return NotFound();
 
-            var userAnswers = HttpContext.Session
-                .GetString("UserAnswers");
+            var userAnswers = HttpContext.Session.GetString("UserAnswers");
 
             var answerIds = string.IsNullOrEmpty(userAnswers)
                 ? new List<int>()
                 : userAnswers.Split(',').Select(int.Parse).ToList();
 
             int score = 0;
-
             var results = new List<dynamic>();
 
             var questions = quiz.Questions
@@ -145,14 +135,56 @@ namespace CyberSecurityWebApp.Controllers
                 });
             }
 
+            double percentage = questions.Count > 0 ? (double)score / questions.Count * 100 : 0;
+            bool passed = percentage >= quiz.PassThreshold;
+
             ViewBag.Score = score;
             ViewBag.Total = questions.Count;
             ViewBag.Results = results;
+            ViewBag.Percentage = percentage;
+            ViewBag.Passed = passed;
+            ViewBag.FeedbackMessage = GetFeedbackMessage(percentage);
+            ViewBag.FeedbackClass = GetFeedbackClass(percentage);
+
+            // Shrani rezultat v session za certifikat
+            if (passed)
+            {
+                HttpContext.Session.SetString($"CertScore_{id}", score.ToString());
+                HttpContext.Session.SetString($"CertTotal_{id}", questions.Count.ToString());
+                HttpContext.Session.SetString($"CertDate_{id}", DateTime.Now.ToString("dd. MM. yyyy"));
+            }
 
             return View(quiz);
         }
 
-        
+        // ✅ Nova akcija za prikaz certifikata
+        public async Task<IActionResult> Certificate(int id, string userName)
+        {
+            var quiz = await _context.Quizzes
+                .FirstOrDefaultAsync(q => q.QuizId == id);
+
+            if (quiz == null)
+                return NotFound();
+
+            var scoreStr = HttpContext.Session.GetString($"CertScore_{id}");
+            var totalStr = HttpContext.Session.GetString($"CertTotal_{id}");
+            var date = HttpContext.Session.GetString($"CertDate_{id}");
+
+            if (string.IsNullOrEmpty(scoreStr))
+                return RedirectToAction("Result", new { id });
+
+            int score = int.Parse(scoreStr);
+            int total = int.Parse(totalStr!);
+            double percentage = total > 0 ? (double)score / total * 100 : 0;
+
+            ViewBag.Score = score;
+            ViewBag.Total = total;
+            ViewBag.Percentage = percentage;
+            ViewBag.CertDate = date ?? DateTime.Now.ToString("dd. MM. yyyy");
+            ViewBag.UserName = string.IsNullOrWhiteSpace(userName) ? "Udeleženec" : userName;
+
+            return View(quiz);
+        }
 
         [HttpPost]
         public async Task<IActionResult> GenerateLink(int moduleId, string userName)
