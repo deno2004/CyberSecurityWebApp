@@ -183,7 +183,7 @@ namespace CyberSecurityWebApp.Controllers
             ViewBag.CertDate = date ?? DateTime.Now.ToString("dd. MM. yyyy");
             ViewBag.UserName = string.IsNullOrWhiteSpace(userName) ? "Udeleženec" : userName;
 
-            return View(quiz);
+            return View("~/Views/Certificate/Certificate.cshtml", quiz);
         }
 
         [HttpPost]

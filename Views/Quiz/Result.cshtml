@@ -11,6 +11,7 @@
 }
 
 <div class="quiz-container">
+<br />
     <div class="quiz-header">
         <h2>&#128202; Rezultati kviza</h2>
         <div class="quiz-progress">
@@ -117,12 +118,17 @@
 </div>
 
 <style>
+    /* ===================== */
+    /* 🎓 CERTIFICATE BANNER */
+    /* ===================== */
+
+    /* ☀️ LIGHT MODE (default) */
     .certificate-banner {
         margin: 0 0 24px 0;
         border-radius: 16px;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        border: 2px solid #e8b923;
-        box-shadow: 0 8px 32px rgba(232, 185, 35, 0.2);
+        background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 50%, #e2e8f0 100%);
+        border: 2px solid #eab308;
+        box-shadow: 0 8px 24px rgba(234, 179, 8, 0.15);
         overflow: hidden;
     }
 
@@ -134,31 +140,32 @@
     }
 
     .certificate-banner-icon {
-        font-size: 3.5rem;
+        font-size: 3.2rem;
         flex-shrink: 0;
-        filter: drop-shadow(0 0 8px rgba(232,185,35,0.6));
+        filter: drop-shadow(0 0 6px rgba(234,179,8,0.4));
     }
 
     .certificate-banner-content h3 {
-        color: #e8b923;
+        color: #b45309;
         font-size: 1.4rem;
         margin: 0 0 8px 0;
     }
 
     .certificate-banner-content p {
-        color: #cbd5e1;
+        color: #475569;
         margin: 0 0 6px 0;
-        font-size: 0.97rem;
+        font-size: 0.95rem;
     }
 
     .certificate-banner-content strong {
-        color: #fff;
+        color: #0f172a;
     }
 
     .certificate-banner-content em {
-        color: #93c5fd;
+        color: #2563eb;
     }
 
+    /* actions */
     .certificate-banner-actions {
         display: flex;
         align-items: center;
@@ -167,58 +174,62 @@
         flex-wrap: wrap;
     }
 
+    /* input */
     .cert-name-input {
         padding: 10px 16px;
         border-radius: 8px;
-        border: 1.5px solid #4a5568;
-        background: rgba(255,255,255,0.08);
-        color: #fff;
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f172a;
         font-size: 0.95rem;
         width: 240px;
         outline: none;
-        transition: border-color 0.2s;
+        transition: all 0.2s ease;
     }
 
         .cert-name-input:focus {
-            border-color: #e8b923;
+            border-color: #eab308;
+            box-shadow: 0 0 0 2px rgba(234,179,8,0.2);
         }
 
         .cert-name-input::placeholder {
             color: #94a3b8;
         }
 
+    /* button */
     .btn-cert {
-        background: linear-gradient(135deg, #e8b923, #f59e0b);
+        background: linear-gradient(135deg, #facc15, #f59e0b);
         color: #1a1a2e !important;
         font-weight: 700;
         padding: 10px 22px;
         border-radius: 8px;
         text-decoration: none;
         font-size: 0.95rem;
-        transition: transform 0.15s, box-shadow 0.15s;
+        transition: all 0.15s ease;
         white-space: nowrap;
         display: inline-block;
     }
 
         .btn-cert:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(232,185,35,0.4);
-            color: #1a1a2e !important;
+            box-shadow: 0 6px 18px rgba(234,179,8,0.35);
         }
 
+    /* feedback */
     .result-feedback {
         padding: 18px 24px;
         border-radius: 12px;
         margin-bottom: 20px;
-        font-size: 0.97rem;
+        font-size: 0.95rem;
     }
 
         .result-feedback.needs-improvement {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1.5px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
+            background: #fff1f2;
+            border: 1.5px solid #f87171;
+            color: #b91c1c;
         }
 
+    /* badges */
     .badge-passed {
         background: #16a34a;
         color: #fff;
@@ -226,7 +237,6 @@
         border-radius: 20px;
         font-size: 0.8rem;
         margin-left: 10px;
-        vertical-align: middle;
     }
 
     .badge-failed {
@@ -236,21 +246,86 @@
         border-radius: 20px;
         font-size: 0.8rem;
         margin-left: 10px;
-        vertical-align: middle;
     }
 
     .feedback-title {
         font-size: 1.2rem;
     }
 
-    @@media (max-width: 600px) {
-        .certificate-banner-inner {
-            flex-direction: column;
-            padding: 20px;
+    /* ===================== */
+    /* 🌙 DARK MODE */
+    /* ===================== */
+
+    body.dark-mode .certificate-banner {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        border: 2px solid #e8b923;
+        box-shadow: 0 8px 32px rgba(232, 185, 35, 0.25);
+    }
+
+    body.dark-mode .certificate-banner-icon {
+        filter: drop-shadow(0 0 8px rgba(232,185,35,0.6));
+    }
+
+    body.dark-mode .certificate-banner-content h3 {
+        color: #e8b923;
+    }
+
+    body.dark-mode .certificate-banner-content p {
+        color: #cbd5e1;
+    }
+
+    body.dark-mode .certificate-banner-content strong {
+        color: #ffffff;
+    }
+
+    body.dark-mode .certificate-banner-content em {
+        color: #93c5fd;
+    }
+
+    /* input dark */
+    body.dark-mode .cert-name-input {
+        background: rgba(255,255,255,0.08);
+        border: 1.5px solid #4a5568;
+        color: #fff;
+    }
+
+        body.dark-mode .cert-name-input::placeholder {
+            color: #94a3b8;
         }
 
-        .cert-name-input {
-            width: 100%;
+        body.dark-mode .cert-name-input:focus {
+            border-color: #e8b923;
         }
+
+    /* button dark */
+    body.dark-mode .btn-cert {
+        background: linear-gradient(135deg, #e8b923, #f59e0b);
+        color: #1a1a2e !important;
+    }
+
+        body.dark-mode .btn-cert:hover {
+            box-shadow: 0 6px 20px rgba(232,185,35,0.4);
+        }
+
+    /* feedback dark */
+    body.dark-mode .result-feedback.needs-improvement {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1.5px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+    }
+
+    /* ===================== */
+    /* 📱 RESPONSIVE */
+    /* ===================== */
+
+    {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .cert-name-input {
+        width: 100%;
+    }
+
     }
 </style>

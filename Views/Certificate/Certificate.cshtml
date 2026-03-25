@@ -1,0 +1,447 @@
+﻿@model Quiz
+@{
+    Layout = null; // ✅ Skrij navbar in footer
+    var score = ViewBag.Score as int? ?? 0;
+    var total = ViewBag.Total as int? ?? 0;
+    var percentage = ViewBag.Percentage as double? ?? 0;
+    var certDate = ViewBag.CertDate as string ?? DateTime.Now.ToString("dd. MM. yyyy");
+    var userName = ViewBag.UserName as string ?? "Udeleženec";
+    var certNumber = $"CERT-{Model.QuizId:D3}-{DateTime.Now:yyyyMMdd}-{score}{total}";
+}
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certifikat - @Model.Title</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        /* ===== AKCIJSKA VRSTICA ===== */
+        .cert-actions-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-cert-print {
+            background: linear-gradient(135deg, #e8b923, #f59e0b);
+            color: #1a1a2e;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+            .btn-cert-print:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(232,185,35,0.4);
+            }
+
+        .btn-back {
+            background: rgba(255,255,255,0.08);
+            color: #cbd5e1;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1rem;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+
+            .btn-back:hover {
+                background: rgba(255,255,255,0.15);
+                color: #fff;
+            }
+
+        /* ===== CERTIFIKAT STRAN ===== */
+        .cert-page {
+            position: relative;
+            width: 794px;
+            min-height: 560px;
+            background: linear-gradient(160deg, #fdfaf0 0%, #fffef8 40%, #faf6e8 100%);
+            border-radius: 4px;
+            padding: 50px 60px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            color: #1a1a2e;
+        }
+
+        /* ===== DEKORATIVNI VOGALI ===== */
+        .cert-corner {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-color: #c9a227;
+            border-style: solid;
+        }
+
+        .cert-corner-tl {
+            top: 18px;
+            left: 18px;
+            border-width: 3px 0 0 3px;
+        }
+
+        .cert-corner-tr {
+            top: 18px;
+            right: 18px;
+            border-width: 3px 3px 0 0;
+        }
+
+        .cert-corner-bl {
+            bottom: 18px;
+            left: 18px;
+            border-width: 0 0 3px 3px;
+        }
+
+        .cert-corner-br {
+            bottom: 18px;
+            right: 18px;
+            border-width: 0 3px 3px 0;
+        }
+
+        /* ===== GLAVA ===== */
+        .cert-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .cert-header-line {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #c9a227, transparent);
+            margin: 8px 0;
+        }
+
+        .cert-logo {
+            font-size: 2.8rem;
+            margin: 8px 0 4px;
+            filter: drop-shadow(0 2px 4px rgba(201,162,39,0.4));
+        }
+
+        .cert-org {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .cert-org-sub {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-top: 2px;
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== NAZIV ===== */
+        .cert-title-block {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .cert-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.18em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .cert-main-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #c9a227;
+            text-shadow: 0 1px 2px rgba(201,162,39,0.2);
+        }
+
+        /* ===== TELO ===== */
+        .cert-body {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .cert-intro {
+            font-size: 1rem;
+            color: #475569;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .cert-name {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            border-bottom: 2px solid #c9a227;
+            display: inline-block;
+            padding: 0 40px 6px;
+            margin-bottom: 14px;
+            font-family: 'Georgia', serif;
+            letter-spacing: 0.02em;
+        }
+
+        .cert-desc {
+            font-size: 0.97rem;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .cert-quiz-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin: 6px 0 8px;
+            font-style: italic;
+        }
+
+        /* ===== REZULTATI ===== */
+        .cert-score-block {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3a5f, #0f3460);
+            border-radius: 12px;
+            padding: 16px 32px;
+            margin-bottom: 28px;
+        }
+
+        .cert-score-item {
+            text-align: center;
+            padding: 0 32px;
+        }
+
+        .cert-score-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #e8b923;
+        }
+
+        .cert-score-label {
+            font-size: 0.75rem;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 2px;
+        }
+
+        .cert-score-divider {
+            width: 1px;
+            height: 40px;
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ===== PODPIS ===== */
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .cert-sign-block {
+            text-align: center;
+            width: 160px;
+        }
+
+        .cert-sign-line {
+            height: 1.5px;
+            background: #c9a227;
+            margin-bottom: 6px;
+        }
+
+        .cert-sign-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .cert-sign-title {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        /* ===== PEČAT ===== */
+        .cert-seal {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c9a227, #e8b923);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(201,162,39,0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+            border: 3px solid #b8911f;
+        }
+
+        .cert-seal-inner {
+            text-align: center;
+            color: #1a1a2e;
+        }
+
+            .cert-seal-inner > div:first-child {
+                font-size: 1.6rem;
+                font-weight: 900;
+                line-height: 1;
+            }
+
+        .cert-seal-text {
+            font-size: 0.5rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* ===== CERTIFIKATNA ŠTEVILKA ===== */
+        .cert-number {
+            text-align: center;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            letter-spacing: 0.05em;
+        }
+
+            .cert-number strong {
+                color: #64748b;
+            }
+
+        /* ===== TISKANJE ===== */
+        @@media print {
+            .cert-actions-bar {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+
+            .cert-page {
+                width: 100% !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 30px 40px !important;
+            }
+        }
+
+        @@media (max-width: 850px) {
+            .cert-page {
+                width: 100%;
+                padding: 30px 24px;
+            }
+
+            .cert-name {
+                font-size: 1.6rem;
+                padding: 0 16px 6px;
+            }
+
+            .cert-score-item {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    @* Gumb za tiskanje - skrit pri tiskanju *@
+    <div class="cert-actions-bar">
+        <button onclick="window.print()" class="btn-cert-print">
+            &#128438; Natisni / Shrani kot PDF
+        </button>
+    </div>
+
+    @* ===================== CERTIFIKAT ===================== *@
+    <div class="cert-page">
+
+        @* Dekorativni vogali *@
+        <div class="cert-corner cert-corner-tl"></div>
+        <div class="cert-corner cert-corner-tr"></div>
+        <div class="cert-corner cert-corner-bl"></div>
+        <div class="cert-corner cert-corner-br"></div>
+
+        @* Glava *@
+        <div class="cert-header">
+            <div class="cert-header-line"></div>
+            <div class="cert-logo">&#128737;</div>
+            <h1 class="cert-org">CyberSecurity Academy</h1>
+            <p class="cert-org-sub">Izobraževalni program kibernetske varnosti</p>
+            <div class="cert-header-line"></div>
+        </div>
+
+        @* Naziv certifikata *@
+        <div class="cert-title-block">
+            <p class="cert-label">CERTIFIKAT O USPEŠNEM OPRAVLJANJU</p>
+            <h2 class="cert-main-title">&#127891; Potrdilo o Znanju</h2>
+        </div>
+
+        @* Besedilo *@
+        <div class="cert-body">
+            <p class="cert-intro">S ponosom potrjujemo, da je</p>
+            <div class="cert-name">@userName</div>
+            <p class="cert-desc">uspešno opravil/-a kviz iz področja kibernetske varnosti</p>
+            <div class="cert-quiz-title">@Model.Title</div>
+            <p class="cert-desc">in s tem izkazal/-a zadostno raven znanja s tega področja.</p>
+        </div>
+
+        @* Rezultat *@
+        <div class="cert-score-block">
+            <div class="cert-score-item">
+                <div class="cert-score-value">@score / @total</div>
+                <div class="cert-score-label">Točke</div>
+            </div>
+            <div class="cert-score-divider"></div>
+            <div class="cert-score-item">
+                <div class="cert-score-value">@percentage.ToString("F0")%</div>
+                <div class="cert-score-label">Uspešnost</div>
+            </div>
+            <div class="cert-score-divider"></div>
+            <div class="cert-score-item">
+                <div class="cert-score-value">@certDate</div>
+                <div class="cert-score-label">Datum</div>
+            </div>
+        </div>
+
+        @* Podpis *@
+        <div class="cert-footer">
+            <div class="cert-sign-block">
+                <div class="cert-sign-line"></div>
+                <div class="cert-sign-name">CyberSecurity Academy</div>
+                <div class="cert-sign-title">Izobraževalni program</div>
+            </div>
+            <div class="cert-seal">
+                <div class="cert-seal-inner">
+                    <div>&#10003;</div>
+                    <div class="cert-seal-text">OPRAVLJENO</div>
+                </div>
+            </div>
+            <div class="cert-sign-block">
+                <div class="cert-sign-line"></div>
+                <div class="cert-sign-name">Avtomatski sistem</div>
+                <div class="cert-sign-title">Digitalna overitev</div>
+            </div>
+        </div>
+
+        @* Certifikatna številka *@
+        <div class="cert-number">
+            Certifikat št.: <strong>@certNumber</strong>
+        </div>
+
+    </div>
+
+</body>
+</html>
