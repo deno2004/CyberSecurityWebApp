@@ -1,75 +1,704 @@
-﻿@model Quiz
-
+﻿@model CyberSecurityWebApp.Models.Quiz
 @{
-    ViewData["Title"] = "Vprašanja";
+    ViewData["Title"] = "Vprašanja – " + Model.Title;
+    var totalQuestions = Model.Questions?.Count ?? 0;
+    var totalAnswers = Model.Questions?.Sum(q => q.Answers?.Count ?? 0) ?? 0;
+    var avgAnswers = totalQuestions > 0 ? Math.Round((double)totalAnswers / totalQuestions, 1) : 0;
 }
+<br />
 
-<div class="users-container">
-
-    <div class="users-header">
-        <div class="users-icon">❓</div>
-        <h1>@Model.Title</h1>
-        <p>Upravljanje vprašanj</p>
-
-        <div class="users-top-actions">
-            <a asp-action="AddQuestion"
-               asp-route-quizId="@Model.QuizId"
-               class="btn btn-secondary btn-add">
-                ➕ Dodaj vprašanje
-            </a>
-
-            <a asp-action="Quizzes"
-               class="btn btn-secondary btn-add">
-                Nazaj
-            </a>
-        </div>
+<!-- Header -->
+<div class="questions-page-header">
+    <div>
+        <h1 class="questions-page-title">❓ @Model.Title</h1>
+        <p class="questions-page-sub">Upravljanje vprašanj in odgovorov</p>
     </div>
+    <a asp-action="AddQuestion" asp-route-quizId="@Model.QuizId" class="btn-add-question">
+        <i class="bi bi-plus-lg"></i> Dodaj vprašanje
+    </a>
+</div>
 
-    <div class="users-grid">
+<!-- KPI strip -->
+<div class="questions-kpi-strip">
+    <div class="questions-kpi">
+        <div class="questions-kpi-val">@totalQuestions</div>
+        <div class="questions-kpi-lbl">Vprašanj</div>
+    </div>
+    <div class="questions-kpi-divider"></div>
+    <div class="questions-kpi">
+        <div class="questions-kpi-val questions-kpi-answers">@totalAnswers</div>
+        <div class="questions-kpi-lbl">Skupaj odgovorov</div>
+    </div>
+    <div class="questions-kpi-divider"></div>
+    <div class="questions-kpi">
+        <div class="questions-kpi-val questions-kpi-avg">@avgAnswers</div>
+        <div class="questions-kpi-lbl">Povprečje odg. / vpr.</div>
+    </div>
+    <div class="questions-kpi-divider"></div>
+    <div class="questions-kpi">
+        <div class="questions-kpi-val questions-kpi-threshold">@Model.PassThreshold%</div>
+        <div class="questions-kpi-lbl">Prag za opravljanje</div>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="questions-search-wrap">
+    <i class="bi bi-search questions-search-icon"></i>
+    <input type="text"
+           id="questionSearch"
+           class="questions-search-input"
+           placeholder="Iskanje po besedilu vprašanja ali odgovora..."
+           oninput="filterQuestions(this.value)" />
+</div>
+
+<!-- Questions list -->
+@if (Model.Questions == null || !Model.Questions.Any())
+{
+    <div class="questions-empty">
+        <i class="bi bi-question-circle"></i>
+        <p>Ta kviz nima vprašanj.</p>
+        <a asp-action="AddQuestion" asp-route-quizId="@Model.QuizId" class="btn-add-question">
+            Dodaj prvo vprašanje
+        </a>
+    </div>
+}
+else
+{
+    <div class="questions-list" id="questionsList">
+        @{
+            int qNum = 1;
+        }
         @foreach (var question in Model.Questions)
         {
-            <div class="user-card">
+            var correctAnswer = question.Answers?.FirstOrDefault(a => a.IsCorrect);
+            var answerCount = question.Answers?.Count ?? 0;
+            var searchStr = question.Text.ToLower() + " " +
+            string.Join(" ", question.Answers?.Select(a => a.Text.ToLower()) ?? Enumerable.Empty<string>());
 
-                <div class="user-card-header">
-                    <div>
-                        <h3>@question.Text</h3>
-                        <p class="username">@question.Answers.Count odgovorov</p>
-                    </div>
-                </div>
+            <div class="question-card" data-search="@searchStr">
 
-                <div class="user-info">
-                    @foreach (var answer in question.Answers)
-                    {
-                        <div class="info-row">
-                            <span>@answer.Text</span>
-
-                            @if (answer.IsCorrect)
+                <!-- Question header -->
+                <div class="question-card-top">
+                    <div class="question-num">@qNum</div>
+                    <div class="question-text-wrap">
+                        <div class="question-text">@question.Text</div>
+                        <div class="question-meta">
+                            <span class="q-meta-pill"><i class="bi bi-list-ul"></i> @answerCount odgovorov</span>
+                            @if (correctAnswer != null)
                             {
-                                <span class="badge badge-admin">
-                                    ✔ Pravilno
+                                <span class="q-meta-pill q-meta-correct">
+                                    <i class="bi bi-check-circle"></i> Pravilen odgovor določen
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="q-meta-pill q-meta-warn">
+                                    <i class="bi bi-exclamation-triangle"></i> Brez pravilnega odgovora
                                 </span>
                             }
                         </div>
+                    </div>
+                    <div class="question-card-btns">
+                        <a asp-action="EditQuestion" asp-route-id="@question.QuestionId" class="btn-q-edit">
+                            <i class="bi bi-pencil">Uredi</i>
+                        </a>
+                        <form asp-action="DeleteQuestion" asp-route-id="@question.QuestionId" method="post"
+                              onsubmit="return confirm('Res želite izbrisati to vprašanje?')">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-q-delete">
+                                <i class="bi bi-trash">Izbriši</i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Answers -->
+                <div class="answers-grid">
+                    @if (question.Answers != null)
+                    {
+                        foreach (var answer in question.Answers)
+                        {
+                            <div class="answer-chip @(answer.IsCorrect ? "answer-correct" : "answer-wrong")">
+                                <span class="answer-dot"></span>
+                                <span class="answer-text-val">@answer.Text</span>
+                                @if (answer.IsCorrect)
+                                {
+                                    <span class="answer-correct-tag"><i class="bi bi-check-lg"></i> Pravilno</span>
+                                }
+                            </div>
+                        }
                     }
                 </div>
 
-                <div class="user-actions">
-                    <a asp-action="EditQuestion"
-                       asp-route-id="@question.QuestionId"
-                       class="btn btn-secondary">
-                        Uredi 
-                    </a>
-
-                    <form asp-action="DeleteQuestion"
-                          asp-route-id="@question.QuestionId"
-                          method="post">
-                        <button type="submit" class="btn btn-secondary">
-                            Izbriši
-                        </button>
-                    </form>
-                </div>
-
             </div>
+
+            qNum++;
         }
     </div>
-</div>
+
+    <div id="noResults" class="questions-empty" style="display:none;">
+        <i class="bi bi-search"></i>
+        <p>Ni zadetkov za iskanje.</p>
+    </div>
+}
+
+<script>
+    function filterQuestions(query) {
+        const q = query.toLowerCase().trim();
+        const cards = document.querySelectorAll('.question-card');
+        let visible = 0;
+        cards.forEach(c => {
+            const match = c.dataset.search.includes(q);
+            c.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+        const noRes = document.getElementById('noResults');
+        if (noRes) noRes.style.display = visible === 0 ? 'flex' : 'none';
+    }
+</script>
+
+<style>
+    /* ══════════════════════════════════════
+           PAGE HEADER
+        ══════════════════════════════════════ */
+
+    .stat-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        color: #888;
+        margin-bottom: 20px;
+    }
+
+        .stat-breadcrumb a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+            .stat-breadcrumb a:hover {
+                text-decoration: underline;
+            }
+
+    .questions-page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .back-link {
+        display: inline-block;
+        font-size: 0.82rem;
+        color: #888;
+        text-decoration: none;
+        margin-bottom: 6px;
+        transition: color 0.15s;
+    }
+
+        .back-link:hover {
+            color: #555;
+        }
+
+    .questions-page-title {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+    }
+
+    .questions-page-sub {
+        font-size: 0.9rem;
+        color: #777;
+        margin: 0;
+    }
+
+    .btn-add-question {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #7c3aed;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 3px 10px rgba(124,58,237,0.28);
+        white-space: nowrap;
+        align-self: center;
+    }
+
+        .btn-add-question:hover {
+            background: #6d28d9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.35);
+            color: #fff;
+        }
+
+    /* ══════════════════════════════════════
+           KPI STRIP
+        ══════════════════════════════════════ */
+    .questions-kpi-strip {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        padding: 18px 28px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .questions-kpi {
+        text-align: center;
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .questions-kpi-val {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        line-height: 1;
+        letter-spacing: -0.03em;
+    }
+
+    .questions-kpi-answers {
+        color: #0d9488;
+    }
+
+    .questions-kpi-avg {
+        color: #7c3aed;
+    }
+
+    .questions-kpi-threshold {
+        color: #d97706;
+    }
+
+    .questions-kpi-lbl {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #aaa;
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .questions-kpi-divider {
+        width: 1px;
+        height: 40px;
+        background: #eee;
+        flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+           SEARCH
+        ══════════════════════════════════════ */
+    .questions-search-wrap {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .questions-search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        font-size: 1rem;
+        pointer-events: none;
+    }
+
+    .questions-search-input {
+        width: 100%;
+        padding: 13px 16px 13px 44px;
+        border: 1.5px solid #e2e2e2;
+        border-radius: 12px;
+        font-size: 0.92rem;
+        background: #fff;
+        color: #1a1a1a;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .questions-search-input:focus {
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+        }
+
+        .questions-search-input::placeholder {
+            color: #bbb;
+        }
+
+    /* ══════════════════════════════════════
+           QUESTIONS LIST
+        ══════════════════════════════════════ */
+    .questions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    /* ══════════════════════════════════════
+           QUESTION CARD
+        ══════════════════════════════════════ */
+    .question-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        overflow: hidden;
+        transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+        .question-card:hover {
+            box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
+        }
+
+    /* Top row */
+    .question-card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .question-num {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #f0fdfa;
+        color: #0d9488;
+        font-size: 0.85rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1.5px solid #99f6e4;
+    }
+
+    .question-text-wrap {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .question-text {
+        font-size: 0.97rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1.45;
+        margin-bottom: 8px;
+    }
+
+    .question-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .q-meta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 99px;
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .q-meta-correct {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .q-meta-warn {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+
+    /* Edit/Delete buttons in header */
+    .question-card-btns {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .btn-q-edit,
+    .btn-q-delete {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        transition: all 0.18s;
+        flex-shrink: 0;
+    }
+
+    .btn-q-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1.5px solid #bfdbfe;
+    }
+
+        .btn-q-edit:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+        }
+
+    .btn-q-delete {
+        background: #fff2f2;
+        color: #dc2626;
+        border: 1.5px solid #fecaca;
+    }
+
+        .btn-q-delete:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+    .question-card-btns form {
+        display: flex;
+    }
+
+    /* ══════════════════════════════════════
+           ANSWERS GRID
+        ══════════════════════════════════════ */
+    .answers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 8px;
+        padding: 14px 20px 18px;
+    }
+
+    .answer-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        border: 1.5px solid;
+        transition: box-shadow 0.15s;
+    }
+
+    .answer-wrong {
+        background: #fafafa;
+        border-color: #e5e7eb;
+        color: #555;
+    }
+
+    .answer-correct {
+        background: #f0fdf4;
+        border-color: #86efac;
+        color: #166534;
+        font-weight: 600;
+    }
+
+    .answer-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .answer-wrong .answer-dot {
+        background: #d1d5db;
+    }
+
+    .answer-correct .answer-dot {
+        background: #16a34a;
+    }
+
+    .answer-text-val {
+        flex: 1;
+        line-height: 1.35;
+    }
+
+    .answer-correct-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        background: #16a34a;
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 99px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+           EMPTY STATE
+        ══════════════════════════════════════ */
+    .questions-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #ccc;
+        gap: 12px;
+        text-align: center;
+    }
+
+        .questions-empty i {
+            font-size: 3rem;
+        }
+
+        .questions-empty p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin: 0;
+        }
+
+    /* ══════════════════════════════════════
+           DARK MODE
+        ══════════════════════════════════════ */
+    body.dark-mode .questions-page-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .questions-kpi-strip {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .questions-kpi-val {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .questions-kpi-divider {
+        background: #2b2b2b;
+    }
+
+    body.dark-mode .questions-search-input {
+        background: #1b1b1b;
+        border-color: #333;
+        color: #eee;
+    }
+
+        body.dark-mode .questions-search-input:focus {
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13,148,136,0.15);
+        }
+
+    body.dark-mode .question-card {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .question-card-top {
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .question-text {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .question-num {
+        background: #0d2520;
+        border-color: #0f4a40;
+        color: #2dd4bf;
+    }
+
+    body.dark-mode .q-meta-pill {
+        background: #252525;
+        color: #888;
+    }
+
+    body.dark-mode .q-meta-correct {
+        background: #14301e;
+        color: #4ade80;
+    }
+
+    body.dark-mode .q-meta-warn {
+        background: #2d2200;
+        color: #facc15;
+    }
+
+    body.dark-mode .btn-add-question {
+        color: white;
+    }
+
+    body.dark-mode .btn-q-edit {
+        background: #1e2d45;
+        color: #60a5fa;
+        border-color: #1d3a6e;
+    }
+
+        body.dark-mode .btn-q-edit:hover {
+            background: #1a3050;
+        }
+
+    body.dark-mode .btn-q-delete {
+        background: #2d1b1b;
+        color: #f87171;
+        border-color: #5c1f1f;
+    }
+
+        body.dark-mode .btn-q-delete:hover {
+            background: #3b2020;
+        }
+
+    body.dark-mode .answer-wrong {
+        background: #252525;
+        border-color: #333;
+        color: #aaa;
+    }
+
+    body.dark-mode .answer-correct {
+        background: #14301e;
+        border-color: #166534;
+        color: #4ade80;
+    }
+
+    body.dark-mode .answer-wrong .answer-dot {
+        background: #555;
+    }
+
+    @@media (max-width: 600px) {
+        .questions-page-header {
+            flex-direction: column;
+        }
+
+        .btn-add-question {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .questions-kpi-strip {
+            padding: 14px 16px;
+        }
+
+        .answers-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .question-card-top {
+            flex-wrap: wrap;
+        }
+    }
+</style>

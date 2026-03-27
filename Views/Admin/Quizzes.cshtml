@@ -1,66 +1,716 @@
-﻿@model IEnumerable<Quiz>
-
+﻿@model IEnumerable<CyberSecurityWebApp.Models.Quiz>
 @{
     ViewData["Title"] = "Upravljanje kvizov";
+    var totalQuizzes = Model.Count();
+    var totalQuestions = Model.Sum(q => q.Questions?.Count ?? 0);
+    var avgQuestions = totalQuizzes > 0 ? Math.Round((double)totalQuestions / totalQuizzes, 1) : 0;
 }
+<br />
 
-<div class="users-container">
-    <div class="users-header">
-        <div class="users-icon">🧠</div>
-        <h1>Upravljanje kvizov</h1>
-        <p>Pregled vseh kvizov v sistemu</p>
-
-        <div class="users-top-actions">
-            <a asp-action="AddQuiz" class="btn btn-secondary btn-add">
-                ➕ Dodaj kviz
-            </a>
-            <a asp-action="Dashboard" class="btn btn-secondary btn-add">
-                Nazaj
-            </a>
-        </div>
+<!-- Header -->
+<div class="quizzes-page-header">
+    <div>
+        <h1 class="quizzes-page-title">🧠 Upravljanje kvizov</h1>
+        <p class="quizzes-page-sub">Pregled vseh kvizov in vprašanj v sistemu</p>
     </div>
+    <a asp-action="AddQuiz" class="btn-add-quiz">
+        <i class="bi bi-plus-lg"></i> Dodaj kviz
+    </a>
+</div>
 
-    <div class="users-grid">
+<!-- KPI strip -->
+<div class="quizzes-kpi-strip">
+    <div class="quizzes-kpi">
+        <div class="quizzes-kpi-val">@totalQuizzes</div>
+        <div class="quizzes-kpi-lbl">Skupaj kvizov</div>
+    </div>
+    <div class="quizzes-kpi-divider"></div>
+    <div class="quizzes-kpi">
+        <div class="quizzes-kpi-val quizzes-kpi-questions">@totalQuestions</div>
+        <div class="quizzes-kpi-lbl">Skupaj vprašanj</div>
+    </div>
+    <div class="quizzes-kpi-divider"></div>
+    <div class="quizzes-kpi">
+        <div class="quizzes-kpi-val quizzes-kpi-avg">@avgQuestions</div>
+        <div class="quizzes-kpi-lbl">Povprečje vpr. / kviz</div>
+    </div>
+</div>
+
+<!-- Search -->
+<div class="quizzes-search-wrap">
+    <i class="bi bi-search quizzes-search-icon"></i>
+    <input type="text"
+           id="quizSearch"
+           class="quizzes-search-input"
+           placeholder="Iskanje po naslovu ali opisu kviza..."
+           oninput="filterQuizzes(this.value)" />
+</div>
+
+<!-- Quiz grid -->
+@if (!Model.Any())
+{
+    <div class="quizzes-empty">
+        <i class="bi bi-journal-x"></i>
+        <p>Ni kvizov v sistemu.</p>
+        <a asp-action="AddQuiz" class="btn-add-quiz">Dodaj prvi kviz</a>
+    </div>
+}
+else
+{
+    <div class="quizzes-grid" id="quizzesGrid">
         @foreach (var quiz in Model)
         {
-            <div class="user-card">
-                <div class="user-card-header">
-                    <div>
-                        <h3>@quiz.Title</h3>
-                        <p class="username">@quiz.Description</p>
+            var questionCount = quiz.Questions?.Count ?? 0;
+            var searchStr = $"{quiz.Title} {quiz.Description}".ToLower();
+
+            <div class="quiz-card" data-search="@searchStr">
+
+                <div class="quiz-card-top">
+                    <div class="quiz-avatar">
+                        <i class="bi bi-journal-text"></i>
+                    </div>
+                    <div class="quiz-title-wrap">
+                        <div class="quiz-title">@quiz.Title</div>
+                        <div class="quiz-desc">@(string.IsNullOrWhiteSpace(quiz.Description) ? "Brez opisa" : quiz.Description)</div>
                     </div>
                 </div>
 
-                <div class="user-info">
-                    <div class="info-row">
-                        <span>Vprašanj:</span>
-                        <span>@(quiz.Questions?.Count ?? 0)</span>
+                <div class="quiz-card-info">
+                    <div class="quiz-info-row">
+                        <span class="quiz-info-icon"><i class="bi bi-question-circle"></i></span>
+                        <span class="quiz-info-label">Vprašanj:</span>
+                        <span class="quiz-info-badge">@questionCount</span>
+                    </div>
+                    <div class="quiz-info-row">
+                        <span class="quiz-info-icon"><i class="bi bi-trophy"></i></span>
+                        <span class="quiz-info-label">Prag za opravljanje:</span>
+                        <span class="quiz-threshold @(quiz.PassThreshold >= 70 ? "threshold-high" : quiz.PassThreshold >= 50 ? "threshold-mid" : "threshold-low")">
+                            @quiz.PassThreshold%
+                        </span>
+                    </div>
+                    <div class="quiz-info-row">
+                        <span class="quiz-info-icon"><i class="bi bi-hash"></i></span>
+                        <span class="quiz-info-label">ID:</span>
+                        <span class="quiz-info-id">@quiz.QuizId</span>
                     </div>
                 </div>
 
-                <div class="user-actions">
-                    <a asp-action="Questions"
-                       asp-route-id="@quiz.QuizId"
-                       class="btn btn-secondary btn-add">
-                        Vprašanja
-                    </a>
+                <!-- Question mini-bar -->
+                @if (totalQuestions > 0 && questionCount > 0)
+                {
+                    var barPct = (int)Math.Round((double)questionCount / Math.Max(Model.Max(q => q.Questions?.Count ?? 0), 1) * 100);
+                    <div class="quiz-bar-wrap">
+                        <div class="quiz-bar-track">
+                            <div class="quiz-bar-fill" style="width:@barPct%"></div>
+                        </div>
+                    </div>
+                }
 
-                    <a asp-action="EditQuiz"
-                       asp-route-id="@quiz.QuizId"
-                       class="btn btn-secondary btn-add">
-                        Uredi
+                <div class="quiz-card-actions">
+                    <a asp-action="Questions" asp-route-id="@quiz.QuizId" class="btn-quiz-questions">
+                        <i class="bi bi-list-ul"></i> Vprašanja
                     </a>
-
-                    <form asp-action="DeleteQuiz"
-                          asp-route-id="@quiz.QuizId"
-                          method="post">
-                        <button type="submit"
-                                class="btn btn-secondary btn-add">
-                            Izbriši
+                    <a asp-action="EditQuiz" asp-route-id="@quiz.QuizId" class="btn-quiz-edit">
+                        <i class="bi bi-pencil"></i> Uredi
+                    </a>
+                    <form asp-action="DeleteQuiz" asp-route-id="@quiz.QuizId" method="post"
+                          onsubmit="return confirm('Res želite izbrisati kviz »@quiz.Title«?')">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-quiz-delete">
+                            <i class="bi bi-trash"></i> Izbriši
                         </button>
                     </form>
                 </div>
+
             </div>
         }
     </div>
-</div>
+
+    <div id="noResults" class="quizzes-empty" style="display:none;">
+        <i class="bi bi-search"></i>
+        <p>Ni zadetkov za iskanje.</p>
+    </div>
+}
+
+<script>
+    function filterQuizzes(query) {
+        const q = query.toLowerCase().trim();
+        const cards = document.querySelectorAll('.quiz-card');
+        let visible = 0;
+        cards.forEach(c => {
+            const match = c.dataset.search.includes(q);
+            c.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+        const noRes = document.getElementById('noResults');
+        if (noRes) noRes.style.display = visible === 0 ? 'flex' : 'none';
+    }
+</script>
+
+<style>
+    /* ══════════════════════════════════════
+           PAGE HEADER
+        ══════════════════════════════════════ */
+
+    .stat-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        color: #888;
+        margin-bottom: 20px;
+    }
+
+        .stat-breadcrumb a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+            .stat-breadcrumb a:hover {
+                text-decoration: underline;
+            }
+
+    .quizzes-page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .back-link {
+        display: inline-block;
+        font-size: 0.82rem;
+        color: #888;
+        text-decoration: none;
+        margin-bottom: 6px;
+        transition: color 0.15s;
+    }
+
+        .back-link:hover {
+            color: #555;
+        }
+
+    .quizzes-page-title {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+    }
+
+    .quizzes-page-sub {
+        font-size: 0.9rem;
+        color: #777;
+        margin: 0;
+    }
+
+    .btn-add-quiz {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #7c3aed;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 3px 10px rgba(124,58,237,0.28);
+        white-space: nowrap;
+        align-self: center;
+    }
+
+        .btn-add-quiz:hover {
+            background: #6d28d9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.35);
+            color: #fff;
+        }
+
+    /* ══════════════════════════════════════
+           KPI STRIP
+        ══════════════════════════════════════ */
+    .quizzes-kpi-strip {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        padding: 18px 28px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .quizzes-kpi {
+        text-align: center;
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .quizzes-kpi-val {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        line-height: 1;
+        letter-spacing: -0.03em;
+    }
+
+    .quizzes-kpi-questions {
+        color: #7c3aed;
+    }
+
+    .quizzes-kpi-avg {
+        color: #0d9488;
+    }
+
+    .quizzes-kpi-lbl {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #aaa;
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .quizzes-kpi-divider {
+        width: 1px;
+        height: 40px;
+        background: #eee;
+        flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+           SEARCH
+        ══════════════════════════════════════ */
+    .quizzes-search-wrap {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .quizzes-search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        font-size: 1rem;
+        pointer-events: none;
+    }
+
+    .quizzes-search-input {
+        width: 100%;
+        padding: 13px 16px 13px 44px;
+        border: 1.5px solid #e2e2e2;
+        border-radius: 12px;
+        font-size: 0.92rem;
+        background: #fff;
+        color: #1a1a1a;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .quizzes-search-input:focus {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+        }
+
+        .quizzes-search-input::placeholder {
+            color: #bbb;
+        }
+
+    /* ══════════════════════════════════════
+           GRID
+        ══════════════════════════════════════ */
+    .quizzes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+    }
+
+    /* ══════════════════════════════════════
+           QUIZ CARD
+        ══════════════════════════════════════ */
+    .quiz-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+        .quiz-card:hover {
+            box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+            transform: translateY(-2px);
+        }
+
+    /* Top */
+    .quiz-card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .quiz-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #f3f0ff;
+        color: #7c3aed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .quiz-title-wrap {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .quiz-title {
+        font-size: 0.97rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 3px;
+    }
+
+    .quiz-desc {
+        font-size: 0.8rem;
+        color: #aaa;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Info rows */
+    .quiz-card-info {
+        padding: 14px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        flex: 1;
+    }
+
+    .quiz-info-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.85rem;
+    }
+
+    .quiz-info-icon {
+        color: #ccc;
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .quiz-info-label {
+        color: #888;
+        flex-shrink: 0;
+    }
+
+    .quiz-info-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        padding: 2px 10px;
+        background: #ede9fe;
+        color: #6d28d9;
+        border-radius: 99px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-left: auto;
+    }
+
+    .quiz-info-id {
+        color: #bbb;
+        font-size: 0.78rem;
+        font-family: monospace;
+        margin-left: auto;
+    }
+
+    .quiz-threshold {
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 99px;
+        margin-left: auto;
+    }
+
+    .threshold-high {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .threshold-mid {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+
+    .threshold-low {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Mini bar */
+    .quiz-bar-wrap {
+        padding: 0 20px 12px;
+    }
+
+    .quiz-bar-track {
+        height: 4px;
+        background: #eee;
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    .quiz-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #7c3aed, #a78bfa);
+        border-radius: 99px;
+        transition: width 0.6s ease;
+    }
+
+    /* Actions */
+    .quiz-card-actions {
+        display: flex;
+        gap: 8px;
+        padding: 14px 20px;
+        border-top: 1px solid #f4f4f4;
+        background: #fafafa;
+    }
+
+    .btn-quiz-questions,
+    .btn-quiz-edit,
+    .btn-quiz-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 9px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        transition: all 0.18s;
+    }
+
+    .btn-quiz-questions {
+        flex: 1;
+        background: #f3f0ff;
+        color: #6d28d9;
+        border: 1.5px solid #ddd6fe;
+    }
+
+        .btn-quiz-questions:hover {
+            background: #ede9fe;
+            color: #6d28d9;
+            border-color: #c4b5fd;
+        }
+
+    .btn-quiz-edit {
+        flex: 1;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1.5px solid #bfdbfe;
+    }
+
+        .btn-quiz-edit:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+        }
+
+    .btn-quiz-delete {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        background: #fff2f2;
+        color: #dc2626;
+        border: 1.5px solid #fecaca;
+        flex-shrink: 0;
+    }
+
+        .btn-quiz-delete:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+    .quiz-card-actions form {
+        display: flex;
+        align-items: center;
+    }
+
+    /* ══════════════════════════════════════
+           EMPTY STATE
+        ══════════════════════════════════════ */
+    .quizzes-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #ccc;
+        gap: 12px;
+        text-align: center;
+    }
+
+        .quizzes-empty i {
+            font-size: 3rem;
+        }
+
+        .quizzes-empty p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin: 0;
+        }
+
+    /* ══════════════════════════════════════
+           DARK MODE
+        ══════════════════════════════════════ */
+    body.dark-mode .quizzes-page-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .quizzes-kpi-strip {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .quizzes-kpi-val {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .quizzes-kpi-divider {
+        background: #2b2b2b;
+    }
+
+    body.dark-mode .quizzes-search-input {
+        background: #1b1b1b;
+        border-color: #333;
+        color: #eee;
+    }
+
+        body.dark-mode .quizzes-search-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+        }
+
+    body.dark-mode .quiz-card {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .quiz-card-top {
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .quiz-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .quiz-avatar {
+        background: #2a1f45;
+        color: #a78bfa;
+    }
+
+    body.dark-mode .quiz-card-actions {
+        background: #252525;
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .quiz-bar-track {
+        background: #333;
+    }
+
+    body.dark-mode .quiz-info-badge {
+        background: #2a1f45;
+        color: #a78bfa;
+    }
+
+    body.dark-mode .threshold-high {
+        background: #14301e;
+        color: #4ade80;
+    }
+
+    body.dark-mode .threshold-mid {
+        background: #2d2200;
+        color: #facc15;
+    }
+
+    body.dark-mode .threshold-low {
+        background: #2d1b1b;
+        color: #f87171;
+    }
+
+    body.dark-mode .btn-add-quiz {
+        color: white;
+    }
+
+    body.dark-mode .btn-quiz-questions {
+        background: #2a1f45;
+        color: #a78bfa;
+        border-color: #3b2d6e;
+    }
+
+        body.dark-mode .btn-quiz-questions:hover {
+            background: #311f55;
+        }
+
+    body.dark-mode .btn-quiz-edit {
+        background: #1e2d45;
+        color: #60a5fa;
+        border-color: #1d3a6e;
+    }
+
+        body.dark-mode .btn-quiz-edit:hover {
+            background: #1a3050;
+        }
+
+    body.dark-mode .btn-quiz-delete {
+        background: #2d1b1b;
+        color: #f87171;
+        border-color: #5c1f1f;
+    }
+
+        body.dark-mode .btn-quiz-delete:hover {
+            background: #3b2020;
+        }
+
+    @@media (max-width: 600px) {
+        .quizzes-page-header {
+            flex-direction: column;
+        }
+
+        .btn-add-quiz {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .quizzes-kpi-strip {
+            padding: 14px 16px;
+        }
+    }
+</style>

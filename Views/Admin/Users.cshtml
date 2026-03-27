@@ -1,74 +1,647 @@
-﻿@model IEnumerable<User>
-
+﻿@model IEnumerable<CyberSecurityWebApp.Models.User>
 @{
     ViewData["Title"] = "Upravljanje uporabnikov";
+    var totalUsers = Model.Count();
+    var totalAdmins = Model.Count(u => u.IsAdmin);
+    var totalRegular = totalUsers - totalAdmins;
 }
+<br />
 
-<div class="users-container">
-    <div class="users-header">
-        <div class="users-icon">👥</div>
-        <h1>Upravljanje uporabnikov</h1>
-        <p>Pregled vseh registriranih računov v sistemu</p>
-        <div class="users-top-actions">
-            <a asp-action="AddUser" class="btn btn-secondary btn-add">
-                ➕ Dodaj uporabnika
-            </a>
-            <a asp-action="Dashboard" class="btn btn-secondary btn-add">
-                Nazaj
-            </a>
-        </div>
+<!-- Header -->
+<div class="users-page-header">
+    <div class="users-page-title-wrap">
+        <h1 class="users-page-title">👥 Upravljanje uporabnikov</h1>
+        <p class="users-page-sub">Pregled vseh registriranih računov v sistemu</p>
     </div>
+    <a asp-action="AddUser" class="btn-add-user">
+        <i class="bi bi-plus-lg"></i> Dodaj uporabnika
+    </a>
+</div>
 
-    <div class="users-grid">
+<!-- KPI strip -->
+<div class="users-kpi-strip">
+    <div class="users-kpi">
+        <div class="users-kpi-val">@totalUsers</div>
+        <div class="users-kpi-lbl">Skupaj</div>
+    </div>
+    <div class="users-kpi-divider"></div>
+    <div class="users-kpi">
+        <div class="users-kpi-val users-kpi-admin">@totalAdmins</div>
+        <div class="users-kpi-lbl">Administratorji</div>
+    </div>
+    <div class="users-kpi-divider"></div>
+    <div class="users-kpi">
+        <div class="users-kpi-val users-kpi-user">@totalRegular</div>
+        <div class="users-kpi-lbl">Navadni uporabniki</div>
+    </div>
+</div>
+
+<!-- Search bar -->
+<div class="users-search-wrap">
+    <i class="bi bi-search users-search-icon"></i>
+    <input type="text"
+           id="userSearch"
+           class="users-search-input"
+           placeholder="Iskanje po imenu, priimku, email-u ali uporabniškem imenu..."
+           oninput="filterUsers(this.value)" />
+</div>
+
+<!-- User grid -->
+@if (!Model.Any())
+{
+    <div class="users-empty">
+        <i class="bi bi-people"></i>
+        <p>Ni registriranih uporabnikov.</p>
+        <a asp-action="AddUser" class="btn-add-user">Dodaj prvega uporabnika</a>
+    </div>
+}
+else
+{
+    <div class="users-grid" id="usersGrid">
         @foreach (var user in Model)
         {
-            <div class="user-card">
-                <div class="user-card-header">
-                    <div class="user-avatar">
-                        @(user.FirstName.Substring(0, 1))@(user.LastName.Substring(0, 1))
+            var initials = user.FirstName.Substring(0, 1) + user.LastName.Substring(0, 1);
+            var searchStr = $"{user.FirstName} {user.LastName} {user.Username} {user.Email}".ToLower();
+
+            <div class="user-card" data-search="@searchStr">
+                <div class="user-card-top">
+                    <div class="user-avatar @(user.IsAdmin ? "avatar-admin" : "avatar-user")">
+                        @initials.ToUpper()
                     </div>
-                    <div>
-                        <h3>@user.FirstName @user.LastName</h3>
-                        <p class="username">@user.Username</p>
+                    <div class="user-name-wrap">
+                        <div class="user-fullname">@user.FirstName @user.LastName</div>
+                        <div class="user-username">@@@user.Username</div>
+                    </div>
+                    @if (user.IsAdmin)
+                    {
+                        <span class="role-badge role-admin">👑 Admin</span>
+                    }
+                    else
+                    {
+                        <span class="role-badge role-user">👤 Uporabnik</span>
+                    }
+                </div>
+
+                <div class="user-card-info">
+                    <div class="user-info-row">
+                        <span class="user-info-icon"><i class="bi bi-envelope"></i></span>
+                        <span class="user-info-val">@user.Email</span>
+                    </div>
+                    <div class="user-info-row">
+                        <span class="user-info-icon"><i class="bi bi-fingerprint"></i></span>
+                        <span class="user-info-val user-info-id">ID: @user.UserId</span>
                     </div>
                 </div>
 
-                <div class="user-info">
-                    <div class="info-row">
-                        <span>Email:</span>
-                        <span>@user.Email</span>
-                    </div>
-
-                    <div class="info-row">
-                        <span>Vloga:</span>
-                        @if (user.IsAdmin)
-                        {
-                            <span class="badge badge-admin">👑 Administrator</span>
-                        }
-                        else
-                        {
-                            <span class="badge badge-user">👤 Uporabnik</span>
-                        }
-                    </div>
-                </div>
-
-                <div class="user-actions">
-                    <a asp-action="EditUser"
-                       asp-route-id="@user.UserId"
-                       class="btn btn-secondary btn-add">
-                       Uredi
+                <div class="user-card-actions">
+                    <a asp-action="EditUser" asp-route-id="@user.UserId" class="btn-user-edit">
+                        <i class="bi bi-pencil"></i> Uredi
                     </a>
-
-                    <form asp-action="DeleteUser"
-                          asp-route-id="@user.UserId"
-                          method="post">
-                        <button type="submit"
-                                class="btn btn-secondary btn-add">
-                            Izbriši
+                    <form asp-action="DeleteUser" asp-route-id="@user.UserId" method="post"
+                          onsubmit="return confirm('Res želite izbrisati uporabnika @user.FirstName @user.LastName?')">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-user-delete">
+                            <i class="bi bi-trash"></i> Izbriši
                         </button>
                     </form>
                 </div>
             </div>
         }
     </div>
-</div>
+
+    <div id="noResults" class="users-empty" style="display:none;">
+        <i class="bi bi-search"></i>
+        <p>Ni zadetkov za iskanje.</p>
+    </div>
+}
+
+<script>
+    function filterUsers(query) {
+        const q = query.toLowerCase().trim();
+        const cards = document.querySelectorAll('.user-card');
+        let visible = 0;
+        cards.forEach(c => {
+            const match = c.dataset.search.includes(q);
+            c.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+        const noRes = document.getElementById('noResults');
+        if (noRes) noRes.style.display = visible === 0 ? 'flex' : 'none';
+    }
+</script>
+
+<style>
+    /* ══════════════════════════════════════
+           PAGE HEADER
+        ══════════════════════════════════════ */
+
+    .stat-breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.82rem;
+        color: #888;
+        margin-bottom: 20px;
+    }
+
+        .stat-breadcrumb a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+            .stat-breadcrumb a:hover {
+                text-decoration: underline;
+            }
+
+    .users-page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .back-link {
+        display: inline-block;
+        font-size: 0.82rem;
+        color: #888;
+        text-decoration: none;
+        margin-bottom: 6px;
+        transition: color 0.15s;
+    }
+
+        .back-link:hover {
+            color: #555;
+        }
+
+    .users-page-title {
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+    }
+
+    .users-page-sub {
+        font-size: 0.9rem;
+        color: #777;
+        margin: 0;
+    }
+
+    .btn-add-user {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #7c3aed;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 3px 10px rgba(124,58,237,0.28);
+        white-space: nowrap;
+        align-self: center;
+    }
+
+        .btn-add-user:hover {
+            background: #6d28d9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.35);
+            color: #fff;
+        }
+
+    /* ══════════════════════════════════════
+           KPI STRIP
+        ══════════════════════════════════════ */
+    .users-kpi-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        padding: 18px 28px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .users-kpi {
+        text-align: center;
+        flex: 1;
+        min-width: 80px;
+    }
+
+    .users-kpi-val {
+        font-size: 2rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        line-height: 1;
+        letter-spacing: -0.03em;
+    }
+
+    .users-kpi-admin {
+        color: #3730a3;
+    }
+
+    .users-kpi-user {
+        color: #16a34a;
+    }
+
+    .users-kpi-lbl {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #aaa;
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .users-kpi-divider {
+        width: 1px;
+        height: 40px;
+        background: #eee;
+        flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+           SEARCH
+        ══════════════════════════════════════ */
+    .users-search-wrap {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .users-search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        font-size: 1rem;
+        pointer-events: none;
+    }
+
+    .users-search-input {
+        width: 100%;
+        padding: 13px 16px 13px 44px;
+        border: 1.5px solid #e2e2e2;
+        border-radius: 12px;
+        font-size: 0.92rem;
+        background: #fff;
+        color: #1a1a1a;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .users-search-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13,110,253,0.1);
+        }
+
+        .users-search-input::placeholder {
+            color: #bbb;
+        }
+
+    /* ══════════════════════════════════════
+           GRID
+        ══════════════════════════════════════ */
+    .users-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+    }
+
+    /* ══════════════════════════════════════
+           USER CARD
+        ══════════════════════════════════════ */
+    .user-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+        .user-card:hover {
+            box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+            transform: translateY(-2px);
+        }
+
+    /* Top section */
+    .user-card-top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        flex-shrink: 0;
+    }
+
+    .avatar-admin {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .avatar-user {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .user-name-wrap {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .user-fullname {
+        font-size: 0.97rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-username {
+        font-size: 0.8rem;
+        color: #aaa;
+        font-weight: 500;
+        margin-top: 1px;
+    }
+
+    /* Role badge */
+    .role-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 99px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .role-admin {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .role-user {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    /* Info section */
+    .user-card-info {
+        padding: 14px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .user-info-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+
+    .user-info-icon {
+        color: #ccc;
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .user-info-val {
+        color: #555;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .user-info-id {
+        color: #bbb;
+        font-size: 0.78rem;
+        font-family: monospace;
+    }
+
+    /* Actions */
+    .user-card-actions {
+        display: flex;
+        gap: 8px;
+        padding: 14px 20px;
+        border-top: 1px solid #f4f4f4;
+        background: #fafafa;
+    }
+
+    .btn-user-edit,
+    .btn-user-delete {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 9px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        transition: all 0.18s;
+    }
+
+    .btn-user-edit {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1.5px solid #bfdbfe;
+    }
+
+        .btn-user-edit:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border-color: #93c5fd;
+        }
+
+    .btn-user-delete {
+        background: #fff2f2;
+        color: #dc2626;
+        border: 1.5px solid #fecaca;
+    }
+
+        .btn-user-delete:hover {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+
+    .user-card-actions form {
+        flex: 1;
+        display: flex;
+    }
+
+        .user-card-actions form .btn-user-delete {
+            width: 100%;
+        }
+
+    /* ══════════════════════════════════════
+           EMPTY STATE
+        ══════════════════════════════════════ */
+    .users-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #ccc;
+        gap: 12px;
+        text-align: center;
+    }
+
+        .users-empty i {
+            font-size: 3rem;
+        }
+
+        .users-empty p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin: 0;
+        }
+
+    /* ══════════════════════════════════════
+           DARK MODE
+        ══════════════════════════════════════ */
+    body.dark-mode .users-page-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .users-kpi-strip {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .users-kpi-val {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .users-kpi-divider {
+        background: #2b2b2b;
+    }
+
+    body.dark-mode .users-search-input {
+        background: #1b1b1b;
+        border-color: #333;
+        color: #eee;
+    }
+
+        body.dark-mode .users-search-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+        }
+
+    body.dark-mode .user-card {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .user-card-top {
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .user-fullname {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .user-card-info {
+    }
+
+    body.dark-mode .user-info-val {
+        color: #aaa;
+    }
+
+    body.dark-mode .user-card-actions {
+        background: #252525;
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .avatar-admin {
+        background: #1e1f3d;
+        color: #818cf8;
+    }
+
+    body.dark-mode .avatar-user {
+        background: #14301e;
+        color: #4ade80;
+    }
+
+    body.dark-mode .role-admin {
+        background: #1e1f3d;
+        color: #818cf8;
+    }
+
+    body.dark-mode .role-user {
+        background: #14301e;
+        color: #4ade80;
+    }
+
+    body.dark-mode .btn-add-user {
+        color: white;
+    }
+
+    body.dark-mode .btn-user-edit {
+        background: #1e2d45;
+        color: #60a5fa;
+        border-color: #1d3a6e;
+    }
+
+        body.dark-mode .btn-user-edit:hover {
+            background: #1a3050;
+        }
+
+    body.dark-mode .btn-user-delete {
+        background: #2d1b1b;
+        color: #f87171;
+        border-color: #5c1f1f;
+    }
+
+        body.dark-mode .btn-user-delete:hover {
+            background: #3b2020;
+        }
+
+    @@media (max-width: 600px) {
+        .users-kpi-strip {
+            padding: 14px 16px;
+        }
+
+        .users-page-header {
+            flex-direction: column;
+        }
+
+        .btn-add-user {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

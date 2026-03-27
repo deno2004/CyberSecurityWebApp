@@ -2,33 +2,470 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<br />
+<div class="dashboard-wrap">
+    <br />
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">⚙️ Administratorska nadzorna plošča</h1>
+            <p class="dashboard-sub">Upravljanje vsebine, uporabnikov in kvizov sistema</p>
+        </div>
+    </div>
 
-<div class="admin-hero">
-    <h1>⚙️ Administratorska nadzorna plošča</h1>
-    <p>Upravljanje vsebine, uporabnikov in kvizov sistema</p>
+    <!-- Cards grid -->
+    <div class="dashboard-grid">
+
+        <!-- Users -->
+        <a href="/Admin/Users" class="dash-card dash-card-blue">
+            <div class="dash-card-icon-wrap">
+                <span class="dash-card-icon">👥</span>
+            </div>
+            <div class="dash-card-body">
+                <h3 class="dash-card-title">Upravljanje uporabnikov</h3>
+                <p class="dash-card-desc">Preglej, ustvari, urejaj ali izbriši registrirane uporabnike sistema.</p>
+            </div>
+            <div class="dash-card-footer">
+                <span class="dash-card-link">Odpri uporabnike <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
+
+        <!-- Quizzes -->
+        <a href="/Admin/Quizzes" class="dash-card dash-card-purple">
+            <div class="dash-card-icon-wrap">
+                <span class="dash-card-icon">📝</span>
+            </div>
+            <div class="dash-card-body">
+                <h3 class="dash-card-title">Upravljanje kvizov</h3>
+                <p class="dash-card-desc">Preglej, ustvari, urejaj ali izbriši obstoječe kvize in vprašanja.</p>
+            </div>
+            <div class="dash-card-footer">
+                <span class="dash-card-link">Upravljaj kvize <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
+
+        <!-- Statistics -->
+        <a href="/Admin/Statistics" class="dash-card dash-card-teal">
+            <div class="dash-card-icon-wrap">
+                <span class="dash-card-icon">📊</span>
+            </div>
+            <div class="dash-card-body">
+                <h3 class="dash-card-title">Statistika sistema</h3>
+                <p class="dash-card-desc">Pregled vsebine, število uporabnikov, kvizov in vprašanj v sistemu.</p>
+            </div>
+            <div class="dash-card-footer">
+                <span class="dash-card-link">Ogled statistike <i class="bi bi-arrow-right"></i></span>
+            </div>
+        </a>
+
+    </div>
+
 </div>
 
-<div class="admin-grid">
+<script>
+    function updateTime() {
+        const el = document.getElementById('dashTime');
+        if (el) el.textContent = new Date().toLocaleString('sl-SI', {
+            weekday: 'long', day: 'numeric', month: 'long',
+            year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+</script>
 
-    <div class="admin-card">
-        <div class="admin-icon">👥</div>
-        <h3>Upravljanje uporabnikov</h3>
-        <p>Preglej, urejaj ali izbriši registrirane uporabnike.</p><br />
-        <a href="/Admin/Users" class="btn btn-primary">Odpri uporabnike</a>
-    </div>
+<style>
+    /* ══════════════════════════════════════
+           WRAP
+        ══════════════════════════════════════ */
+    .dashboard-wrap {
+        max-width: 960px;
+    }
 
-    <div class="admin-card">
-        <div class="admin-icon">📝</div>
-        <h3>Upravljanje kvizov</h3>
-        <p>Ustvari, urejaj ali odstrani obstoječe kvize.</p><br />
-        <a href="/Admin/Quizzes" class="btn btn-primary">Upravljaj kvize</a>
-    </div>
+    /* ══════════════════════════════════════
+           HEADER
+        ══════════════════════════════════════ */
+    .dashboard-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #f0f0f0;
+    }
 
-    <div class="admin-card">
-        <div class="admin-icon">📊</div>
-        <h3>Statistika sistema</h3>
-        <p>Pregled rezultatov, število uporabnikov in aktivnosti.</p><br />
-        <a href="/Admin/Statistics" class="btn btn-primary">Ogled statistike</a>
-    </div>
-</div>
+    .dashboard-greeting {
+        font-size: 0.88rem;
+        color: #aaa;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        margin: 0 0 4px;
+    }
+
+    .dashboard-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 6px;
+        letter-spacing: -0.02em;
+    }
+
+    .dashboard-sub {
+        font-size: 0.9rem;
+        color: #777;
+        margin: 0;
+    }
+
+    .dashboard-time {
+        font-size: 0.82rem;
+        color: #bbb;
+        text-align: right;
+        padding-top: 6px;
+        min-width: 200px;
+        line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════
+           CARDS GRID
+        ══════════════════════════════════════ */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .dash-card {
+        display: flex;
+        flex-direction: column;
+        border-radius: 18px;
+        border: 1.5px solid transparent;
+        text-decoration: none;
+        overflow: hidden;
+        transition: transform 0.18s, box-shadow 0.2s;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+        .dash-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+            text-decoration: none;
+        }
+
+    /* Color variants */
+    .dash-card-blue {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    .dash-card-purple {
+        background: #faf5ff;
+        border-color: #e9d5ff;
+    }
+
+    .dash-card-teal {
+        background: #f0fdfa;
+        border-color: #99f6e4;
+    }
+
+    /* Icon wrap */
+    .dash-card-icon-wrap {
+        padding: 28px 24px 16px;
+    }
+
+    .dash-card-icon {
+        font-size: 2.6rem;
+        line-height: 1;
+        display: block;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
+    /* Body */
+    .dash-card-body {
+        padding: 0 24px 20px;
+        flex: 1;
+    }
+
+    .dash-card-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin: 0 0 8px;
+        letter-spacing: -0.01em;
+    }
+
+    .dash-card-blue .dash-card-title {
+        color: #1d4ed8;
+    }
+
+    .dash-card-purple .dash-card-title {
+        color: #6d28d9;
+    }
+
+    .dash-card-teal .dash-card-title {
+        color: #0f766e;
+    }
+
+    .dash-card-desc {
+        font-size: 0.85rem;
+        line-height: 1.55;
+        margin: 0;
+    }
+
+    .dash-card-blue .dash-card-desc {
+        color: #3b82f6;
+    }
+
+    .dash-card-purple .dash-card-desc {
+        color: #8b5cf6;
+    }
+
+    .dash-card-teal .dash-card-desc {
+        color: #0d9488;
+    }
+
+    /* Footer */
+    .dash-card-footer {
+        padding: 14px 24px;
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .dash-card-link {
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: gap 0.18s;
+    }
+
+    .dash-card:hover .dash-card-link {
+        gap: 10px;
+    }
+
+    .dash-card-blue .dash-card-link {
+        color: #1d4ed8;
+    }
+
+    .dash-card-purple .dash-card-link {
+        color: #6d28d9;
+    }
+
+    .dash-card-teal .dash-card-link {
+        color: #0f766e;
+    }
+
+    /* ══════════════════════════════════════
+           QUICK STRIP
+        ══════════════════════════════════════ */
+    .dash-quick-strip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        background: #fff;
+        border: 1px solid #f0f0f0;
+        border-radius: 14px;
+        padding: 16px 22px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .dash-quick-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-right: 4px;
+        white-space: nowrap;
+    }
+
+    .dash-quick-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.83rem;
+        font-weight: 700;
+        padding: 7px 16px;
+        border-radius: 99px;
+        text-decoration: none;
+        transition: all 0.18s;
+        border: 1.5px solid transparent;
+    }
+
+    .dash-quick-blue {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+    }
+
+    .dash-quick-purple {
+        background: #faf5ff;
+        color: #6d28d9;
+        border-color: #e9d5ff;
+    }
+
+    .dash-quick-teal {
+        background: #f0fdfa;
+        color: #0f766e;
+        border-color: #99f6e4;
+    }
+
+    .dash-quick-gray {
+        background: #f9fafb;
+        color: #4b5563;
+        border-color: #e5e7eb;
+    }
+
+    .dash-quick-blue:hover {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .dash-quick-purple:hover {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .dash-quick-teal:hover {
+        background: #ccfbf1;
+        color: #0f766e;
+    }
+
+    .dash-quick-gray:hover {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    /* ══════════════════════════════════════
+           DARK MODE
+        ══════════════════════════════════════ */
+    body.dark-mode .dashboard-header {
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .dashboard-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .dash-card-blue {
+        background: #1a2235;
+        border-color: #1d3a6e;
+    }
+
+    body.dark-mode .dash-card-purple {
+        background: #1e1528;
+        border-color: #3b1f5e;
+    }
+
+    body.dark-mode .dash-card-teal {
+        background: #0d2520;
+        border-color: #0f4a40;
+    }
+
+    body.dark-mode .dash-card-blue .dash-card-title {
+        color: #60a5fa;
+    }
+
+    body.dark-mode .dash-card-purple .dash-card-title {
+        color: #a78bfa;
+    }
+
+    body.dark-mode .dash-card-teal .dash-card-title {
+        color: #2dd4bf;
+    }
+
+    body.dark-mode .dash-card-blue .dash-card-desc {
+        color: #3b82f6;
+    }
+
+    body.dark-mode .dash-card-purple .dash-card-desc {
+        color: #8b5cf6;
+    }
+
+    body.dark-mode .dash-card-teal .dash-card-desc {
+        color: #0d9488;
+    }
+
+    body.dark-mode .dash-card-footer {
+        border-color: rgba(255,255,255,0.06);
+    }
+
+    body.dark-mode .dash-card-blue .dash-card-link {
+        color: #60a5fa;
+    }
+
+    body.dark-mode .dash-card-purple .dash-card-link {
+        color: #a78bfa;
+    }
+
+    body.dark-mode .dash-card-teal .dash-card-link {
+        color: #2dd4bf;
+    }
+
+    body.dark-mode .dash-quick-strip {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .dash-quick-blue {
+        background: #1a2235;
+        color: #60a5fa;
+        border-color: #1d3a6e;
+    }
+
+    body.dark-mode .dash-quick-purple {
+        background: #1e1528;
+        color: #a78bfa;
+        border-color: #3b1f5e;
+    }
+
+    body.dark-mode .dash-quick-teal {
+        background: #0d2520;
+        color: #2dd4bf;
+        border-color: #0f4a40;
+    }
+
+    body.dark-mode .dash-quick-gray {
+        background: #252525;
+        color: #9ca3af;
+        border-color: #333;
+    }
+
+    body.dark-mode .dash-quick-blue:hover {
+        background: #1d3050;
+    }
+
+    body.dark-mode .dash-quick-purple:hover {
+        background: #251840;
+    }
+
+    body.dark-mode .dash-quick-teal:hover {
+        background: #0f3530;
+    }
+
+    body.dark-mode .dash-quick-gray:hover {
+        background: #2f2f2f;
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-title {
+            font-size: 1.4rem;
+        }
+
+        .dashboard-time {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .dash-quick-strip {
+            padding: 14px 16px;
+        }
+    }
+</style>

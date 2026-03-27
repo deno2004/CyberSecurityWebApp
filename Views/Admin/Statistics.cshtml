@@ -12,23 +12,13 @@
     // dynamic list from ViewBag
     var quizStats = ViewBag.QuizStats as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
 }
-
-<!-- Breadcrumb -->
-<div class="stat-breadcrumb">
-    <a href="/Admin/Dashboard">⚙️ Dashboard</a>
-    <span>/</span>
-    <span>Statistika</span>
-</div>
+<br />
 
 <!-- Page title -->
 <div class="stat-page-header">
     <div>
         <h1 class="stat-page-title">📊 Statistika sistema</h1>
         <p class="stat-page-sub">Pregled vsebine in aktivnosti platforme</p>
-    </div>
-    <div class="stat-timestamp">
-        Osveženo: <strong id="statTime"></strong>
-        <script>document.getElementById('statTime').textContent = new Date().toLocaleString('sl-SI');</script>
     </div>
 </div>
 
