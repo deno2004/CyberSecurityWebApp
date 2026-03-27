@@ -3,113 +3,127 @@
     ViewData["Title"] = "Phishing napadi";
 }
 
-<div class="row">
+<div class="row g-4">
     <div class="col-lg-8">
-        <div class="card border-0 shadow-sm mb-4 course-header-card">
-            <div class="card-body p-4 d-flex align-items-center">
-                <i class="bi bi-fish display-3 me-4 opacity-75"></i>
-                <div>
-                    <h1 class="fw-bold mb-1">🎣 Prepoznavanje phishinga</h1>
-                    <p class="mb-0 opacity-75">Naučite se prepoznati lažne e-maile in nevarne povezave</p>
+        <br />
+        <!-- Course Hero -->
+        <div class="course-hero mb-4">
+            <div class="course-hero-icon">
+				<i class="bi bi-fish">🎣</i>
+            </div>
+            <div>
+                <h1 class="course-title">Prepoznavanje phishinga</h1>
+                <p class="course-subtitle">Naučite se prepoznati lažne e-maile in nevarne povezave</p>
+            </div>
+        </div>
+
+        <!-- Section 1: Kaj je phishing -->
+        <div class="section-card mb-4">
+            <div class="section-header">
+                <span class="section-badge">01</span>
+                <h3 class="section-title">Kaj je phishing?</h3>
+            </div>
+            <div class="section-body">
+                <p class="body-text">Phishing je vrsta <strong>socialnega inženiringa</strong>, kjer napadalci poskušajo žrtev preslepiti, da razkrije občutljive informacije (gesla, številke kreditnih kartic, osebne podatke).</p>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <div class="phish-type-card">
+                            <div class="phish-type-icon"><i class="bi bi-envelope-fill"></i></div>
+                            <div>
+                                <div class="phish-type-title">E-poštni phishing</div>
+                                <p class="phish-type-desc">Lažna sporočila, ki se pretvarjajo, da so od bank, PayPal, Microsoft ali drugih zaupanja vrednih virov.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="phish-type-card">
+                            <div class="phish-type-icon"><i class="bi bi-phone-fill"></i></div>
+                            <div>
+                                <div class="phish-type-title">Smishing (SMS)</div>
+                                <p class="phish-type-desc">Goljufiva SMS sporočila z lažnimi navodili ali lažnimi paketi za dostavo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="phish-type-card">
+                            <div class="phish-type-icon"><i class="bi bi-telephone-fill"></i></div>
+                            <div>
+                                <div class="phish-type-title">Vishing (Telefon)</div>
+                                <p class="phish-type-desc">Klici "tehnične podpore" ali "banke", ki zahtevajo gesla ali dostop do računalnika.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="phish-type-card">
+                            <div class="phish-type-icon"><i class="bi bi-person-check-fill"></i></div>
+                            <div>
+                                <div class="phish-type-title">Spear Phishing</div>
+                                <p class="phish-type-desc">Ciljni napadi na specifične posameznike ali podjetja z osebno prilagojenimi sporočili.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- What is Phishing -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-                <h3 class="fw-bold"><i class="bi bi-1-circle-fill text-warning me-2"></i>Kaj je phishing?</h3>
-                <p>Phishing je vrsta <strong>socialnega inženiringa</strong>, kjer napadalci poskušajo žrtev preslepiti, da razkrije občutljive informacije (gesla, številke kreditnih kartic, osebne podatke).</p>
-
-                <div class="row g-3 mt-2">
-                    <div class="col-md-6">
-                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
-                            <div class="card-body">
-                                <h6 class="fw-bold"><i class="bi bi-envelope-fill me-2 text-warning"></i>E-poštni phishing</h6>
-                                <p class="small mb-0">Lažna sporočila, ki se pretvarjajo, da so od bank, PayPal, Microsoft ali drugih zaupanja vrednih vira.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
-                            <div class="card-body">
-                                <h6 class="fw-bold"><i class="bi bi-phone-fill me-2 text-warning"></i>Smishing (SMS)</h6>
-                                <p class="small mb-0">Goljufiva SMS sporočila z lažnimi navodili ali lažnimi paketi za dostavo.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
-                            <div class="card-body">
-                                <h6 class="fw-bold"><i class="bi bi-telephone-fill me-2 text-warning"></i>Vishing (Telefon)</h6>
-                                <p class="small mb-0">Klici "tehnične podpore" ali "banke", ki zahtevajo gesla ali dostop do računalnika.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card bg-warning bg-opacity-10 border-warning border-opacity-25">
-                            <div class="card-body">
-                                <h6 class="fw-bold"><i class="bi bi-person-check-fill me-2 text-warning"></i>Spear Phishing</h6>
-                                <p class="small mb-0">Ciljni napadi na specifične posameznike ali podjetja z osebno prilagojenimi sporočili.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- Section 2: Primer phishing sporočila -->
+        <div class="section-card mb-4">
+            <div class="section-header">
+                <span class="section-badge">02</span>
+                <h3 class="section-title">Primer phishing sporočila</h3>
             </div>
-        </div>
+            <div class="section-body">
+                <p class="body-text">Kliknite na sumljive elemente v spodnjem e-poštnem sporočilu:</p>
 
-        <!-- Phishing Email Example -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-                <h3 class="fw-bold"><i class="bi bi-2-circle-fill text-warning me-2"></i>Primer phishing sporočila</h3>
-                <p class="text-muted">Kliknite na sumljive elemente v spodnjem e-poštnem sporočilu:</p>
-
-                <div class="card border-2 border-secondary mt-3" id="phishingEmail">
-                    <div class="card-header bg-light">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <small><strong>Od:</strong> <span class="phish-element badge bg-danger text-white" data-info="Sumljiv pošiljatelj! 'noreply-support@paypa1-secure.com' – opazite 1 namesto l v 'paypa1'" style="cursor:pointer;">noreply-support@paypa1-secure.com</span></small>
-                            </div>
-                            <div class="col-sm-6">
-                                <small><strong>Zadeva:</strong> <span class="phish-element badge bg-danger text-white" data-info="Urgentni naslov sproži strah in pritisk. Legitimna podjetja ne pišejo tako." style="cursor:pointer;">⚠️ NUJNO: Vaš račun bo zaprt v 24 urah!</span></small>
-                            </div>
+                <div class="email-preview" id="phishingEmail">
+                    <div class="email-meta">
+                        <div class="email-meta-row">
+                            <span class="email-meta-label">Od:</span>
+                            <span class="phish-element phish-badge" data-info="Sumljiv pošiljatelj! 'noreply-support@paypa1-secure.com' – opazite 1 namesto l v 'paypa1'">noreply-support@paypa1-secure.com</span>
+                        </div>
+                        <div class="email-meta-row">
+                            <span class="email-meta-label">Zadeva:</span>
+                            <span class="phish-element phish-badge" data-info="Urgentni naslov sproži strah in pritisk. Legitimna podjetja ne pišejo tako.">⚠️ NUJNO: Vaš račun bo zaprt v 24 urah!</span>
                         </div>
                     </div>
-                    <div class="card-body p-4 bg-white">
+                    <div class="email-body">
                         <p>Spoštovani uporabnik,</p>
-                        <p>Zaznali smo <span class="phish-element text-danger fw-bold" data-info="Strašenje in urgenca – klasičen manipulativni trik." style="cursor:pointer; text-decoration: underline dotted;">sumljivo aktivnost</span> na vašem računu. Vaš račun bo <strong class="phish-element text-danger" data-info="Groznja zaklene -> pritisk na žrtev da ravna hitro brez razmisleka." style="cursor:pointer; text-decoration: underline dotted;">blokiran v 24 urah</strong>, razen če potrdite svojo identiteto.</p>
+                        <p>Zaznali smo <span class="phish-element phish-inline" data-info="Strašenje in urgenca – klasičen manipulativni trik.">sumljivo aktivnost</span> na vašem računu. Vaš račun bo <span class="phish-element phish-inline" data-info="Groznja zaklene → pritisk na žrtev da ravna hitro brez razmisleka.">blokiran v 24 urah</span>, razen če potrdite svojo identiteto.</p>
                         <p>Kliknite spodnjo povezavo za verifikacijo:</p>
                         <div class="my-3">
-                            <span class="phish-element btn btn-danger btn-sm" data-info="NEVARNA POVEZAVA! Prava PayPal stran je paypal.com, ne 'paypa1-secure-verify.ru'" style="cursor:pointer;">
+                            <span class="phish-element phish-link-btn" data-info="NEVARNA POVEZAVA! Prava PayPal stran je paypal.com, ne 'paypa1-secure-verify.ru'">
                                 👉 Potrdite račun zdaj: http://paypa1-secure-verify.ru/verify
                             </span>
                         </div>
-                        <p>Vnesite vaše <span class="phish-element text-danger" data-info="Legitimna podjetja NIKOLI ne zahtevajo gesla po e-pošti!" style="cursor:pointer; text-decoration: underline dotted;">uporabniško ime, geslo in PIN</span> za potrditev.</p>
-                        <p>Z lepimi pozdravi,<br><span class="phish-element" data-info="Lažni podpis – podjetja imajo profesionalne podpise z uradnimi kontakti." style="cursor:pointer; text-decoration: underline dotted;">PayPal Varnostna Ekipa</span></p>
+                        <p>Vnesite vaše <span class="phish-element phish-inline" data-info="Legitimna podjetja NIKOLI ne zahtevajo gesla po e-pošti!">uporabniško ime, geslo in PIN</span> za potrditev.</p>
+                        <p>Z lepimi pozdravi,<br><span class="phish-element phish-inline" data-info="Lažni podpis – podjetja imajo profesionalne podpise z uradnimi kontakti.">PayPal Varnostna Ekipa</span></p>
                     </div>
                 </div>
 
-                <div id="phishHint" class="alert alert-info mt-3 d-none">
-                    <strong><i class="bi bi-cursor-fill me-2"></i>Kliknite na označene rdeče elemente</strong> za razlago!
-                </div>
-                <div id="phishExplanation" class="alert alert-warning mt-3 d-none">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i><span id="phishExplanationText"></span>
+                <div id="phishExplanation" class="phish-explanation d-none">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span id="phishExplanationText"></span>
                 </div>
 
                 <div class="mt-3">
-                    <button class="btn btn-warning" onclick="showAllPhishHints()">
-                        <i class="bi bi-eye me-2"></i>Pokaži vse znake phishinga
+                    <button class="btn-warning-outline" onclick="showAllPhishHints()">
+                        <i class="bi bi-eye"></i> Pokaži vse znake phishinga
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Warning Signs Checklist -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body p-4">
-                <h3 class="fw-bold"><i class="bi bi-3-circle-fill text-warning me-2"></i>Opozorilni znaki checklist</h3>
-                <p class="text-muted">Preverite vsako e-poštno sporočilo po tem seznamu:</p>
-                <div id="checklistContainer">
+        <!-- Section 3: Checklist -->
+        <div class="section-card mb-4">
+            <div class="section-header">
+                <span class="section-badge">03</span>
+                <h3 class="section-title">Opozorilni znaki – checklist</h3>
+            </div>
+            <div class="section-body">
+                <p class="body-text">Preverite vsako e-poštno sporočilo po tem seznamu:</p>
+
+                <div id="checklistContainer" class="checklist">
                     @{
                         var checks = new[] {
                                         "Pošiljateljev naslov je sumljiv ali ne ustreza domeni podjetja",
@@ -123,34 +137,53 @@
                                         };
                         for (int i = 0; i < checks.Length; i++)
                         {
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="check@i" onchange="updateChecklist()">
-                                <label class="form-check-label" for="check@i">@checks[i]</label>
-                            </div>
+                            <label class="checklist-item" for="check@i">
+                                <input type="checkbox" id="check@i" onchange="updateChecklist()">
+                                <span class="checklist-box"><i class="bi bi-check"></i></span>
+                                <span class="checklist-text">@checks[i]</span>
+                            </label>
                         }
                     }
                 </div>
+
                 <div id="checklistResult" class="mt-3"></div>
             </div>
         </div>
+
     </div>
 
     <!-- Sidebar -->
     <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h6 class="mb-0 fw-bold"><i class="bi bi-shield-check me-2"></i>Kaj storiti ob phishingu</h6>
+        <div class="sidebar-card">
+            <div class="sidebar-header">
+                <i class="bi bi-shield-check me-2"></i> Kaj storiti ob phishingu
             </div>
-            <div class="card-body">
-                <ol class="mb-0 ps-3">
-                    <li class="mb-2 small">Ne kliknite na povezave</li>
-                    <li class="mb-2 small">Preverite pravi naslov pošiljatelja</li>
-                    <li class="mb-2 small">Kontaktirajte podjetje neposredno</li>
-                    <li class="mb-2 small">Prijavite sporočilo kot phishing</li>
-                    <li class="mb-2 small">Zamenjajte gesla, če ste kliknili</li>
-                    <li class="mb-0 small">Obvestite IT ekipo / banko</li>
-                </ol>
-            </div>
+            <ol class="sidebar-steps">
+                <li class="sidebar-step">
+                    <span class="step-num">1</span>
+                    <span>Ne kliknite na povezave</span>
+                </li>
+                <li class="sidebar-step">
+                    <span class="step-num">2</span>
+                    <span>Preverite pravi naslov pošiljatelja</span>
+                </li>
+                <li class="sidebar-step">
+                    <span class="step-num">3</span>
+                    <span>Kontaktirajte podjetje neposredno</span>
+                </li>
+                <li class="sidebar-step">
+                    <span class="step-num">4</span>
+                    <span>Prijavite sporočilo kot phishing</span>
+                </li>
+                <li class="sidebar-step">
+                    <span class="step-num">5</span>
+                    <span>Zamenjajte gesla, če ste kliknili</span>
+                </li>
+                <li class="sidebar-step">
+                    <span class="step-num">6</span>
+                    <span>Obvestite IT ekipo / banko</span>
+                </li>
+            </ol>
         </div>
     </div>
 </div>
@@ -158,233 +191,612 @@
 @section Scripts {
     <script>
         document.querySelectorAll('.phish-element').forEach(el => {
-            el.addEventListener('click', function() {
+            el.addEventListener('click', function () {
                 const exp = document.getElementById('phishExplanation');
                 document.getElementById('phishExplanationText').textContent = this.dataset.info;
                 exp.classList.remove('d-none');
-                document.getElementById('phishHint').classList.add('d-none');
             });
         });
 
         function showAllPhishHints() {
-            document.querySelectorAll('.phish-element').forEach(el => {
-                if (!el.classList.contains('btn')) {
-                    el.style.backgroundColor = '#fff3cd';
-                    el.style.border = '2px solid #ffc107';
-                    el.style.borderRadius = '3px';
-                }
+            document.querySelectorAll('.phish-inline').forEach(el => {
+                el.classList.add('phish-highlighted');
             });
-            document.getElementById('phishHint').classList.remove('d-none');
-            document.getElementById('phishHint').innerHTML = '<strong>🎯 Označeni so vsi sumljivi elementi:</strong> Pošiljateljev naslov, urgentna zadeva, lažna URL, zahteva po geslu, generično nagovarjanje.';
+            const exp = document.getElementById('phishExplanation');
+            document.getElementById('phishExplanationText').textContent =
+                '🎯 Označeni so vsi sumljivi elementi: Pošiljateljev naslov, urgentna zadeva, lažna URL, zahteva po geslu, generično nagovarjanje.';
+            exp.classList.remove('d-none');
         }
 
         function updateChecklist() {
-            const total = document.querySelectorAll('#checklistContainer .form-check-input').length;
-            const checked = document.querySelectorAll('#checklistContainer .form-check-input:checked').length;
+            const total = document.querySelectorAll('#checklistContainer input[type=checkbox]').length;
+            const checked = document.querySelectorAll('#checklistContainer input[type=checkbox]:checked').length;
             const result = document.getElementById('checklistResult');
             if (checked === 0) { result.innerHTML = ''; return; }
-            const pct = Math.round(checked / total * 100);
-            result.innerHTML = `<div class="alert alert-${checked >= 3 ? 'danger' : 'warning'} mb-0">
-                <strong>${checked}/${total} opozorilnih znakov zaznano.</strong>
-                ${checked >= 3 ? ' ⚠️ Velika verjetnost phishinga! Ne kliknite ničesar.' : ' Bodite pozorni.'}
-            </div>`;
+
+            const isDanger = checked >= 3;
+            result.innerHTML = `
+                <div class="checklist-result ${isDanger ? 'result-danger' : 'result-warning'}">
+                    <strong>${checked}/${total} opozorilnih znakov zaznano.</strong>
+                    ${isDanger ? ' ⚠️ Velika verjetnost phishinga! Ne kliknite ničesar.' : ' Bodite pozorni.'}
+                </div>`;
         }
     </script>
 }
 
 <style>
-
-    .course-header-card {
-        border-radius: 8px;
+    /* ══════════════════════════════════════
+           COURSE HERO
+        ══════════════════════════════════════ */
+    .course-hero {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background: linear-gradient(135deg, #e6a817 0%, #b07d0a 100%);
+        border-radius: 16px;
+        padding: 28px 32px;
+        box-shadow: 0 8px 24px rgba(230,168,23,0.28);
     }
 
-        .course-header-card h1 {
-            font-size: 1.6rem;
+    .course-hero-icon {
+        font-size: 2.4rem;
+        color: rgba(255,255,255,0.92);
+        flex-shrink: 0;
+        background: rgba(255,255,255,0.18);
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+
+    .course-title {
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #fff;
+        margin: 0 0 4px;
+        letter-spacing: -0.02em;
+    }
+
+    .course-subtitle {
+        color: rgba(255,255,255,0.84);
+        font-size: 0.92rem;
+        margin: 0;
+    }
+
+    /* ══════════════════════════════════════
+           SECTION CARDS
+        ══════════════════════════════════════ */
+    .section-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+    }
+
+        .section-card:hover {
+            box-shadow: 0 6px 24px rgba(0,0,0,0.09);
         }
 
-        .course-header-card p {
-            opacity: 0.85;
-            font-size: 0.9rem;
-        }
-
-    .card {
-        border-radius: 8px;
-        border: none;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 20px 28px;
+        border-bottom: 1px solid #f4f4f4;
     }
 
-    .card-header {
-        background: white;
-        border-bottom: 1px solid #eee;
-        font-weight: 600;
-    }
-
-    .section-number {
+    .section-badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 22px;
-        height: 22px;
-        background: #dc3545;
-        color: white;
-        font-size: 13px;
-        font-weight: bold;
-        border-radius: 50%;
-        margin-right: 8px;
+        width: 36px;
+        height: 36px;
+        background: #e6a817;
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 800;
+        border-radius: 10px;
+        letter-spacing: 0.04em;
+        flex-shrink: 0;
     }
 
-    .border-danger {
-        border: 1px solid #f1b0b7 !important;
-        background: #fff7f7;
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
     }
 
-    .border-success {
-        border: 1px solid #b8e0c5 !important;
-        background: #f5fff8;
+    .section-body {
+        padding: 24px 28px;
     }
 
-    .table {
-        font-size: 0.9rem;
+    .body-text {
+        font-size: 0.93rem;
+        color: #555;
+        line-height: 1.65;
+        margin-bottom: 14px;
     }
 
-    .table-dark th {
-        background-color: #2b2f33;
+    /* ══════════════════════════════════════
+           PHISHING TYPE CARDS
+        ══════════════════════════════════════ */
+    .phish-type-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        background: #fffbee;
+        border: 1.5px solid #f5d97a;
+        border-radius: 12px;
+        padding: 16px;
+        height: 100%;
+        transition: box-shadow 0.18s;
     }
 
-    .table-success {
-        background-color: #d8f3dc;
-    }
-
-    .progress {
-        background: #e9ecef;
-        border-radius: 6px;
-    }
-
-    .progress-bar {
-        transition: width 0.3s ease;
-    }
-
-    #generatedPwd {
-        font-family: monospace;
-        letter-spacing: 1px;
-    }
-
-    .sidebar-card .card-header {
-        background: #2f343a;
-        color: white;
-        font-size: 0.9rem;
-    }
-
-    .sidebar-card .list-group-item {
-        border: none;
-        font-size: 0.9rem;
-        padding: 10px 0;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-        .btn-danger:hover {
-            background-color: #bb2d3b;
+        .phish-type-card:hover {
+            box-shadow: 0 4px 16px rgba(230,168,23,0.18);
         }
 
-    .card-body {
-        padding: 22px;
+    .phish-type-icon {
+        font-size: 1.3rem;
+        color: #b07d0a;
+        background: rgba(230,168,23,0.15);
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
-    h5 {
-        font-size: 1rem;
+    .phish-type-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+    }
+
+    .phish-type-desc {
+        font-size: 0.82rem;
+        color: #666;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════
+           EMAIL PREVIEW
+        ══════════════════════════════════════ */
+    .email-preview {
+        border: 2px solid #dee2e6;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .email-meta {
+        background: #f8f9fa;
+        padding: 14px 20px;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .email-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.87rem;
+    }
+
+    .email-meta-label {
+        font-weight: 700;
+        color: #555;
+        min-width: 56px;
+        flex-shrink: 0;
+    }
+
+    .email-body {
+        padding: 22px 24px;
+        font-size: 0.92rem;
+        color: #333;
+        line-height: 1.7;
+    }
+
+        .email-body p {
+            margin-bottom: 10px;
+        }
+
+            .email-body p:last-child {
+                margin-bottom: 0;
+            }
+
+    /* ══════════════════════════════════════
+           PHISH ELEMENTS (clickable)
+        ══════════════════════════════════════ */
+    .phish-element {
+        cursor: pointer;
+    }
+
+    /* Badge style (in email header) */
+    .phish-badge {
+        display: inline-block;
+        background: #dc3545;
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 6px;
+        transition: background 0.18s, transform 0.1s;
+    }
+
+        .phish-badge:hover {
+            background: #b02a37;
+            transform: scale(1.02);
+        }
+
+    /* Inline highlighted text */
+    .phish-inline {
+        color: #dc3545;
+        font-weight: 600;
+        text-decoration: underline dotted #dc3545;
+        text-underline-offset: 3px;
+        transition: background 0.18s;
+        border-radius: 3px;
+        padding: 0 2px;
+    }
+
+        .phish-inline:hover {
+            background: rgba(220,53,69,0.1);
+        }
+
+    .phish-highlighted {
+        background: #fff3cd !important;
+        border: 1.5px solid #ffc107 !important;
+        border-radius: 4px;
+        padding: 1px 4px;
+    }
+
+    /* Link button in email */
+    .phish-link-btn {
+        display: inline-block;
+        background: #dc3545;
+        color: #fff;
+        font-size: 0.88rem;
+        font-weight: 600;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.12s;
+        word-break: break-all;
+    }
+
+        .phish-link-btn:hover {
+            background: #b02a37;
+            transform: scale(1.01);
+        }
+
+    /* Explanation box */
+    .phish-explanation {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        background: #fff8e1;
+        border: 1.5px solid #ffc107;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-top: 16px;
+        font-size: 0.9rem;
+        color: #6d4c00;
+        line-height: 1.55;
+    }
+
+        .phish-explanation i {
+            font-size: 1rem;
+            color: #e6a817;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+    /* ══════════════════════════════════════
+           CHECKLIST
+        ══════════════════════════════════════ */
+    .checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .checklist-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1.5px solid #eee;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s;
+        user-select: none;
+    }
+
+        .checklist-item:hover {
+            background: #fffbee;
+            border-color: #f5d97a;
+        }
+
+        .checklist-item input {
+            display: none;
+        }
+
+    .checklist-box {
+        width: 22px;
+        height: 22px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.8rem;
+        color: transparent;
+        transition: all 0.18s;
+        background: #fff;
+    }
+
+    .checklist-item input:checked ~ .checklist-box {
+        background: #e6a817;
+        border-color: #e6a817;
+        color: #fff;
+    }
+
+    .checklist-item input:checked ~ .checklist-text {
+        color: #b07d0a;
         font-weight: 600;
     }
 
-    body.dark-mode .card {
-        background-color: #1e1e1e;
-        color: #e4e4e4;
-        border: 1px solid #2b2b2b;
-        box-shadow: none;
+    .checklist-text {
+        font-size: 0.88rem;
+        color: #444;
+        line-height: 1.4;
     }
 
-    body.dark-mode .card-header {
-        background-color: #1e1e1e;
-        border-bottom: 1px solid #2c2c2c;
+    .checklist-result {
+        padding: 14px 18px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        line-height: 1.5;
     }
 
-    body.dark-mode .card {
-        background-color: #1e1e1e;
-        color: #e4e4e4;
-        border: 1px solid #2b2b2b;
-        box-shadow: none;
+    .result-danger {
+        background: #fff2f2;
+        border: 1.5px solid #f5c0c5;
+        color: #842029;
     }
 
-    body.dark-mode .card-header {
-        background-color: #1e1e1e;
-        border-bottom: 1px solid #2c2c2c;
+    .result-warning {
+        background: #fff8e1;
+        border: 1.5px solid #ffc107;
+        color: #6d4c00;
     }
 
-    body.dark-mode input,
-    body.dark-mode .form-control {
-        background-color: #1b1b1b;
-        border: 1px solid #333;
-        color: #eee;
+    /* ══════════════════════════════════════
+           BUTTON
+        ══════════════════════════════════════ */
+    .btn-warning-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: transparent;
+        color: #b07d0a;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 10px 22px;
+        border: 2px solid #e6a817;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.18s;
     }
 
-        body.dark-mode input::placeholder {
-            color: #888;
+        .btn-warning-outline:hover {
+            background: #e6a817;
+            color: #fff;
         }
 
-    body.dark-mode .progress {
-        background-color: #2a2a2a;
+    /* ══════════════════════════════════════
+           SIDEBAR
+        ══════════════════════════════════════ */
+    .sidebar-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        overflow: hidden;
+        position: sticky;
+        top: 20px;
     }
 
-    body.dark-mode .progress-bar {
-        background-color: #dc3545;
+    .sidebar-header {
+        background: #2b2f33;
+        color: #fff;
+        padding: 16px 22px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
     }
 
-    body.dark-mode input[type="file"] {
-        background-color: #1b1b1b;
-        color: #ccc;
-        border: 1px solid #333;
+    .sidebar-steps {
+        list-style: none;
+        padding: 18px 22px;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
 
+    .sidebar-step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.88rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .step-num {
+        width: 26px;
+        height: 26px;
+        background: #e6a817;
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 800;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+           DARK MODE
+        ══════════════════════════════════════ */
+    body.dark-mode .section-card,
     body.dark-mode .sidebar-card {
-        background-color: #1e1e1e;
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
     }
 
-        body.dark-mode .sidebar-card .card-header {
-            background-color: #000;
+    body.dark-mode .section-header {
+        border-bottom-color: #2b2b2b;
+    }
+
+    body.dark-mode .section-title,
+    body.dark-mode .sidebar-step {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .body-text {
+        color: #aaa;
+    }
+
+    body.dark-mode .phish-type-card {
+        background: #252010;
+        border-color: #5a4800;
+    }
+
+    body.dark-mode .phish-type-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .phish-type-desc {
+        color: #999;
+    }
+
+    body.dark-mode .phish-type-icon {
+        background: rgba(230,168,23,0.15);
+        color: #f5c842;
+    }
+
+    body.dark-mode .email-preview {
+        border-color: #333;
+    }
+
+    body.dark-mode .email-meta {
+        background: #252525;
+        border-color: #333;
+    }
+
+    body.dark-mode .email-meta-label {
+        color: #aaa;
+    }
+
+    body.dark-mode .email-body {
+        background: #1e1e1e;
+        color: #ccc;
+    }
+
+    body.dark-mode .phish-explanation {
+        background: #2a2000;
+        border-color: #5a4800;
+        color: #f5c842;
+    }
+
+    body.dark-mode .checklist-item {
+        border-color: #2b2b2b;
+    }
+
+        body.dark-mode .checklist-item:hover {
+            background: #252010;
+            border-color: #5a4800;
         }
 
-    body.dark-mode .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
+    body.dark-mode .checklist-text {
+        color: #bbb;
     }
 
-    body.dark-mode .btn-outline-danger {
-        color: #ff6b6b;
-        border-color: #ff6b6b;
+    body.dark-mode .checklist-box {
+        border-color: #444;
+        background: #252525;
     }
 
-        body.dark-mode .btn-outline-danger:hover {
-            background-color: #ff6b6b;
-            color: black;
+    body.dark-mode .checklist-item input:checked ~ .checklist-text {
+        color: #f5c842;
+    }
+
+    body.dark-mode .result-danger {
+        background: #2b1c1c;
+        border-color: #6b2c32;
+        color: #f48898;
+    }
+
+    body.dark-mode .result-warning {
+        background: #2a2000;
+        border-color: #5a4800;
+        color: #f5c842;
+    }
+
+    body.dark-mode .sidebar-header {
+        background: #111;
+    }
+
+    body.dark-mode .step-num {
+        background: #e6a817;
+    }
+
+    body.dark-mode .btn-warning-outline {
+        color: #f5c842;
+        border-color: #f5c842;
+    }
+
+        body.dark-mode .btn-warning-outline:hover {
+            background: #e6a817;
+            color: #1a1a1a;
         }
 
-    body.dark-mode .section-number {
-        background-color: #dc3545;
-        color: white;
-    }
+    @@media (max-width: 576px) {
+        .course-hero {
+            padding: 20px;
+            gap: 14px;
+        }
 
-    body.dark-mode .border-danger {
-        background-color: #2b1b1d;
-        border-color: #6b2c32 !important;
-    }
+        .course-title {
+            font-size: 1.3rem;
+        }
 
-    body.dark-mode .border-success {
-        background-color: #1c2b22;
-        border-color: #2f6b48 !important;
-    }
+        .section-body {
+            padding: 18px;
+        }
 
+        .email-body {
+            padding: 16px;
+        }
+    }
 </style>
-

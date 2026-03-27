@@ -41,7 +41,6 @@ namespace CyberSecurityWebApp.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // 🔐 HASH PASSWORD
             model.Password = PasswordHelper.HashPassword(model.Password);
 
             _context.Users.Add(model);
@@ -71,24 +70,20 @@ namespace CyberSecurityWebApp.Controllers
             if (user == null)
                 return NotFound();
 
-            // 🔐 DOBI ID trenutno prijavljenega uporabnika
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // 🔒 PREPREČI, da si admin odstrani admin pravice
             if (user.UserId.ToString() == currentUserId && !model.IsAdmin)
             {
                 ModelState.AddModelError("", "Ne moreš si odstraniti admin pravic.");
                 return View(model);
             }
 
-            // POSODOBI PODATKE
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Username = model.Username;
             user.Email = model.Email;
             user.IsAdmin = model.IsAdmin;
 
-            // 🔐 Če je vneseno novo geslo → hash
             if (!string.IsNullOrWhiteSpace(model.Password))
             {
                 user.Password = PasswordHelper.HashPassword(model.Password);
@@ -112,17 +107,14 @@ namespace CyberSecurityWebApp.Controllers
                 return RedirectToAction("Users");
             }
 
-            // 🔐 Trenutni prijavljeni uporabnik
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // ❌ Admin ne more izbrisati samega sebe
             if (user.UserId.ToString() == currentUserId)
             {
                 TempData["Error"] = "Ne moreš izbrisati svojega računa.";
                 return RedirectToAction("Users");
             }
 
-            // 🛡️ Prepreči brisanje zadnjega admina
             if (user.IsAdmin)
             {
                 var adminCount = await _context.Users.CountAsync(u => u.IsAdmin);
@@ -272,5 +264,46 @@ namespace CyberSecurityWebApp.Controllers
             return RedirectToAction("Questions", new { id = question.QuizId });
         }
 
+        // -------- STATISTIKA --------
+        public async Task<IActionResult> Statistics()
+        {
+            // Splošni podatki
+            var totalUsers = await _context.Users.CountAsync();
+            var totalAdmins = await _context.Users.CountAsync(u => u.IsAdmin);
+            var totalQuizzes = await _context.Quizzes.CountAsync();
+            var totalQuestions = await _context.Questions.CountAsync();
+            var totalAnswers = await _context.Answers.CountAsync();
+
+            // Kvizi z vprašanji in odgovori
+            var quizzes = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .ToListAsync();
+
+            // Statistika po kvizih
+            var quizStats = quizzes.Select(q => new
+            {
+                Title = q.Title,
+                QuestionCount = q.Questions.Count,
+                AnswerCount = q.Questions.Sum(qu => qu.Answers.Count),
+                PassThreshold = q.PassThreshold,
+            }).ToList();
+
+            // Povprečno vprašanj na kviz
+            double avgQuestionsPerQuiz = totalQuizzes > 0
+                ? Math.Round((double)totalQuestions / totalQuizzes, 1)
+                : 0;
+
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalAdmins = totalAdmins;
+            ViewBag.TotalRegularUsers = totalUsers - totalAdmins;
+            ViewBag.TotalQuizzes = totalQuizzes;
+            ViewBag.TotalQuestions = totalQuestions;
+            ViewBag.TotalAnswers = totalAnswers;
+            ViewBag.AvgQuestionsPerQuiz = avgQuestionsPerQuiz;
+            ViewBag.QuizStats = quizStats;
+
+            return View();
+        }
     }
 }
