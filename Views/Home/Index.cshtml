@@ -9,7 +9,7 @@
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             <div class="hero-buttons">
-                <a href="/Home/Learn" class="btn btn-primary">Začni z učenjem</a>
+                <a asp-controller="Course" asp-action="Index" class="btn btn-primary">Začni z učenjem</a>
                 <a href="/Quiz" class="btn btn-secondary">Preizkusi svoje znanje</a>
             </div>
         }
@@ -23,7 +23,7 @@
         <p>Osnove kibernetske varnosti razložene na preprost in razumljiv način</p>
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            <a href="/Home/Learn" class="btn btn-link">Preberi več →</a>
+            <a asp-controller="Course" asp-action="Index" class="btn btn-link">Preberi več →</a>
         }
     </div>
 
@@ -80,6 +80,6 @@
     <br />
     @if (User.Identity != null && User.Identity.IsAuthenticated)
     {
-        <a href="/Home/Learn" class="btn btn-large btn-primary">Začni zdaj</a>
+        <a asp-controller="Course" asp-action="Index" class="btn btn-large btn-primary">Začni zdaj</a>
     }
 </div>

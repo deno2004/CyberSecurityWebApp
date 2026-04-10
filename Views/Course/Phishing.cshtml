@@ -2,10 +2,10 @@
 @{
     ViewData["Title"] = "Phishing napadi";
 }
-
+<br />
 <div class="row g-4">
     <div class="col-lg-8">
-        <br />
+
         <!-- Course Hero -->
         <div class="course-hero mb-4">
             <div class="course-hero-icon">
@@ -105,7 +105,7 @@
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                     <span id="phishExplanationText"></span>
                 </div>
-
+                <br />
                 <div class="mt-3">
                     <button class="btn-warning-outline" onclick="showAllPhishHints()">
                         <i class="bi bi-eye"></i> Pokaži vse znake phishinga
@@ -137,7 +137,7 @@
                                         };
                         for (int i = 0; i < checks.Length; i++)
                         {
-                            <label class="checklist-item" for="check@i">
+                            <label class="checklist-item">
                                 <input type="checkbox" id="check@i" onchange="updateChecklist()">
                                 <span class="checklist-box"><i class="bi bi-check"></i></span>
                                 <span class="checklist-text">@checks[i]</span>

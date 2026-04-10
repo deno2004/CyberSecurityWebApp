@@ -2,14 +2,14 @@
 @{
     ViewData["Title"] = "Varna uporaba interneta";
 }
-
+<br />
 <div class="row g-4">
     <div class="col-lg-8">
-        <br />
+
         <!-- Course Hero -->
         <div class="course-hero mb-4">
             <div class="course-hero-icon">
-                <i class="bi bi-shield-lock-fill">🌐</i>
+				<i class="bi bi-shield-lock-fill">🌐</i>
             </div>
             <div>
                 <h1 class="course-title">Varna raba interneta</h1>
@@ -161,7 +161,7 @@
                                         };
                         for (int i = 0; i < habits.Length; i++)
                         {
-                            <label class="checklist-item" for="habit@i">
+                            <label class="checklist-item">
                                 <input type="checkbox" id="habit@i" onchange="updateHabits()">
                                 <span class="checklist-box"><i class="bi bi-check"></i></span>
                                 <span class="checklist-text">@habits[i]</span>

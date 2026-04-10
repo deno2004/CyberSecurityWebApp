@@ -1787,8 +1787,7 @@ body.dark-mode {
     body.dark-mode h3,
     body.dark-mode h4,
     body.dark-mode p,
-    body.dark-mode span,
-    body.dark-mode li {
+    body.dark-mode span {
         color: #ffffff;
     }
 
@@ -1796,6 +1795,10 @@ body.dark-mode {
     body.dark-mode .navbar {
         background: linear-gradient(135deg, #1f2230 0%, #1a1d29 100%);
         box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    }
+
+    body.dark-mode navbar-brand {
+        color: white;
     }
 
     /* Footer */
@@ -1948,6 +1951,10 @@ body.dark-mode {
 
     body.dark-mode th {
         background: #222733;
+    }
+
+    body.dark-mode .li a {
+        color: white;
     }
 
 /* Smooth transition */
