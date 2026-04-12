@@ -27,6 +27,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Authentication/Logout";
     });
 
+builder.Services.AddScoped<CyberSecurityWebApp.Services.EmailService>();
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();

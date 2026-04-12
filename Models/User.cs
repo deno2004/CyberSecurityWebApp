@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CyberSecurityWebApp.Models
 {
-    [Table("users")] // matches your SQLite table name
+    [Table("users")]
     public class User
     {
         [Key]
@@ -32,5 +32,15 @@ namespace CyberSecurityWebApp.Models
 
         [Column("is_admin")]
         public bool IsAdmin { get; set; } = false;
+
+        // ✅ Email potrditev
+        [Column("email_confirmed")]
+        public bool EmailConfirmed { get; set; } = false;
+
+        [Column("confirmation_token")]
+        public string? ConfirmationToken { get; set; }
+
+        [Column("confirmation_token_expires")]
+        public DateTime? ConfirmationTokenExpires { get; set; }
     }
 }

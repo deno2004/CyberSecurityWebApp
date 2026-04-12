@@ -1,0 +1,158 @@
+﻿@* ══════════════════════════════════════
+   Views/Authentication/ConfirmEmail.cshtml
+══════════════════════════════════════ *@
+@{
+    ViewData["Title"] = "Potrditev e-pošte";
+    var status = ViewBag.Status as string ?? "error";
+    var message = ViewBag.Message as string ?? "";
+    var name = ViewBag.Name as string ?? "";
+    var userId = ViewBag.UserId as int?;
+}
+
+<div class="confirm-wrap">
+    <div class="confirm-card">
+
+        @if (status == "success")
+        {
+            <div class="confirm-icon confirm-icon-success">✅</div>
+            <h1 class="confirm-title">Potrjeno!</h1>
+            <p class="confirm-msg">
+                @(string.IsNullOrEmpty(name) ? "Vaš" : name + ", vaš") e-poštni naslov je bil
+                uspešno potrjen. Sedaj se lahko prijavite.
+            </p>
+            <a asp-action="Login" class="btn-confirm-primary">
+                <i class="bi bi-box-arrow-in-right"></i> Prijava
+            </a>
+        }
+        else if (status == "already")
+        {
+            <div class="confirm-icon confirm-icon-info">ℹ️</div>
+            <h1 class="confirm-title">Že potrjeno</h1>
+            <p class="confirm-msg">@message</p>
+            <a asp-action="Login" class="btn-confirm-primary">Pojdi na prijavo</a>
+        }
+        else if (status == "expired")
+        {
+            <div class="confirm-icon confirm-icon-warn">⏳</div>
+            <h1 class="confirm-title">Povezava je potekla</h1>
+            <p class="confirm-msg">@message</p>
+            @if (userId.HasValue)
+            {
+                <form asp-action="ResendConfirmation" method="post">
+                    <input type="hidden" name="userId" value="@userId" />
+                    <button type="submit" class="btn-confirm-primary">
+                        <i class="bi bi-envelope-arrow-up"></i> Pošlji nov e-mail
+                    </button>
+                </form>
+            }
+        }
+        else
+        {
+            <div class="confirm-icon confirm-icon-error">❌</div>
+            <h1 class="confirm-title">Napaka</h1>
+            <p class="confirm-msg">@message</p>
+            <a asp-action="Register" class="btn-confirm-primary">Nazaj na registracijo</a>
+        }
+
+        <div class="confirm-back">
+            <a asp-action="Login">← Nazaj na prijavo</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .confirm-wrap {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .confirm-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 20px;
+        padding: 48px 40px;
+        max-width: 440px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    }
+
+    .confirm-icon {
+        font-size: 3.2rem;
+        margin-bottom: 16px;
+        display: block;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.12));
+    }
+
+    .confirm-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 12px;
+        letter-spacing: -0.02em;
+    }
+
+    .confirm-msg {
+        font-size: 0.93rem;
+        color: #666;
+        line-height: 1.65;
+        margin: 0 0 28px;
+    }
+
+    .btn-confirm-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.92rem;
+        padding: 12px 28px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.15s;
+        box-shadow: 0 3px 12px rgba(37,99,235,0.28);
+        margin-bottom: 20px;
+    }
+
+        .btn-confirm-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+    .confirm-back {
+        margin-top: 8px;
+        font-size: 0.82rem;
+    }
+
+        .confirm-back a {
+            color: #888;
+            text-decoration: none;
+        }
+
+            .confirm-back a:hover {
+                color: #555;
+                text-decoration: underline;
+            }
+
+    body.dark-mode .confirm-card {
+        background: #1e1e1e;
+        border-color: #2b2b2b;
+        box-shadow: none;
+    }
+
+    body.dark-mode .confirm-title {
+        color: #e4e4e4;
+    }
+
+    body.dark-mode .confirm-msg {
+        color: #aaa;
+    }
+</style>
+
