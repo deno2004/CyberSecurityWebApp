@@ -3,6 +3,7 @@ using CyberSecurityWebApp.Helpers;
 using CyberSecurityWebApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -21,76 +22,93 @@ namespace CyberSecurityWebApp.Controllers
             _env = env;
         }
 
-        public IActionResult Learn()
-        {
-            return View();
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Learn() => View();
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult About() => View();
+
+        public IActionResult Index() => View();
+        public IActionResult Privacy() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult Error() =>
+            View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 
+        // ─────────────────────────────────────────
+        //  PROFILE GET
+        // ─────────────────────────────────────────
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Profile()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null)
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdStr == null)
                 return RedirectToAction("Login", "Authentication");
 
-            var user = await _context.Users.FindAsync(int.Parse(userId));
-            if (user == null)
-                return NotFound();
+            int userId = int.Parse(userIdStr);
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return NotFound();
+
+            // ✅ Vsi kvizi v sistemu
+            var allQuizzes = await _context.Quizzes.ToListAsync();
+
+            // ✅ Kvizi, ki jih je uporabnik opravil (ima certifikat)
+            var completions = await _context.QuizCompletions
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
+
+            // ✅ Sestavi seznam z statusom za vsak kviz
+            var quizStatuses = allQuizzes.Select(q =>
+            {
+                var comp = completions.FirstOrDefault(c => c.QuizId == q.QuizId);
+                return new
+                {
+                    Quiz = q,
+                    Completed = comp != null,
+                    Score = comp?.Score ?? 0,
+                    Total = comp?.Total ?? 0,
+                    Percentage = comp?.Percentage ?? 0.0,
+                    CompletedAt = comp?.CompletedAt
+                };
+            }).ToList();
+
+            ViewBag.QuizStatuses = quizStatuses;
+            ViewBag.CompletedCount = completions.Count;
+            ViewBag.TotalQuizzesCount = allQuizzes.Count;
 
             return View(user);
         }
 
+        // ─────────────────────────────────────────
+        //  PROFILE POST (update)
+        // ─────────────────────────────────────────
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> UpdateProfile(User model)
         {
             var user = await _context.Users.FindAsync(model.UserId);
+            if (user == null) return NotFound();
 
-            if (user == null)
-                return NotFound();
-
-            // 🔐 DOBI ID trenutno prijavljenega uporabnika
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // 🔒 PREPREČI, da si admin odstrani admin pravice
             if (user.UserId.ToString() == currentUserId && !model.IsAdmin)
             {
                 ModelState.AddModelError("", "Ne moreš si odstraniti admin pravic.");
-                return View(model);
+                return View("Profile", model);
             }
 
-            // POSODOBI PODATKE
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.Username = model.Username;
             user.Email = model.Email;
-            user.IsAdmin = model.IsAdmin;
 
-            // 🔐 Če je vneseno novo geslo → hash
             if (!string.IsNullOrWhiteSpace(model.Password))
-            {
                 user.Password = PasswordHelper.HashPassword(model.Password);
-            }
 
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = "Uporabnik uspešno posodobljen.";
-            return RedirectToAction("Users");
+            TempData["Success"] = "Profil uspešno posodobljen.";
+            return RedirectToAction("Profile");
         }
     }
 }

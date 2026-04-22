@@ -4,7 +4,7 @@
 
     (string bg, string border, string accent, string btn) GetTheme(string title) => title switch
     {
-        "Varnost gesel" => ("#eff6ff", "#bfdbfe", "#1d4ed8", "theme-blue"),
+        "Varnost gesel" => ("#fff1f2", "#fecdd3", "#dc3545", "theme-red"),
         "Prepoznavanje phishinga" => ("#fffbeb", "#fde68a", "#b45309", "theme-amber"),
         "Varna raba interneta" => ("#f0fdf4", "#bbf7d0", "#166534", "theme-green"),
         _ => ("#f9fafb", "#e5e7eb", "#374151", "theme-gray")
@@ -227,6 +227,12 @@ else
         text-transform: uppercase;
     }
 
+    .course-card.theme-red {
+        --card-bg: #fff1f2;
+        --card-border: #fecdd3;
+        --card-accent: #dc3545;
+    }
+
     /* ── Body ── */
     .course-card-body {
         padding: 4px 22px 18px;
@@ -359,10 +365,10 @@ else
         color: white;
     }
 
-    body.dark-mode .course-card.theme-blue {
-        --card-bg: #1a2235;
-        --card-border: #1d3a6e;
-        --card-accent: #60a5fa;
+    body.dark-mode .course-card.theme-red {
+        --card-bg: #2a1215;
+        --card-border: #5c1f26;
+        --card-accent: #ff6b6b;
     }
 
     body.dark-mode .course-card.theme-amber {

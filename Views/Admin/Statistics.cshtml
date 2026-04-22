@@ -13,12 +13,16 @@
     var quizStats = ViewBag.QuizStats as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
 }
 <br />
-
 <!-- Page title -->
 <div class="stat-page-header">
     <div>
         <h1 class="stat-page-title">📊 Statistika sistema</h1>
         <p class="stat-page-sub">Pregled vsebine in aktivnosti platforme</p>
+    </div>
+    <div class="stat-header-actions">
+        <a asp-action="Dashboard" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Nazaj
+        </a>
     </div>
 </div>
 
@@ -796,11 +800,48 @@
         margin-top: 2px;
     }
 
+    .stat-header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f3f4f6;
+        color: #444;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: 1.5px solid #e5e7eb;
+        transition: all 0.18s;
+    }
+
+        .btn-back:hover {
+            background: #e5e7eb;
+            color: #111;
+        }
+
     /* ══════════════════════════════════════
            DARK MODE
         ══════════════════════════════════════ */
+
+    /* ── Splošno ── */
     body.dark-mode .stat-page-title {
         color: #e4e4e4;
+    }
+
+    body.dark-mode .quiz-card-actions {
+        background: #252525;
+        border-color: #2b2b2b;
+    }
+
+    body.dark-mode .stat-page-sub {
+        color: #888;
     }
 
     body.dark-mode .stat-section {
@@ -813,6 +854,7 @@
         color: #e4e4e4;
     }
 
+    /* ── KPI kartice (temno ozadje → svetli teksti) ── */
     body.dark-mode .kpi-blue {
         background: #1a2235;
         border-color: #1d3a6e;
@@ -833,8 +875,61 @@
         border-color: #14532d;
     }
 
+    body.dark-mode .kpi-blue .kpi-icon {
+        color: #60a5fa;
+    }
+
+    body.dark-mode .kpi-purple .kpi-icon {
+        color: #a78bfa;
+    }
+
+    body.dark-mode .kpi-teal .kpi-icon {
+        color: #2dd4bf;
+    }
+
+    body.dark-mode .kpi-green .kpi-icon {
+        color: #4ade80;
+    }
+
+    body.dark-mode .kpi-blue .kpi-value {
+        color: #93c5fd;
+    }
+
+    body.dark-mode .kpi-purple .kpi-value {
+        color: #c4b5fd;
+    }
+
+    body.dark-mode .kpi-teal .kpi-value {
+        color: #5eead4;
+    }
+
+    body.dark-mode .kpi-green .kpi-value {
+        color: #86efac;
+    }
+
     body.dark-mode .kpi-label {
         color: #aaa;
+    }
+
+    /* ── KPI pills: svetlo ozadje → ČRN tekst ── */
+    body.dark-mode .kpi-pill-admin {
+        background: #818cf8;
+        color: #000;
+    }
+
+    body.dark-mode .kpi-pill-user {
+        background: #4ade80;
+        color: #000;
+    }
+
+    body.dark-mode .kpi-pill-neutral {
+        background: #9ca3af;
+        color: #000;
+    }
+
+    /* ── Tabela ── */
+    body.dark-mode .stat-table-wrap {
+        border-color: #2b2b2b;
     }
 
     body.dark-mode .stat-table thead tr {
@@ -854,17 +949,58 @@
         background: #252525;
     }
 
+    body.dark-mode .stat-row-num {
+        color: #666;
+    }
+
     body.dark-mode .stat-quiz-title {
         color: #e4e4e4;
     }
 
-    body.dark-mode .stat-table-wrap {
-        border-color: #2b2b2b;
+    /* ── Stat badges: svetlo ozadje → ČRN tekst ── */
+    body.dark-mode .stat-badge-teal {
+        background: #2dd4bf;
+        color: #000;
     }
 
+    body.dark-mode .stat-badge-purple {
+        background: #a78bfa;
+        color: #000;
+    }
+
+    /* ── Threshold pills: svetlo ozadje → ČRN tekst ── */
+    body.dark-mode .threshold-high {
+        background: #4ade80;
+        color: #000;
+    }
+
+    body.dark-mode .threshold-mid {
+        background: #facc15;
+        color: #000;
+    }
+
+    body.dark-mode .threshold-low {
+        background: #f87171;
+        color: #000;
+    }
+
+    /* ── Mini bar ── */
+    body.dark-mode .mini-bar {
+        background: #333;
+    }
+
+    body.dark-mode .mini-bar-label {
+        color: #777;
+    }
+
+    /* ── Bar chart ── */
     body.dark-mode .stat-chart-wrap {
         background: #252525;
         border-color: #333;
+    }
+
+    body.dark-mode .stat-chart-title {
+        color: #888;
     }
 
     body.dark-mode .bar-chart-track {
@@ -875,14 +1011,7 @@
         color: #aaa;
     }
 
-    body.dark-mode .mini-bar {
-        background: #333;
-    }
-
-    body.dark-mode .mini-bar-label {
-        color: #777;
-    }
-
+    /* ── Donut ── */
     body.dark-mode .donut-hole {
         background: #1e1e1e;
     }
@@ -891,13 +1020,44 @@
         color: #e4e4e4;
     }
 
+    body.dark-mode .donut-total-label {
+        color: #888;
+    }
+
     body.dark-mode .donut-legend-item {
         color: #bbb;
+    }
+
+    /* ── User stat icons: svetlo ozadje → ČRN tekst ── */
+    body.dark-mode .user-stat-icon-admin {
+        background: #818cf8;
+        color: #000;
+    }
+
+    body.dark-mode .user-stat-icon-user {
+        background: #4ade80;
+        color: #000;
     }
 
     body.dark-mode .user-stat-val {
         color: #e4e4e4;
     }
+
+    body.dark-mode .user-stat-lbl {
+        color: #888;
+    }
+
+    /* ── Gumb nazaj ── */
+    body.dark-mode .btn-back {
+        background: #252525;
+        border-color: #333;
+        color: #ddd;
+    }
+
+        body.dark-mode .btn-back:hover {
+            background: #2f2f2f;
+            color: #fff;
+        }
 
     @@media (max-width: 1024px) {
         .kpi-grid {

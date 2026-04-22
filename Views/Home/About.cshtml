@@ -1,0 +1,243 @@
+﻿@{
+    ViewData["Title"] = "O nas";
+}
+<br />
+<div class="about-page">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>🛡️ O Cyber Security Akademiji</h1>
+            <p>
+                Naša misija je ozaveščanje o kibernetski varnosti skozi interaktivno učenje,
+                kvize in praktične primere.
+            </p>
+        </div>
+    </section>
+
+    <!-- MISSION -->
+    <section class="about-section">
+        <div class="container about-grid">
+            <div>
+                <h2>🎯 Naša misija</h2>
+                <p>
+                    Verjamemo, da je kibernetska varnost ključna veščina sodobnega sveta.
+                    Zato ustvarjamo enostavne, razumljive in interaktivne vsebine,
+                    ki pomagajo uporabnikom zaščititi svoje podatke.
+                </p>
+            </div>
+
+            <div>
+                <h2>🚀 Kaj ponujamo</h2>
+                <ul class="about-list">
+                    <li>✔ Interaktivne kvize</li>
+                    <li>✔ Praktične primere napadov</li>
+                    <li>✔ Sledenje napredku</li>
+                    <li>✔ Certifikate znanja</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="about-section alt">
+        <div class="container">
+            <h2 class="section-title">✨ Zakaj izbrati nas?</h2>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Enostavno učenje</h3>
+                    <p>Vsebine so prilagojene začetnikom in naprednim uporabnikom.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Interaktivnost</h3>
+                    <p>Uči se skozi reševanje kvizov in praktičnih primerov.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Realni scenariji</h3>
+                    <p>Primeri temeljijo na resničnih kibernetskih napadih.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Nagrade</h3>
+                    <p>Pridobi certifikate in spremljaj svoj napredek.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="about-section">
+        <div class="container">
+            <h2 class="section-title">👨‍💻 Ekipa</h2>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">👤</div>
+                    <h3>Razvijalec</h3>
+                    <p>Full-stack razvijalec aplikacije</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">🧠</div>
+                    <h3>Strokovnjak</h3>
+                    <p>Kibernetska varnost in vsebina</p>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-avatar">🎨</div>
+                    <h3>Dizajn</h3>
+                    <p>UI/UX in uporabniška izkušnja</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="cta-section">
+        <h2>Pripravljeni začeti?</h2>
+        <p>Začnite svojo pot do boljšega razumevanja kibernetske varnosti še danes!</p>
+        <br />
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Course" asp-action="Index" class="btn btn-large btn-primary">Začni zdaj</a>
+        }
+    </div>
+
+</div>
+
+<style>
+    /* ===== ABOUT PAGE ===== */
+    .about-page {
+        font-family: inherit;
+    }
+
+    /* HERO */
+    .about-hero {
+        background: linear-gradient(135deg, #0d6efd, #4f46e5);
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+    }
+
+        .about-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .about-hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+    /* SECTION */
+    .about-section {
+        padding: 60px 20px;
+    }
+
+        .about-section.alt {
+            background: #f9fafb;
+        }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 1.6rem;
+    }
+
+    /* GRID */
+    .about-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+
+    /* LIST */
+    .about-list {
+        padding-left: 20px;
+    }
+
+        .about-list li {
+            margin-bottom: 10px;
+        }
+
+    /* FEATURES */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        border: 1px solid #eee;
+        transition: 0.3s;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    /* TEAM */
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    .team-card {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .team-avatar {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+
+    /* CTA */
+    .about-cta {
+        background: linear-gradient(135deg, #4f46e5, #0d6efd);
+        color: white;
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+        .about-cta h2 {
+            margin-bottom: 10px;
+        }
+
+    /* DARK MODE */
+    body.dark-mode .about-section.alt {
+        background: #1e1e1e;
+    }
+
+    body.dark-mode .about-list li {
+        color: white;
+    }
+
+    body.dark-mode .feature-card {
+        background: #2a2a2a;
+        border-color: #333;
+        color: #ddd;
+    }
+
+    body.dark-mode .about-hero,
+    body.dark-mode .about-cta {
+        background: linear-gradient(135deg, #1e3a8a, #312e81);
+    }
+</style>

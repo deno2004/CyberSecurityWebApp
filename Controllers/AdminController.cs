@@ -135,7 +135,10 @@ namespace CyberSecurityWebApp.Controllers
 
         public async Task<IActionResult> Quizzes()
         {
-            var quizzes = await _context.Quizzes.ToListAsync();
+            var quizzes = await _context.Quizzes
+                .Include(q => q.Questions)
+                .ToListAsync();
+
             return View(quizzes);
         }
 

@@ -13,9 +13,14 @@
         <h1 class="questions-page-title">❓ @Model.Title</h1>
         <p class="questions-page-sub">Upravljanje vprašanj in odgovorov</p>
     </div>
-    <a asp-action="AddQuestion" asp-route-quizId="@Model.QuizId" class="btn-add-question">
-        <i class="bi bi-plus-lg"></i> Dodaj vprašanje
-    </a>
+    <div class="questions-header-actions">
+        <a asp-action="Quizzes" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Nazaj
+        </a>
+        <a asp-action="AddQuestion" asp-route-quizId="@Model.QuizId" class="btn-add-question">
+            <i class="bi bi-plus-lg"></i> Dodaj vprašanje
+        </a>
+    </div>
 </div>
 
 <!-- KPI strip -->
@@ -389,6 +394,32 @@ else
         border: 1.5px solid #99f6e4;
     }
 
+    .questions-header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f3f4f6;
+        color: #444;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: 1.5px solid #e5e7eb;
+        transition: all 0.18s;
+    }
+
+        .btn-back:hover {
+            background: #e5e7eb;
+            color: #111;
+        }
+
     .question-text-wrap {
         flex: 1;
         min-width: 0;
@@ -661,6 +692,16 @@ else
 
         body.dark-mode .btn-q-delete:hover {
             background: #3b2020;
+        }
+
+    body.dark-mode .btn-back {
+        background: #252525;
+        border-color: #333;
+        color: #ddd;
+    }
+
+        body.dark-mode .btn-back:hover {
+            background: #2f2f2f;
         }
 
     body.dark-mode .answer-wrong {

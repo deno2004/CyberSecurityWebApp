@@ -14,26 +14,27 @@ namespace CyberSecurityWebApp.Controllers
     {
         private readonly AppDbContext _context;
         private readonly EmailService _emailService;
+        private readonly ILogger<AuthenticationController> _logger;
 
-        public AuthenticationController(AppDbContext context, EmailService emailService)
+        public AuthenticationController(
+            AppDbContext context,
+            EmailService emailService,
+            ILogger<AuthenticationController> logger)
         {
             _context = context;
             _emailService = emailService;
+            _logger = logger;
         }
 
         public IActionResult Index() => View();
 
-        // ─────────────────────────────────────────
-        //  LOGIN
-        // ─────────────────────────────────────────
         [HttpGet]
         public IActionResult Login() => View();
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null || !PasswordHelper.VerifyPassword(password, user.Password))
             {
@@ -41,7 +42,6 @@ namespace CyberSecurityWebApp.Controllers
                 return View();
             }
 
-            // 🔐 Preveri ali je e-pošta potrjena
             if (!user.EmailConfirmed)
             {
                 ViewBag.Error = "Prosimo, najprej potrdite vaš e-poštni naslov. Preverite vaš nabiralnik.";
@@ -58,18 +58,13 @@ namespace CyberSecurityWebApp.Controllers
             };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(identity));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             return user.IsAdmin
                 ? RedirectToAction("Dashboard", "Admin")
                 : RedirectToAction("Index", "Home");
         }
 
-        // ─────────────────────────────────────────
-        //  REGISTER
-        // ─────────────────────────────────────────
         [HttpGet]
         public IActionResult Register() => View();
 
@@ -91,7 +86,6 @@ namespace CyberSecurityWebApp.Controllers
                 return View(model);
             }
 
-            // Generiraj potrditveni žeton
             var token = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
             var expires = DateTime.UtcNow.AddHours(24);
 
@@ -111,78 +105,49 @@ namespace CyberSecurityWebApp.Controllers
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
-            // Pošlji potrditveni e-mail
             var confirmLink = Url.Action(
                 "ConfirmEmail", "Authentication",
                 new { userId = newUser.UserId, token },
                 Request.Scheme)!;
 
+            // ✅ Pokaži napako uporabniku če pošiljanje ne uspe
+            string? emailError = null;
             try
             {
-                await _emailService.SendConfirmationEmailAsync(
-                    newUser.Email,
-                    newUser.FirstName,
-                    confirmLink);
+                await _emailService.SendConfirmationEmailAsync(newUser.Email, newUser.FirstName, confirmLink);
+                _logger.LogInformation("Potrditveni e-mail poslan na {Email}", newUser.Email);
             }
             catch (Exception ex)
             {
-                // Če pošiljanje ne uspe, še vedno registriraj — logiraj napako
-                // V produkciji bi tu logirali napako
-                _ = ex;
+                emailError = ex.Message;
+                _logger.LogError(ex, "Napaka pri pošiljanju e-maila na {Email}", newUser.Email);
             }
 
             TempData["RegisterSuccess"] = newUser.Email;
+            TempData["EmailError"] = emailError;   // null = uspelo
+            TempData["ConfirmLink"] = confirmLink;  // za debug
             return RedirectToAction("RegisterSuccess");
         }
 
-        // ─────────────────────────────────────────
-        //  REGISTER SUCCESS (info stran)
-        // ─────────────────────────────────────────
         [HttpGet]
         public IActionResult RegisterSuccess()
         {
             ViewBag.Email = TempData["RegisterSuccess"]?.ToString();
+            ViewBag.EmailError = TempData["EmailError"]?.ToString();
+            ViewBag.ConfirmLink = TempData["ConfirmLink"]?.ToString();
             return View();
         }
 
-        // ─────────────────────────────────────────
-        //  CONFIRM EMAIL
-        // ─────────────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(int userId, string token)
         {
             var user = await _context.Users.FindAsync(userId);
 
-            if (user == null)
-            {
-                ViewBag.Status = "error";
-                ViewBag.Message = "Uporabnik ne obstaja.";
-                return View();
-            }
+            if (user == null) { ViewBag.Status = "error"; ViewBag.Message = "Uporabnik ne obstaja."; return View(); }
+            if (user.EmailConfirmed) { ViewBag.Status = "already"; ViewBag.Message = "Vaš e-poštni naslov je bil že potrjen."; return View(); }
+            if (user.ConfirmationToken != token) { ViewBag.Status = "error"; ViewBag.Message = "Neveljavna potrditvena povezava."; return View(); }
+            if (user.ConfirmationTokenExpires < DateTime.UtcNow) { ViewBag.Status = "expired"; ViewBag.Message = "Potrditvena povezava je potekla."; ViewBag.UserId = userId; return View(); }
 
-            if (user.EmailConfirmed)
-            {
-                ViewBag.Status = "already";
-                ViewBag.Message = "Vaš e-poštni naslov je bil že potrjen.";
-                return View();
-            }
-
-            if (user.ConfirmationToken != token)
-            {
-                ViewBag.Status = "error";
-                ViewBag.Message = "Neveljavna potrditvena povezava.";
-                return View();
-            }
-
-            if (user.ConfirmationTokenExpires < DateTime.UtcNow)
-            {
-                ViewBag.Status = "expired";
-                ViewBag.Message = "Potrditvena povezava je potekla. Zahtevajte novo.";
-                ViewBag.UserId = userId;
-                return View();
-            }
-
-            // Potrdi
             user.EmailConfirmed = true;
             user.ConfirmationToken = null;
             user.ConfirmationTokenExpires = null;
@@ -194,9 +159,6 @@ namespace CyberSecurityWebApp.Controllers
             return View();
         }
 
-        // ─────────────────────────────────────────
-        //  RESEND CONFIRMATION EMAIL
-        // ─────────────────────────────────────────
         [HttpPost]
         public async Task<IActionResult> ResendConfirmation(int userId)
         {
@@ -210,34 +172,26 @@ namespace CyberSecurityWebApp.Controllers
 
             var token = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
             var expires = DateTime.UtcNow.AddHours(24);
-
             user.ConfirmationToken = token;
             user.ConfirmationTokenExpires = expires;
             await _context.SaveChangesAsync();
 
-            var confirmLink = Url.Action(
-                "ConfirmEmail", "Authentication",
-                new { userId = user.UserId, token },
-                Request.Scheme)!;
+            var confirmLink = Url.Action("ConfirmEmail", "Authentication", new { userId = user.UserId, token }, Request.Scheme)!;
 
             try
             {
-                await _emailService.SendConfirmationEmailAsync(
-                    user.Email, user.FirstName, confirmLink);
-
+                await _emailService.SendConfirmationEmailAsync(user.Email, user.FirstName, confirmLink);
                 TempData["Success"] = "Potrditveni e-mail je bil znova poslan.";
             }
-            catch
+            catch (Exception ex)
             {
-                TempData["Error"] = "Pošiljanje e-maila ni uspelo. Poskusite znova.";
+                _logger.LogError(ex, "Napaka pri ponovnem pošiljanju e-maila");
+                TempData["Error"] = $"Pošiljanje ni uspelo: {ex.Message}";
             }
 
             return RedirectToAction("Login");
         }
 
-        // ─────────────────────────────────────────
-        //  LOGOUT
-        // ─────────────────────────────────────────
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

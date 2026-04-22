@@ -1,6 +1,8 @@
 ﻿using CyberSecurityWebApp.Data;
+using CyberSecurityWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CyberSecurityWebApp.Controllers
 {
@@ -21,12 +23,8 @@ namespace CyberSecurityWebApp.Controllers
 
         public async Task<IActionResult> Start(int id)
         {
-            var module = await _context.Quizzes
-                .FirstOrDefaultAsync(m => m.QuizId == id);
-
-            if (module == null)
-                return NotFound();
-
+            var module = await _context.Quizzes.FirstOrDefaultAsync(m => m.QuizId == id);
+            if (module == null) return NotFound();
             return View(module);
         }
 
@@ -45,98 +43,102 @@ namespace CyberSecurityWebApp.Controllers
             }
 
             var quiz = await _context.Quizzes
-                .Include(q => q.Questions)
-                    .ThenInclude(q => q.Answers)
+                .Include(q => q.Questions).ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.QuizId == id);
 
-            if (quiz == null)
-                return NotFound();
+            if (quiz == null) return NotFound();
 
             ViewBag.CurrentQuestion = questionIndex;
-
             return View(quiz);
         }
 
         [HttpPost]
         public async Task<IActionResult> SubmitAnswer(int quizId, int questionId, int answerId, int questionIndex)
         {
-            var existingAnswers = HttpContext.Session.GetString("UserAnswers");
-
-            List<int> answerIds;
-
-            if (string.IsNullOrEmpty(existingAnswers))
-                answerIds = new List<int>();
-            else
-                answerIds = existingAnswers.Split(',').Select(int.Parse).ToList();
+            var existing = HttpContext.Session.GetString("UserAnswers");
+            var answerIds = string.IsNullOrEmpty(existing)
+                ? new List<int>()
+                : existing.Split(',').Select(int.Parse).ToList();
 
             answerIds.Add(answerId);
-
             HttpContext.Session.SetString("UserAnswers", string.Join(",", answerIds));
 
-            var totalQuestions = await _context.Questions
-                .CountAsync(q => q.QuizId == quizId);
+            var total = await _context.Questions.CountAsync(q => q.QuizId == quizId);
 
-            if (questionIndex < totalQuestions)
-            {
-                return RedirectToAction("TakeQuiz", new
-                {
-                    id = quizId,
-                    questionIndex = questionIndex + 1
-                });
-            }
-
-            return RedirectToAction("Result", new { id = quizId });
+            return questionIndex < total
+                ? RedirectToAction("TakeQuiz", new { id = quizId, questionIndex = questionIndex + 1 })
+                : RedirectToAction("Result", new { id = quizId });
         }
 
         public async Task<IActionResult> Result(int id)
         {
             var quiz = await _context.Quizzes
-                .Include(q => q.Questions)
-                    .ThenInclude(q => q.Answers)
+                .Include(q => q.Questions).ThenInclude(q => q.Answers)
                 .FirstOrDefaultAsync(q => q.QuizId == id);
 
-            if (quiz == null)
-                return NotFound();
+            if (quiz == null) return NotFound();
 
             var userAnswers = HttpContext.Session.GetString("UserAnswers");
-
             var answerIds = string.IsNullOrEmpty(userAnswers)
                 ? new List<int>()
                 : userAnswers.Split(',').Select(int.Parse).ToList();
 
             int score = 0;
             var results = new List<dynamic>();
-
-            var questions = quiz.Questions
-                .OrderBy(q => q.QuestionId)
-                .ToList();
+            var questions = quiz.Questions.OrderBy(q => q.QuestionId).ToList();
 
             for (int i = 0; i < questions.Count; i++)
             {
-                var question = questions[i];
-                var selectedAnswerId = answerIds.ElementAtOrDefault(i);
-
-                var selectedAnswer = question.Answers
-                    .FirstOrDefault(a => a.AnswerId == selectedAnswerId);
-
-                var correctAnswer = question.Answers
-                    .FirstOrDefault(a => a.IsCorrect);
-
-                bool isCorrect = selectedAnswer != null && selectedAnswer.IsCorrect;
-
+                var q = questions[i];
+                var selId = answerIds.ElementAtOrDefault(i);
+                var selAnswer = q.Answers.FirstOrDefault(a => a.AnswerId == selId);
+                var corrAnswer = q.Answers.FirstOrDefault(a => a.IsCorrect);
+                bool isCorrect = selAnswer != null && selAnswer.IsCorrect;
                 if (isCorrect) score++;
 
-                results.Add(new
-                {
-                    Question = question,
-                    SelectedAnswer = selectedAnswer,
-                    CorrectAnswer = correctAnswer,
-                    IsCorrect = isCorrect
-                });
+                results.Add(new { Question = q, SelectedAnswer = selAnswer, CorrectAnswer = corrAnswer, IsCorrect = isCorrect });
             }
 
             double percentage = questions.Count > 0 ? (double)score / questions.Count * 100 : 0;
             bool passed = percentage >= quiz.PassThreshold;
+
+            // ✅ Shrani v session za certifikat
+            if (passed)
+            {
+                HttpContext.Session.SetString($"CertScore_{id}", score.ToString());
+                HttpContext.Session.SetString($"CertTotal_{id}", questions.Count.ToString());
+                HttpContext.Session.SetString($"CertDate_{id}", DateTime.Now.ToString("dd. MM. yyyy"));
+
+                // ✅ Shrani v bazo (za prikaz na profilu)
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (int.TryParse(userIdStr, out int userId))
+                {
+                    var existingCompletion = await _context.QuizCompletions
+                        .FirstOrDefaultAsync(c => c.UserId == userId && c.QuizId == id);
+
+                    if (existingCompletion == null)
+                    {
+                        _context.QuizCompletions.Add(new QuizCompletion
+                        {
+                            UserId = userId,
+                            QuizId = id,
+                            Score = score,
+                            Total = questions.Count,
+                            Percentage = percentage,
+                            CompletedAt = DateTime.Now
+                        });
+                    }
+                    else if (percentage > existingCompletion.Percentage)
+                    {
+                        existingCompletion.Score = score;
+                        existingCompletion.Total = questions.Count;
+                        existingCompletion.Percentage = percentage;
+                        existingCompletion.CompletedAt = DateTime.Now;
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             ViewBag.Score = score;
             ViewBag.Total = questions.Count;
@@ -146,25 +148,13 @@ namespace CyberSecurityWebApp.Controllers
             ViewBag.FeedbackMessage = GetFeedbackMessage(percentage);
             ViewBag.FeedbackClass = GetFeedbackClass(percentage);
 
-            // Shrani rezultat v session za certifikat
-            if (passed)
-            {
-                HttpContext.Session.SetString($"CertScore_{id}", score.ToString());
-                HttpContext.Session.SetString($"CertTotal_{id}", questions.Count.ToString());
-                HttpContext.Session.SetString($"CertDate_{id}", DateTime.Now.ToString("dd. MM. yyyy"));
-            }
-
             return View(quiz);
         }
 
-        // ✅ Nova akcija za prikaz certifikata
         public async Task<IActionResult> Certificate(int id, string userName)
         {
-            var quiz = await _context.Quizzes
-                .FirstOrDefaultAsync(q => q.QuizId == id);
-
-            if (quiz == null)
-                return NotFound();
+            var quiz = await _context.Quizzes.FirstOrDefaultAsync(q => q.QuizId == id);
+            if (quiz == null) return NotFound();
 
             var scoreStr = HttpContext.Session.GetString($"CertScore_{id}");
             var totalStr = HttpContext.Session.GetString($"CertTotal_{id}");
@@ -196,30 +186,23 @@ namespace CyberSecurityWebApp.Controllers
             }
 
             var sessionCode = GenerateSessionCode();
-
-            var module = await _context.Quizzes
-                .Include(m => m.Questions)
+            var module = await _context.Quizzes.Include(m => m.Questions)
                 .FirstOrDefaultAsync(m => m.QuizId == moduleId);
 
-            if (module == null)
-                return NotFound();
+            if (module == null) return NotFound();
 
-            var session = new Models.Quiz
+            /*_context.Quizzes.Add(new Models.Quiz
             {
                 Title = $"{module.Title} - Seja za {userName}",
                 Description = $"Seja kviza za uporabnika {userName}",
                 IconClass = module.IconClass,
                 PassThreshold = module.PassThreshold
-            };
+            });
+            await _context.SaveChangesAsync();*/
 
-            _context.Quizzes.Add(session);
-            await _context.SaveChangesAsync();
-
-            var shareUrl = Url.Action("TakeQuiz", "Quiz", new { code = sessionCode }, Request.Scheme);
-            ViewBag.ShareUrl = shareUrl;
+            ViewBag.ShareUrl = Url.Action("TakeQuiz", "Quiz", new { id = moduleId }, Request.Scheme);
             ViewBag.SessionCode = sessionCode;
             ViewBag.ModuleId = moduleId;
-
             return View("Share");
         }
 
@@ -227,30 +210,23 @@ namespace CyberSecurityWebApp.Controllers
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             var random = new Random();
-            return new string(Enumerable.Repeat(chars, 8)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            return new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        private string GetFeedbackMessage(double percentage)
+        private string GetFeedbackMessage(double p) => p switch
         {
-            return percentage switch
-            {
-                >= 90 => "Odlično! Imate izvrstno znanje o kibernetski varnosti!",
-                >= 70 => "Zelo dobro! Dobro razumete osnove kibernetske varnosti.",
-                >= 50 => "Dobro! Še nekaj vsebin bi bilo dobro pregledati.",
-                _ => "Priporočamo, da si ogledate izobraževalne vsebine in poskusite znova."
-            };
-        }
+            >= 90 => "Odlično! Imate izvrstno znanje o kibernetski varnosti!",
+            >= 70 => "Zelo dobro! Dobro razumete osnove kibernetske varnosti.",
+            >= 50 => "Dobro! Še nekaj vsebin bi bilo dobro pregledati.",
+            _ => "Priporočamo, da si ogledate izobraževalne vsebine in poskusite znova."
+        };
 
-        private string GetFeedbackClass(double percentage)
+        private string GetFeedbackClass(double p) => p switch
         {
-            return percentage switch
-            {
-                >= 90 => "excellent",
-                >= 70 => "good",
-                >= 50 => "average",
-                _ => "needs-improvement"
-            };
-        }
+            >= 90 => "excellent",
+            >= 70 => "good",
+            >= 50 => "average",
+            _ => "needs-improvement"
+        };
     }
 }

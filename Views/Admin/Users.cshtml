@@ -13,9 +13,14 @@
         <h1 class="users-page-title">👥 Upravljanje uporabnikov</h1>
         <p class="users-page-sub">Pregled vseh registriranih računov v sistemu</p>
     </div>
-    <a asp-action="AddUser" class="btn-add-user">
-        <i class="bi bi-plus-lg"></i> Dodaj uporabnika
-    </a>
+    <div class="users-header-actions">
+        <a asp-action="Dashboard" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Nazaj
+        </a>
+        <a asp-action="AddUser" class="btn-add-user">
+            <i class="bi bi-plus-lg"></i> Dodaj uporabnika
+        </a>
+    </div>
 </div>
 
 <!-- KPI strip -->
@@ -85,7 +90,7 @@ else
                 <div class="user-card-info">
                     <div class="user-info-row">
                         <span class="user-info-icon"><i class="bi bi-envelope"></i></span>
-                        <span class="user-info-val">@user.Email</span>
+                        <span class="user-info-val user-info-id">Email: @user.Email</span>
                     </div>
                     <div class="user-info-row">
                         <span class="user-info-icon"><i class="bi bi-fingerprint"></i></span>
@@ -270,6 +275,32 @@ else
         flex-shrink: 0;
     }
 
+    .users-header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f3f4f6;
+        color: #444;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 18px;
+        border-radius: 10px;
+        text-decoration: none;
+        border: 1.5px solid #e5e7eb;
+        transition: all 0.18s;
+    }
+
+        .btn-back:hover {
+            background: #e5e7eb;
+            color: #111;
+        }
+
     /* ══════════════════════════════════════
            SEARCH
         ══════════════════════════════════════ */
@@ -434,14 +465,14 @@ else
     }
 
     .user-info-val {
-        color: #555;
+        color: black;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .user-info-id {
-        color: #bbb;
+        color: black;
         font-size: 0.78rem;
         font-family: monospace;
     }
@@ -548,6 +579,16 @@ else
     body.dark-mode .users-kpi-divider {
         background: #2b2b2b;
     }
+
+    body.dark-mode .btn-back {
+        background: #252525;
+        border-color: #333;
+        color: #ddd;
+    }
+
+        body.dark-mode .btn-back:hover {
+            background: #2f2f2f;
+        }
 
     body.dark-mode .users-search-input {
         background: #1b1b1b;

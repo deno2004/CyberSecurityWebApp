@@ -5,7 +5,7 @@
     // Color theme per category
     (string bg, string border, string accent, string btn) GetTheme(string category) => category switch
     {
-        "Gesla" => ("#eff6ff", "#bfdbfe", "#1d4ed8", "theme-blue"),
+        "Gesla" => ("#fff1f2", "#fecdd3", "#dc3545", "theme-red"),
         "Phishing" => ("#fffbeb", "#fde68a", "#b45309", "theme-amber"),
         "Internet" => ("#f0fdf4", "#bbf7d0", "#166534", "theme-green"),
         _ => ("#f9fafb", "#e5e7eb", "#374151", "theme-gray")
@@ -217,6 +217,13 @@ else
         text-transform: uppercase;
     }
 
+    /* RED THEME (GESLA) */
+    .course-card.theme-red {
+        --card-bg: #fff1f2;
+        --card-border: #fecdd3;
+        --card-accent: #dc3545;
+    }
+
     /* ── Body ── */
     .course-card-body {
         padding: 4px 22px 18px;
@@ -349,10 +356,10 @@ else
         color: white;
     }
 
-    body.dark-mode .course-card.theme-blue {
-        --card-bg: #1a2235;
-        --card-border: #1d3a6e;
-        --card-accent: #60a5fa;
+    body.dark-mode .course-card.theme-red {
+        --card-bg: #2a1215;
+        --card-border: #5c1f26;
+        --card-accent: #ff6b6b;
     }
 
     body.dark-mode .course-card.theme-amber {

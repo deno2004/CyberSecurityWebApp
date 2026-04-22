@@ -1,50 +1,92 @@
 ﻿@{
     ViewData["Title"] = "Registracija uspešna";
-    var email = ViewBag.Email as string ?? "vaš e-poštni naslov";
+    var email = ViewBag.Email as string ?? "";
+    var emailError = ViewBag.EmailError as string;
+    var confirmLink = ViewBag.ConfirmLink as string;
+    bool emailOk = string.IsNullOrEmpty(emailError);
 }
 
 <div class="regsuccess-wrap">
     <div class="regsuccess-card">
 
-        <div class="regsuccess-envelope">
-            <div class="envelope-body">📧</div>
-        </div>
+        @if (!emailOk)
+        {
+            @* ══ NAPAKA PRI POŠILJANJU E-MAILA ══ *@
+            <div class="regsuccess-envelope">⚠️</div>
+            <h1 class="regsuccess-title">Registracija uspešna, a e-mail ni bil poslan</h1>
+            <p class="regsuccess-msg">
+                Vaš račun je ustvarjen, a pošiljanje potrditvenega e-maila ni uspelo.<br />
+                Preverite SMTP nastavitve v <code>appsettings.json</code>.
+            </p>
 
-        <h1 class="regsuccess-title">Preverite nabiralnik!</h1>
-
-        <p class="regsuccess-msg">
-            Registracija je bila uspešna. Poslali smo potrditveni e-mail na:
-        </p>
-
-        <div class="regsuccess-email-box">
-            <i class="bi bi-envelope-fill"></i>
-            <strong>@email</strong>
-        </div>
-
-        <p class="regsuccess-sub">
-            Kliknite na potrditveno povezavo v e-mailu, da aktivirate vaš račun.
-            Povezava velja <strong>24 ur</strong>.
-        </p>
-
-        <div class="regsuccess-steps">
-            <div class="rs-step">
-                <span class="rs-step-num">1</span>
-                <span>Odprite vaš e-poštni nabiralnik</span>
+            <div class="email-error-box">
+                <div class="email-error-label"><i class="bi bi-bug"></i> Napaka:</div>
+                <code class="email-error-msg">@emailError</code>
             </div>
-            <div class="rs-step">
-                <span class="rs-step-num">2</span>
-                <span>Poiščite sporočilo od <em>Cyber Security Akademija</em></span>
-            </div>
-            <div class="rs-step">
-                <span class="rs-step-num">3</span>
-                <span>Kliknite "Potrdi e-poštni naslov"</span>
-            </div>
-        </div>
 
-        <div class="regsuccess-note">
-            <i class="bi bi-info-circle"></i>
-            Če e-maila ne najdete, preverite <strong>mapo Neželena pošta (Spam)</strong>.
-        </div>
+            @if (!string.IsNullOrEmpty(confirmLink))
+            {
+                <div class="debug-link-box">
+                    <div class="debug-link-label">
+                        <i class="bi bi-link-45deg"></i>
+                        <strong>Ročna potrditev (samo za razvoj):</strong>
+                    </div>
+                    <a href="@confirmLink" class="debug-link-url">@confirmLink</a>
+                    <div class="debug-link-note">
+                        Kliknite zgornjo povezavo, da potrdite e-mail brez pošiljanja sporočila.
+                    </div>
+                </div>
+            }
+
+            <div class="smtp-checklist">
+                <div class="smtp-checklist-title">📋 Preverite naslednje:</div>
+                <ol class="smtp-steps">
+                    <li>V <code>appsettings.json</code> zamenjajte <code>vas.email@gmail.com</code> z vašim Gmail naslovom</li>
+                    <li>Zamenjajte <code>app-password-tukaj</code> z Gmail App Password (ne navadnim geslom)</li>
+                    <li>Ustvarite App Password: Gmail → Nastavitve → Varnost → 2FA → App Passwords</li>
+                    <li>Preverite da je 2FA vklopljena na Google računu</li>
+                </ol>
+            </div>
+        }
+        else
+        {
+            @* ══ USPEH ══ *@
+            <div class="regsuccess-envelope">📧</div>
+            <h1 class="regsuccess-title">Preverite nabiralnik!</h1>
+            <p class="regsuccess-msg">
+                Registracija je bila uspešna. Poslali smo potrditveni e-mail na:
+            </p>
+
+            <div class="regsuccess-email-box">
+                <i class="bi bi-envelope-fill"></i>
+                <strong>@email</strong>
+            </div>
+
+            <p class="regsuccess-sub">
+                Kliknite na potrditveno povezavo v e-mailu, da aktivirate vaš račun.
+                Povezava velja <strong>24 ur</strong>.
+            </p>
+
+            <div class="regsuccess-steps">
+                <div class="rs-step">
+                    <span class="rs-step-num">1</span>
+                    <span>Odprite vaš e-poštni nabiralnik</span>
+                </div>
+                <div class="rs-step">
+                    <span class="rs-step-num">2</span>
+                    <span>Poiščite sporočilo od <em>Cyber Security Akademija</em></span>
+                </div>
+                <div class="rs-step">
+                    <span class="rs-step-num">3</span>
+                    <span>Kliknite "Potrdi e-poštni naslov"</span>
+                </div>
+            </div>
+
+            <div class="regsuccess-note">
+                <i class="bi bi-info-circle"></i>
+                Če e-maila ne najdete, preverite <strong>mapo Neželena pošta (Spam)</strong>.
+            </div>
+        }
 
         <div class="regsuccess-actions">
             <a asp-action="Login" class="btn-rs-primary">
@@ -69,7 +111,7 @@
         border: 1.5px solid #f0f0f0;
         border-radius: 20px;
         padding: 48px 40px;
-        max-width: 480px;
+        max-width: 520px;
         width: 100%;
         text-align: center;
         box-shadow: 0 8px 32px rgba(0,0,0,0.07);
@@ -78,6 +120,7 @@
     .regsuccess-envelope {
         font-size: 3.5rem;
         margin-bottom: 20px;
+        display: block;
         animation: float 2.5s ease-in-out infinite;
     }
 
@@ -92,7 +135,7 @@
     }
 
     .regsuccess-title {
-        font-size: 1.55rem;
+        font-size: 1.4rem;
         font-weight: 800;
         color: #1a1a1a;
         margin: 0 0 12px;
@@ -100,12 +143,107 @@
     }
 
     .regsuccess-msg {
-        font-size: 0.93rem;
+        font-size: 0.92rem;
         color: #666;
-        margin: 0 0 14px;
-        line-height: 1.55;
+        margin: 0 0 18px;
+        line-height: 1.6;
     }
 
+    /* ── Error box ── */
+    .email-error-box {
+        background: #fff2f2;
+        border: 1.5px solid #fecaca;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 18px;
+        text-align: left;
+    }
+
+    .email-error-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #dc2626;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .email-error-msg {
+        font-size: 0.8rem;
+        color: #991b1b;
+        word-break: break-all;
+        line-height: 1.5;
+        display: block;
+    }
+
+    /* ── Debug link box ── */
+    .debug-link-box {
+        background: #f0fdf4;
+        border: 1.5px solid #86efac;
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 18px;
+        text-align: left;
+    }
+
+    .debug-link-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #166534;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .debug-link-url {
+        font-size: 0.75rem;
+        color: #2563eb;
+        word-break: break-all;
+        display: block;
+        line-height: 1.5;
+        margin-bottom: 8px;
+    }
+
+    .debug-link-note {
+        font-size: 0.78rem;
+        color: #4b5563;
+    }
+
+    /* ── SMTP checklist ── */
+    .smtp-checklist {
+        background: #fffbeb;
+        border: 1.5px solid #fde68a;
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-bottom: 24px;
+        text-align: left;
+    }
+
+    .smtp-checklist-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #92400e;
+        margin-bottom: 10px;
+    }
+
+    .smtp-steps {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 0.82rem;
+        color: #78350f;
+        line-height: 1.7;
+    }
+
+        .smtp-steps code {
+            background: rgba(0,0,0,0.07);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+    /* ── Success elements ── */
     .regsuccess-email-box {
         display: inline-flex;
         align-items: center;
@@ -123,7 +261,7 @@
         font-size: 0.87rem;
         color: #888;
         line-height: 1.6;
-        margin: 0 0 24px;
+        margin: 0 0 20px;
     }
 
     .regsuccess-steps {
@@ -135,7 +273,7 @@
         border: 1px solid #f0f0f0;
         border-radius: 12px;
         padding: 18px 20px;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }
 
     .rs-step {
@@ -179,6 +317,10 @@
             margin-top: 1px;
         }
 
+    .regsuccess-actions {
+        margin-top: 8px;
+    }
+
     .btn-rs-primary {
         display: inline-flex;
         align-items: center;
@@ -210,8 +352,7 @@
         color: #e4e4e4;
     }
 
-    body.dark-mode .regsuccess-msg,
-    body.dark-mode .regsuccess-sub {
+    body.dark-mode .regsuccess-msg {
         color: #aaa;
     }
 
@@ -235,5 +376,35 @@
         border-color: #5c3d0a;
         color: #fbbf24;
     }
-</style>
 
+    body.dark-mode .smtp-checklist {
+        background: #2a1f0a;
+        border-color: #5c3d0a;
+    }
+
+    body.dark-mode .smtp-checklist-title {
+        color: #fbbf24;
+    }
+
+    body.dark-mode .smtp-steps {
+        color: #fde68a;
+    }
+
+    body.dark-mode .email-error-box {
+        background: #2d1b1b;
+        border-color: #5c1f1f;
+    }
+
+    body.dark-mode .email-error-msg {
+        color: #f87171;
+    }
+
+    body.dark-mode .debug-link-box {
+        background: #0d2518;
+        border-color: #14532d;
+    }
+
+    body.dark-mode .debug-link-note {
+        color: #9ca3af;
+    }
+</style>

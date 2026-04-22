@@ -15,5 +15,7 @@ namespace CyberSecurityWebApp.Data
         public DbSet<Answer> Answers { get; set; }
 
         public DbSet<Course> Courses { get; set; }
+
+        public DbSet<QuizCompletion> QuizCompletions { get; set; }
     }
 }

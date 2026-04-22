@@ -1,62 +1,604 @@
-﻿@model User
-
+﻿@model CyberSecurityWebApp.Models.User
 @{
     ViewData["Title"] = "Moj profil";
-}
 
-<div class="form-container">
-    <div class="form-header">
-        <div class="form-icon">👤</div>
-        <h1>Moj profil</h1>
-        <p>Uredi svoje osebne podatke</p>
+    var quizStatuses = ViewBag.QuizStatuses as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>();
+    var completedCount = ViewBag.CompletedCount as int? ?? 0;
+    var totalCount = ViewBag.TotalQuizzesCount as int? ?? 0;
+    int progressPct = totalCount > 0 ? (int)Math.Round((double)completedCount / totalCount * 100) : 0;
+}
+<br />
+<div class="profile-wrap">
+
+    <!-- ══ LEVA KOLONA: Podatki ══ -->
+    <div class="profile-left">
+
+        <!-- Avatar + ime -->
+        <div class="profile-avatar-card">
+            <div class="profile-avatar">
+                @(Model.FirstName.Substring(0, 1).ToUpper())@(Model.LastName.Substring(0, 1).ToUpper())
+            </div>
+            <div class="profile-avatar-name">@Model.FirstName @Model.LastName</div>
+            <div class="profile-avatar-username">@@@Model.Username</div>
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="profile-role-badge profile-role-admin">👑 Administrator</span>
+            }
+            else
+            {
+                <span class="profile-role-badge profile-role-user">👤 Uporabnik</span>
+            }
+        </div>
+
+        <!-- Kviz napredek (mini) -->
+        <div class="profile-progress-card">
+            <div class="profile-progress-title">🎓 Napredek kvizov</div>
+            <div class="profile-progress-nums">
+                <span class="profile-progress-done">@completedCount</span>
+                <span class="profile-progress-sep">/</span>
+                <span class="profile-progress-total">@totalCount</span>
+                <span class="profile-progress-label">opravljenih</span>
+            </div>
+            <div class="profile-progress-track">
+                <div class="profile-progress-fill" style="width:@progressPct%"></div>
+            </div>
+            <div class="profile-progress-pct">@progressPct%</div>
+        </div>
+
     </div>
 
-    <div class="form-card">
-        <form asp-action="Index" method="post">
-            @Html.AntiForgeryToken()
+    <!-- ══ DESNA KOLONA ══ -->
+    <div class="profile-right">
 
-            <div class="form-group">
-                <label>Ime</label>
-                <input asp-for="FirstName" class="form-input" />
+        <!-- Urejanje podatkov -->
+        <div class="profile-section-card">
+            <div class="profile-section-header">
+                <span class="profile-section-icon">✏️</span>
+                <h2 class="profile-section-title">Osebni podatki</h2>
             </div>
+            <div class="profile-section-body">
+                <form asp-action="UpdateProfile" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="UserId" />
+                    <input type="hidden" asp-for="IsAdmin" />
 
-            <div class="form-group">
-                <label>Priimek</label>
-                <input asp-for="LastName" class="form-input" />
+                    <div class="profile-form-grid">
+                        <div class="profile-field">
+                            <label class="profile-label">Ime</label>
+                            <input asp-for="FirstName" class="profile-input" />
+                        </div>
+                        <div class="profile-field">
+                            <label class="profile-label">Priimek</label>
+                            <input asp-for="LastName" class="profile-input" />
+                        </div>
+                        <div class="profile-field">
+                            <label class="profile-label">Uporabniško ime</label>
+                            <input asp-for="Username" class="profile-input" />
+                        </div>
+                        <div class="profile-field">
+                            <label class="profile-label">E-pošta</label>
+                            <input asp-for="Email" class="profile-input" type="email" />
+                        </div>
+                        <div class="profile-field profile-field-full">
+                            <label class="profile-label">
+                                Novo geslo
+                                <span class="profile-label-hint">(pusti prazno, če ne želiš spremeniti)</span>
+                            </label>
+                            <input asp-for="Password" type="password" class="profile-input" />
+                        </div>
+                    </div>
+
+                    <div class="profile-form-actions">
+                        <button type="submit" class="btn-profile-save">
+                            <i class="bi bi-check-lg"></i> Shrani spremembe
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label>Uporabniško ime</label>
-                <input asp-for="Username" class="form-input" />
+        <!-- ══ KVIZI ══ -->
+        <div class="profile-section-card">
+            <div class="profile-section-header">
+                <span class="profile-section-icon">🏆</span>
+                <h2 class="profile-section-title">Moji kvizi in certifikati</h2>
+                <span class="profile-quiz-summary">@completedCount / @totalCount opravljenih</span>
             </div>
+            <div class="profile-section-body">
 
-            <div class="form-group">
-                <label>Email</label>
-                <input asp-for="Email" class="form-input" />
-            </div>
-
-            <div class="form-group">
-                <label>Novo geslo (pusti prazno, če ne želiš spremeniti)</label>
-                <input asp-for="Password" type="password" class="form-input" />
-            </div>
-
-            <div class="form-group">
-                <label>Vloga</label>
-                @if (User.IsInRole("Admin"))
+                @if (!quizStatuses.Any())
                 {
-                    <div class="badge badge-admin">👑 Administrator</div>
+                    <div class="profile-quiz-empty">
+                        <i class="bi bi-journal-text"></i>
+                        <p>Ni kvizov v sistemu.</p>
+                    </div>
                 }
                 else
                 {
-                    <div class="badge badge-user">👤 Uporabnik</div>
-                }
-            </div>
+                    <div class="profile-quiz-list">
+                        @foreach (var qs in quizStatuses)
+                        {
+                            bool done = (bool)qs.Completed;
+                            var quiz = qs.Quiz;
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    Shrani spremembe
-                </button>
+                            <div class="profile-quiz-item @(done ? "quiz-done" : "quiz-pending")">
+                                <div class="profile-quiz-icon-wrap">
+                                    <img src="@quiz.IconClass" alt="@quiz.Title" class="profile-quiz-img" />
+                                </div>
+                                <div class="profile-quiz-info">
+                                    <div class="profile-quiz-title">@quiz.Title</div>
+                                    @if (done)
+                                    {
+                                        double pct = (double)qs.Percentage;
+                                        int sc = (int)qs.Score;
+                                        int tot = (int)qs.Total;
+                                        string date = ((DateTime?)qs.CompletedAt)?.ToString("dd. MM. yyyy") ?? "";
+
+                                        <div class="profile-quiz-meta">
+                                            <span class="quiz-meta-score">@sc / @tot točk (@pct.ToString("F0")%)</span>
+                                            <span class="quiz-meta-date"><i class="bi bi-calendar3"></i> @date</span>
+                                        </div>
+                                        <div class="quiz-mini-bar">
+                                            <div class="quiz-mini-bar-fill" style="width:@pct.ToString("F0")%"></div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="profile-quiz-pending-label">Še ni opravljeno</div>
+                                    }
+                                </div>
+                                <div class="profile-quiz-actions">
+                                    @if (done)
+                                    {
+                                        <span class="quiz-status-badge quiz-status-done">
+                                            <i class="bi bi-patch-check-fill"></i> Certifikat
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="quiz-status-badge quiz-status-pending">
+                                            <i class="bi bi-circle"></i> Nedokončano
+                                        </span>
+                                        <a href="/Quiz/Start/@quiz.QuizId" class="btn-quiz-start-small">
+                                            <i class="bi bi-play-fill"></i> Začni
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
             </div>
-        </form>
+        </div>
+
     </div>
 </div>
+
+<style>
+    /* ══════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════ */
+    .profile-wrap {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* ══════════════════════════════════════
+       LEFT: AVATAR CARD
+    ══════════════════════════════════════ */
+    .profile-avatar-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        padding: 28px 20px;
+        text-align: center;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        margin-bottom: 16px;
+    }
+
+    .profile-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: #fff;
+        font-size: 1.6rem;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+        box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+        letter-spacing: -0.02em;
+    }
+
+    .profile-avatar-name {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 3px;
+    }
+
+    .profile-avatar-username {
+        font-size: 0.82rem;
+        color: #aaa;
+        margin-bottom: 12px;
+    }
+
+    .profile-role-badge {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 99px;
+    }
+
+    .profile-role-admin { background: #e0e7ff; color: #3730a3; }
+    .profile-role-user  { background: #dcfce7; color: #166534; }
+
+    /* ══ PROGRESS CARD ══ */
+    .profile-progress-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+
+    .profile-progress-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #555;
+        margin-bottom: 12px;
+    }
+
+    .profile-progress-nums {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 4px;
+        margin-bottom: 10px;
+    }
+
+    .profile-progress-done  { font-size: 2rem; font-weight: 900; color: #2563eb; line-height: 1; }
+    .profile-progress-sep   { font-size: 1.2rem; color: #ccc; }
+    .profile-progress-total { font-size: 1.2rem; font-weight: 700; color: #888; }
+    .profile-progress-label { font-size: 0.78rem; color: #aaa; margin-left: 4px; }
+
+    .profile-progress-track {
+        height: 8px;
+        background: #eee;
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 6px;
+    }
+
+    .profile-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #2563eb, #60a5fa);
+        border-radius: 99px;
+        transition: width 0.5s ease;
+    }
+
+    .profile-progress-pct {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+    /* ══════════════════════════════════════
+       RIGHT: SECTION CARDS
+    ══════════════════════════════════════ */
+    .profile-section-card {
+        background: #fff;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .profile-section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 18px 24px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .profile-section-icon { font-size: 1.1rem; }
+
+    .profile-section-title {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0;
+        flex: 1;
+    }
+
+    .profile-quiz-summary {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #aaa;
+        background: #f3f4f6;
+        padding: 3px 10px;
+        border-radius: 99px;
+    }
+
+    .profile-section-body { padding: 22px 24px; }
+
+    /* ══ FORM ══ */
+    .profile-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .profile-field-full { grid-column: 1 / -1; }
+
+    .profile-label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #555;
+        margin-bottom: 6px;
+    }
+
+    .profile-label-hint {
+        font-weight: 400;
+        color: #bbb;
+        font-size: 0.78rem;
+    }
+
+    .profile-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #e2e2e2;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        color: #1a1a1a;
+        background: #fafafa;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+    }
+
+    .profile-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        background: #fff;
+    }
+
+    .profile-form-actions { display: flex; justify-content: flex-end; }
+
+    .btn-profile-save {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        padding: 11px 24px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.18s, transform 0.15s;
+        box-shadow: 0 3px 12px rgba(37,99,235,0.25);
+    }
+
+    .btn-profile-save:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+    }
+
+    /* ══ QUIZ LIST ══ */
+    .profile-quiz-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .profile-quiz-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1.5px solid;
+        transition: box-shadow 0.18s;
+    }
+
+    .quiz-done    { background: #f0fdf4; border-color: #86efac; }
+    .quiz-pending { background: #fafafa; border-color: #e5e7eb; }
+
+    .profile-quiz-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+    .profile-quiz-icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.7);
+        border: 1.5px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .profile-quiz-img { width: 28px; height: 28px; object-fit: contain; }
+
+    .profile-quiz-info { flex: 1; min-width: 0; }
+
+    .profile-quiz-title {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .profile-quiz-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 0.78rem;
+        color: #555;
+        margin-bottom: 6px;
+        flex-wrap: wrap;
+    }
+
+    .quiz-meta-score { font-weight: 600; color: #166534; }
+    .quiz-meta-date  { color: #888; display: flex; align-items: center; gap: 4px; }
+
+    .quiz-mini-bar {
+        height: 4px;
+        background: #d1fae5;
+        border-radius: 99px;
+        overflow: hidden;
+    }
+
+    .quiz-mini-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #16a34a, #4ade80);
+        border-radius: 99px;
+    }
+
+    .profile-quiz-pending-label {
+        font-size: 0.78rem;
+        color: #bbb;
+    }
+
+    .profile-quiz-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    .quiz-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 99px;
+        white-space: nowrap;
+    }
+
+    .quiz-status-done    { background: #dcfce7; color: #166534; }
+    .quiz-status-pending { background: #f3f4f6; color: #9ca3af; }
+
+    .btn-quiz-retry, .btn-quiz-start-small {
+        width: 34px;
+        height: 34px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.18s;
+        flex-shrink: 0;
+    }
+
+    .btn-quiz-retry {
+        background: #eff6ff;
+        color: #2563eb;
+        border: 1.5px solid #bfdbfe;
+    }
+
+    .btn-quiz-retry:hover { background: #dbeafe; color: #2563eb; }
+
+    .btn-quiz-start-small {
+        background: #2563eb;
+        color: #fff;
+        font-size: 0.8rem;
+        padding: 0 12px;
+        width: auto;
+        gap: 5px;
+        font-weight: 700;
+    }
+
+    .btn-quiz-start-small:hover { background: #1d4ed8; color: #fff; }
+
+    .profile-quiz-empty {
+        text-align: center;
+        padding: 40px;
+        color: #ccc;
+    }
+
+    .profile-quiz-empty i { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+    .profile-quiz-empty p { font-size: 0.9rem; color: #aaa; margin: 0; }
+
+    /* ══════════════════════════════════════
+       DARK MODE
+    ══════════════════════════════════════ */
+    body.dark-mode .profile-avatar-card,
+    body.dark-mode .profile-progress-card,
+    body.dark-mode .profile-section-card   { background: #1e1e1e; border-color: #2b2b2b; box-shadow: none; }
+
+    body.dark-mode .profile-avatar-name    { color: #e4e4e4; }
+    body.dark-mode .profile-section-title  { color: #e4e4e4; }
+    body.dark-mode .profile-section-header { border-color: #2b2b2b; }
+    body.dark-mode .profile-label          { color: #aaa; }
+    body.dark-mode .profile-progress-title { color: #aaa; }
+    body.dark-mode .profile-progress-track { background: #333; }
+
+    body.dark-mode .profile-input {
+        background: #252525;
+        border-color: #333;
+        color: #eee;
+    }
+
+    body.dark-mode .profile-quiz-summary {
+        color: #6b7280;
+        background: #2b2b2b; 
+    }
+
+    body.dark-mode .profile-input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    body.dark-mode .quiz-done    { background: #0d2518; border-color: #166534; }
+    body.dark-mode .quiz-pending { background: #252525; border-color: #2b2b2b; }
+
+    body.dark-mode .profile-quiz-title   { color: #e4e4e4; }
+    body.dark-mode .quiz-meta-score      { color: #4ade80; }
+    body.dark-mode .quiz-mini-bar        { background: #1a3b26; }
+    body.dark-mode .quiz-status-done     { background: #14301e; color: #4ade80; }
+    body.dark-mode .quiz-status-pending  { background: #2b2b2b; color: #6b7280; }
+
+    body.dark-mode .profile-quiz-icon-wrap { background: rgba(0,0,0,0.3); border-color: #333; }
+
+    body.dark-mode .btn-quiz-retry {
+        background: #1e2d45;
+        color: #60a5fa;
+        border-color: #1d3a6e;
+    }
+
+    body.dark-mode .profile-role-admin { background: #1e1f3d; color: #818cf8; }
+    body.dark-mode .profile-role-user  { background: #14301e; color: #4ade80; }
+
+    @@media (max-width: 900px) {
+        .profile-wrap       { grid-template-columns: 1fr; }
+        .profile-form-grid  { grid-template-columns: 1fr; }
+        .profile-field-full { grid-column: 1; }
+    }
+
+    @@media (max-width: 500px) {
+        .profile-section-body { padding: 16px; }
+        .profile-quiz-item    { flex-wrap: wrap; }
+    }
+</style>
